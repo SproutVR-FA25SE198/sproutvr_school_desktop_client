@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Accounts\" />
+    <Folder Include="Features\VrLearningSessions\" />
+    <Folder Include="Features\VrLessons\" />
+    <Folder Include="Features\VrDevices\" />
+    <Folder Include="Models\Accounts\" />
+    <Folder Include="Models\VrLessons\" />
+    <Folder Include="Models\VrLearningSessions\" />
+    <Folder Include="Models\VrDevices\" />
+    <Folder Include="Navigations\" />
+    <Folder Include="Messages\" />
+    <Folder Include="Services\" />
+    <Folder Include="Validation\" />
+    <Folder Include="ViewModels\Accounts\" />
+    <Folder Include="ViewModels\VrLessons\" />
+    <Folder Include="ViewModels\VrLearningSessions\" />
+    <Folder Include="ViewModels\VrDevices\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+  </ItemGroup>
+
+</Project>

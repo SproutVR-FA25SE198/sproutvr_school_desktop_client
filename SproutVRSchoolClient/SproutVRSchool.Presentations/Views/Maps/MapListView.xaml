@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:SproutVRSchool.Client.Core.ViewModels.Maps;assembly=SproutVRSchool.Client.Core"
+             xmlns:models="clr-namespace:SproutVRSchool.Client.Core.Models.Maps;assembly=SproutVRSchool.Client.Core"
+             x:Class="SproutVRSchool.Presentations.Views.Maps.MapListView"
+             x:DataType="viewModels:MapListViewModel"
+             Title="Map list"
+             BackgroundColor="White">
+
+    <!--bind with view model -->
+    <ContentPage.BindingContext>
+        <viewModels:MapListViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="Auto, Auto, Auto, *" Margin="24">
+        <HorizontalStackLayout Grid.Row="0" Spacing="20">
+            <Button Text="Map" FontSize="18" BackgroundColor="Transparent" TextColor="Black" BorderColor="Black" CornerRadius="0" />
+            <Button Text="Session" FontSize="18" BackgroundColor="Transparent" TextColor="Gray" />
+        </HorizontalStackLayout>
+        
+        <!--Subject list-->
+        <ScrollView Grid.Row="1" Orientation="Horizontal" HorizontalScrollBarVisibility="Never" Margin="0,20,0,0">
+            <HorizontalStackLayout BindableLayout.ItemsSource="{Binding Subjects}" Spacing="15">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate  x:DataType="x:String">
+                        <Button Text="{Binding .}"  Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:MapListViewModel}}, Path=FilterBySubjectCommand}"
+                        CommandParameter="{Binding .}" BackgroundColor="Transparent"
+                        TextColor="Black" 
+                        BorderColor="LightGray"
+                        BorderWidth="1"
+                        CornerRadius="16"
+                        Padding="20,5"/>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </HorizontalStackLayout>
+        </ScrollView>
+        
+        <!--- sorting options -->
+        <Grid Grid.Row="2" Margin="0,20,0,10">
+            <Button Text="+ lesson" HorizontalOptions="Start" Command="{Binding AddNewMapCommand}"/>
+            <Picker Title="Sort" HorizontalOptions="End">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Name A-Z</x:String>
+                        <x:String>Name Z-A</x:String>
+                        <x:String>Newest</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+        </Grid>
+
+        <!--Map list-->
+        <CollectionView Grid.Row="3" ItemsSource="{Binding Maps}"
+                        SelectionMode="None">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="2" HorizontalItemSpacing="15" VerticalItemSpacing="15"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:MapListModel">
+                    <Border StrokeShape="RoundRectangle 8"
+                            Stroke="LightGray"
+                            Padding="10"
+                            BackgroundColor="#F8F8F8">
+                        <VerticalStackLayout Spacing="8">
+                            <Image Source="dotnet_bot.png" Aspect="AspectFill" HeightRequest="120" BackgroundColor="LightGray" />
+                            <Label Text="{Binding Subject}" TextColor="Gray" FontSize="12" />
+                            <Label Text="{Binding MapName}" FontSize="16" TextColor="Black" />
+                            <Label Text="{Binding VrLessonsCount, StringFormat='VR Maps: {0}'}" FontSize="12" TextColor="Gray"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>
