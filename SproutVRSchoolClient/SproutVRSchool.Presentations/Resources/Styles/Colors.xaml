@@ -6,18 +6,44 @@
 
     <!-- Note: For Android please see also Platforms\Android\Resources\values\colors.xml -->
 
-    <Color x:Key="Primary">#512BD4</Color>
-    <Color x:Key="PrimaryDark">#ac99ea</Color>
-    <Color x:Key="PrimaryDarkText">#242424</Color>
-    <Color x:Key="Secondary">#DFD8F7</Color>
-    <Color x:Key="SecondaryDarkText">#9880e5</Color>
-    <Color x:Key="Tertiary">#2B0B98</Color>
+    <Color x:Key="Primary">#0f2c5b</Color>
+    <Color x:Key="PrimaryDark">#001a3d</Color>
+    <Color x:Key="PrimaryDarkText">#ffffff</Color>
+    <Color x:Key="Secondary">#29ae62</Color>
+    <Color x:Key="SecondaryDarkText">#e0f5e6</Color>
+    <Color x:Key="Tertiary">#fe9a00</Color>
+
+
+    <Color x:Key="Accent">#e0f5e6</Color>
+    <Color x:Key="AccentForeground">#001a3d</Color>
+    <Color x:Key="Muted">#f2f2f2</Color>
+    <Color x:Key="MutedForeground">#4d5660</Color>
+    <Color x:Key="Success">#07bc0c</Color>
+    <Color x:Key="Error">#e74d3c</Color>
+    <Color x:Key="Warning">#f1c40f</Color>
+    <Color x:Key="Info">#3498db</Color>
+    <Color x:Key="Destructive">#e7000b</Color>
+
+
+    <Color x:Key="Primary10">#190f2c5b</Color>
+    <Color x:Key="Primary30">#4c0f2c5b</Color>
+    <Color x:Key="Primary50">#800f2c5b</Color>
+    <Color x:Key="Primary70">#b20f2c5b</Color>
+    <Color x:Key="Secondary10">#1929ae62</Color>
+    <Color x:Key="Secondary30">#4c29ae62</Color>
+    <Color x:Key="Secondary50">#8029ae62</Color>
+    <Color x:Key="Secondary70">#b229ae62</Color>
+
 
     <Color x:Key="White">White</Color>
     <Color x:Key="Black">Black</Color>
     <Color x:Key="Magenta">#D600AA</Color>
     <Color x:Key="MidnightBlue">#190649</Color>
     <Color x:Key="OffBlack">#1f1f1f</Color>
+    <Color x:Key="Violet">#8e51ff</Color>
+    <Color x:Key="LightViolet">#bb86fc</Color>
+    <Color x:Key="Rose">#ff2056</Color>
+    <Color x:Key="Blue">#2b7fff</Color>
 
     <Color x:Key="Gray100">#E1E1E1</Color>
     <Color x:Key="Gray200">#C8C8C8</Color>
