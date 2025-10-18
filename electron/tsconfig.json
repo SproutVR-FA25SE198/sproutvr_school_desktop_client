@@ -1,9 +1,14 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
     "strict": true,
     "target": "ESNext",
     "module": "NodeNext",
     "outDir": "../dist-electron",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": "../",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }
