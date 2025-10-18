@@ -1,0 +1,16 @@
+{
+  "appId": "sproutvr",
+  "files": ["dist-electron", "dist-react"],
+  "extraResources": ["dist-electron/preload/preload.cjs", "src/assets/**"],
+  "icon": "public/SproutVR_Icon.png",
+  "mac": {
+    "target": "dmg"
+  },
+  "linux": {
+    "target": "AppImage",
+    "category": "Utility"
+  },
+  "win": {
+    "target": ["portable", "msi"]
+  }
+}

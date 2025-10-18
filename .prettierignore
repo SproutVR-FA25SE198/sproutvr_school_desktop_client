@@ -1,0 +1,28 @@
+# Build output
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+
+# Coverage
+coverage/
+
+# Config & lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Assets
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+
+# Misc
+.DS_Store
