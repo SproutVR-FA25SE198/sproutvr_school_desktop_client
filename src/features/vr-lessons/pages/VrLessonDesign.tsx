@@ -1,12 +1,26 @@
-import { Button } from '@/common/components/ui/button';
+import { FormProvider, useFormContext } from '@/common/contexts/form-context';
+import { PhaseOneStepOne } from '../components/forms/phase-one-step-one';
+import { PhaseOneStepTwo } from '../components/forms/phase-one-step-two';
+import { PhaseOneStepThree } from '../components/forms/phase-one-step-three';
+import { PhaseTwo } from './VrTaskDesign';
 
 const VrLessonDesign = () => {
+  const { currentStep } = useFormContext();
+
   return (
-    <div>
-      VrLessonDesign
-      <Button variant='default'>Hello</Button>
-    </div>
+    <>
+      {currentStep === 1 && <PhaseOneStepOne />}
+      {currentStep === 2 && <PhaseOneStepTwo />}
+      {currentStep === 3 && <PhaseOneStepThree />}
+      {currentStep === 4 && <PhaseTwo />}
+    </>
   );
 };
 
-export default VrLessonDesign;
+export const VrLessonDesignPage = () => {
+  return (
+    <FormProvider>
+      <VrLessonDesign />
+    </FormProvider>
+  );
+};
