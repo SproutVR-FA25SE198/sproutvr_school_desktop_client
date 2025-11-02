@@ -47,7 +47,7 @@
     "clsx": "^2.1.1",
     "cross-env": "^10.1.0",
     "electron": "^38.3.0",
-    "electron-builder": "^26.0.12",
+    "electron-builder": "^25.1.8",
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-jsx-a11y": "^6.10.2",
