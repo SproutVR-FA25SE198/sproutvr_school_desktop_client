@@ -10,7 +10,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: 'Dashboard', href: '/dashboard', icon: '📊' },
-  { label: 'Lessons', href: '/lessons', icon: '📚' },
+  { label: 'Lessons', href: '/', icon: '📚' },
   { label: 'Sessions', href: '/sessions', icon: '▶️' },
   { label: 'Devices', href: '/devices', icon: '🖥️' },
   { label: 'Accounts', href: '/accounts', icon: '👥' },
