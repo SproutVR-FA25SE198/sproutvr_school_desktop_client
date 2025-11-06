@@ -63,7 +63,7 @@ export function LessonsGrid() {
           >
             {sort === 'asc' ? <SortDesc /> : <SortAsc />} Sắp xếp
           </Button>
-          <Button className='bg-primary text-white hover:bg-primary/90'>
+          <Button className='bg-primary text-white hover:bg-primary/90' onClick={() => navigate(routes.lessonCreation)}>
             <BookOpen /> Tạo bài học mới
           </Button>
         </div>
