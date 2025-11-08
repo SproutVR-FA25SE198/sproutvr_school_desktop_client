@@ -5,6 +5,8 @@ const routes = {
   lessons: '/lessons',
   lessonDetails: '/lessons/:id',
   vrLessons: '/lessons/:id/:vrId',
+  vrDevices: '/vr-devices',
+  vrDeviceDetail: '/vr-devices/:id',
   logout: '/logout',
   notFound: '*',
 };

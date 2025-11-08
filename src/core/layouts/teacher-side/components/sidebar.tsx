@@ -12,7 +12,7 @@ const navItems: NavItem[] = [
   { label: 'Dashboard', href: '/dashboard', icon: '📊' },
   { label: 'Lessons', href: '/lessons', icon: '📚' },
   { label: 'Sessions', href: '/sessions', icon: '▶️' },
-  { label: 'Devices', href: '/devices', icon: '🖥️' },
+  { label: 'VR Devices', href: '/vr-devices', icon: '🖥️' },
   { label: 'Accounts', href: '/accounts', icon: '👥' },
   { label: 'Reports', href: '/reports', icon: '📈' },
 ];
