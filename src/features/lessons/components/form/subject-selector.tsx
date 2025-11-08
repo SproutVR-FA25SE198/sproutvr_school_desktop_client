@@ -10,7 +10,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/common/components/ui/carousel';
-import type { MasterSubjectRetrieve } from '../../services/subject.service';
+import type { MasterSubjectRetrieve } from '@/common/services/subject.service';
 
 // ✅ Generic version that works with any form type
 export function SubjectSelector<T extends FieldValues>({

@@ -3,7 +3,7 @@
 import { Controller } from 'react-hook-form';
 import type { Control, FieldValues, Path, PathValue } from 'react-hook-form';
 import { Label } from '@/common/components/ui/label';
-import type { SubjectRetrieve } from '../../services/subject.service';
+import type { SubjectRetrieve } from '@/common/services/subject.service';
 
 export function ClassSelector<T extends FieldValues>({
   control,

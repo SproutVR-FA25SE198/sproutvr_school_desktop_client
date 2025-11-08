@@ -10,7 +10,7 @@ import { Label } from '@/common/components/ui/label';
 import { SubjectSelector } from './subject-selector';
 import { FileUpload } from './file-upload';
 import { useState } from 'react';
-import type { MasterSubjectRetrieve, SubjectRetrieve } from '../../services/subject.service';
+import type { MasterSubjectRetrieve, SubjectRetrieve } from '@/common/services/subject.service';
 import { ClassSelector } from './class-selector';
 
 interface LessonFormProps {

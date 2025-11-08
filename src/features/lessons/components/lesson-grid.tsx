@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { usePagination } from '@/common/hooks/usePagination';
 import routes from '@/core/configs/routes';
 import type { LessonRetrieve } from '../services/lesson.service';
-import type { MasterSubjectRetrieve } from '../services/subject.service';
+import type { MasterSubjectRetrieve } from '@/common/services/subject.service';
 
 interface LessonsGridProps {
   lessons?: LessonRetrieve[];

@@ -1,4 +1,4 @@
-import { GET_SUBJECT_LIST_QUERY__KEY, getSubjectList, SUBJECTS_STALE_TIME } from '../services/subject.service';
+import { GET_SUBJECT_LIST_QUERY__KEY, getSubjectList, SUBJECTS_STALE_TIME } from '@/common/services/subject.service';
 import { useQuery } from '@tanstack/react-query';
 
 const useGetSubjects = () => {
