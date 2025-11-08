@@ -10,10 +10,18 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/common/components/ui/carousel';
-import { mockSubjects } from '../../services/lesson-creation-mock-data';
+import type { MasterSubjectRetrieve } from '../../services/subject.service';
 
 // ✅ Generic version that works with any form type
-export function SubjectSelector<T extends FieldValues>({ control, error }: { control: Control<T>; error?: string }) {
+export function SubjectSelector<T extends FieldValues>({
+  control,
+  error,
+  subjects,
+}: {
+  control: Control<T>;
+  error?: string;
+  subjects?: MasterSubjectRetrieve[];
+}) {
   return (
     <Controller
       control={control}
@@ -25,7 +33,7 @@ export function SubjectSelector<T extends FieldValues>({ control, error }: { con
 
           <Carousel className='w-full max-w-[420px] mx-auto'>
             <CarouselContent className='py-2 px-4'>
-              {mockSubjects.map((subject) => {
+              {subjects?.map((subject) => {
                 const isSelected = field.value === subject.id;
 
                 return (

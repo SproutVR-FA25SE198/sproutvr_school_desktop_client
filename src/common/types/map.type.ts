@@ -1,6 +1,6 @@
 export interface Map {
   id: string;
-  name: string;
+  name?: string;
   description: string;
   imageUrl: string;
   subjectId: string;

@@ -44,7 +44,7 @@ export const MOCK_LESSONS: Lesson[] = [
     status: 'published',
     createdAt: '2024-10-15T10:30:00Z',
     updatedAt: '2024-10-20T15:45:00Z',
-    vrLessonCount: 24,
+    vrLessonsCount: 24,
     subjectImage: '/calculus-math-visualization.jpg',
   },
   {
@@ -59,7 +59,7 @@ export const MOCK_LESSONS: Lesson[] = [
     status: 'published',
     createdAt: '2024-10-10T09:15:00Z',
     updatedAt: '2024-10-18T14:20:00Z',
-    vrLessonCount: 18,
+    vrLessonsCount: 18,
     subjectImage: '/human-anatomy-biology.jpg',
   },
   {
@@ -74,7 +74,7 @@ export const MOCK_LESSONS: Lesson[] = [
     status: 'published',
     createdAt: '2024-10-05T11:00:00Z',
     updatedAt: '2024-10-17T16:30:00Z',
-    vrLessonCount: 15,
+    vrLessonsCount: 15,
     subjectImage: '/molecular-structure-chemistry.jpg',
   },
   {
@@ -89,7 +89,7 @@ export const MOCK_LESSONS: Lesson[] = [
     status: 'published',
     createdAt: '2024-09-28T08:45:00Z',
     updatedAt: '2024-10-16T13:15:00Z',
-    vrLessonCount: 12,
+    vrLessonsCount: 12,
     subjectImage: '/photosynthesis-plant-biology.jpg',
   },
   {
@@ -104,7 +104,7 @@ export const MOCK_LESSONS: Lesson[] = [
     status: 'draft',
     createdAt: '2024-10-12T07:30:00Z',
     updatedAt: '2024-10-19T10:00:00Z',
-    vrLessonCount: 9,
+    vrLessonsCount: 9,
     subjectImage: '/3d-geometry-mathematics.jpg',
   },
   {
@@ -118,7 +118,7 @@ export const MOCK_LESSONS: Lesson[] = [
     status: 'published',
     createdAt: '2024-09-20T14:20:00Z',
     updatedAt: '2024-10-14T12:45:00Z',
-    vrLessonCount: 20,
+    vrLessonsCount: 20,
     subjectImage: '/periodic-table-chemistry-elements.jpg',
   },
 ];

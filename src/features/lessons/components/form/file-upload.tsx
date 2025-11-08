@@ -3,8 +3,9 @@
 import { Controller } from 'react-hook-form';
 import type { Control, FieldValues, Path } from 'react-hook-form';
 import { Label } from '@/common/components/ui/label';
-import { Upload } from 'lucide-react';
+import { Trash, Upload } from 'lucide-react';
 import { useState } from 'react';
+import { Button } from '@/common/components/ui/button';
 
 export function FileUpload<T extends FieldValues>({ control, error }: { control: Control<T>; error?: string }) {
   const [isDragActive, setIsDragActive] = useState(false);
@@ -37,9 +38,13 @@ export function FileUpload<T extends FieldValues>({ control, error }: { control:
               {isFile ? (
                 <>
                   <p className='font-medium'>{field.value.name}</p>
-                  <button type='button' onClick={() => field.onChange(null)}>
-                    Remove
-                  </button>
+                  <Button
+                    variant={'link'}
+                    className='text-destructive hover:cursor-pointer'
+                    onClick={() => field.onChange(null)}
+                  >
+                    <Trash /> Xóa
+                  </Button>
                 </>
               ) : (
                 <label className='cursor-pointer'>

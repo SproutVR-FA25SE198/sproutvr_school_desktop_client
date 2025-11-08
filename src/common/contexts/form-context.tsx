@@ -158,11 +158,9 @@ export function FormProvider({ children }: { children: ReactNode }) {
   };
 
   const submitForm = () => {
-    console.log(taskDetails);
     const completeFormData: VrLessonPatchPayload = {
       isSequential: tasksType === 'ordered',
       taskConfigs: Object.keys(taskDetails).map((key) => {
-        console.log(key);
         const quiz = taskDetails[Number.parseInt(key)]?.quizData;
         const info = taskDetails[Number.parseInt(key)]?.infoText || null;
         return {

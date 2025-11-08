@@ -10,7 +10,7 @@ export interface Lesson {
   createdAt: string;
   updatedAt: string;
   subjectImage?: string;
-  vrLessonCount?: number;
+  vrLessonsCount?: number;
 }
 
 export interface LessonGeneralRetrieve extends Pick<Lesson, 'id' | 'name' | 'description'> {}
