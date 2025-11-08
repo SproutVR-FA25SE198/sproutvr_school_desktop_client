@@ -3,13 +3,14 @@ import type { ActivityType, MapGeneralRetrieve, MapObject, TaskLocation } from '
 
 export interface VrLesson {
   id: string;
+  name?: string;
   mapId: string;
   lessonId: string;
   mapName: string;
   lessonName: string;
   description: string;
   maxDuration: number;
-  PresetJsonRelativeFilePath: string;
+  presetJsonRelativeFilePath: string;
   status: string;
   createdAt: string;
   updatedAt: string;
