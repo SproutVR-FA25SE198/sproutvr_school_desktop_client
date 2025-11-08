@@ -3,7 +3,7 @@
 import Loading from '@/common/components/loading';
 import { LessonsGrid } from '../components/lesson-grid';
 import useGetLessons from '../hooks/useGetLessons';
-import useGetMasterSubjects from '../hooks/useGetMasterSubjects';
+import useGetMasterSubjects from '@/common/hooks/useGetMasterSubjects';
 
 export default function LessonsPage() {
   const {
