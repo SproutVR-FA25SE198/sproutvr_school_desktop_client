@@ -12,10 +12,12 @@ app.on('ready', () => {
     },
   });
 
+  mainWindow.setFullScreen(true);
+
   if (isDev()) {
     mainWindow.loadURL('http://localhost:7272');
   } else {
     mainWindow.loadFile(path.join(app.getAppPath(), 'dist-react', 'index.html'));
   }
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 });

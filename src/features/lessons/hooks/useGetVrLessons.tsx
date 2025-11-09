@@ -1,0 +1,15 @@
+import { useQuery } from '@tanstack/react-query';
+import { GET_VR_LESSON_LIST_QUERY__KEY, getVrLessonList, LESSONS_STALE_TIME } from '../services/lesson.service';
+
+const useGetVrLessons = ({ lessonId }: { lessonId: string }) => {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: [GET_VR_LESSON_LIST_QUERY__KEY, lessonId],
+    queryFn: async () => await getVrLessonList(lessonId),
+    staleTime: LESSONS_STALE_TIME,
+    refetchOnWindowFocus: false,
+  });
+
+  return { data, isLoading, isError };
+};
+
+export default useGetVrLessons;

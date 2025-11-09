@@ -9,6 +9,8 @@ export interface Lesson {
   status: string;
   createdAt: string;
   updatedAt: string;
+  subjectImage?: string;
+  vrLessonsCount?: number;
 }
 
 export interface LessonGeneralRetrieve extends Pick<Lesson, 'id' | 'name' | 'description'> {}
