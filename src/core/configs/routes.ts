@@ -7,6 +7,8 @@ const routes = {
   lessonCreation: '/lessons/create',
   vrLessons: '/lessons/:id/:vrId',
   vrLessonDesign: '/vr-lessons-design',
+  vrDevices: '/vr-devices',
+  vrDeviceDetail: '/vr-devices/:id',
   logout: '/logout',
   notFound: '*',
 };
