@@ -39,10 +39,10 @@ export const useStepTwoForm = (
   /** ✅ Validate one task */
   const validateTask = useCallback((task: TaskFormData): TaskFormErrors => {
     const newErrors: TaskFormErrors = {};
-    if (!task.description.trim()) newErrors.description = 'Description is required';
-    if (!task.taskLocationId) newErrors.taskLocationId = 'Task location is required';
-    if (!task.mapObjectId) newErrors.mapObjectId = 'Object is required';
-    if (!task.activityTypeId) newErrors.activityTypeId = 'Activity is required';
+    if (!task.description.trim()) newErrors.description = 'Xin hãy nhập mô tả nhiệm vụ';
+    if (!task.taskLocationId) newErrors.taskLocationId = 'Xin hãy chọn vị trí nhiệm vụ';
+    if (!task.mapObjectId) newErrors.mapObjectId = 'Xin hãy chọn đồ vật';
+    if (!task.activityTypeId) newErrors.activityTypeId = 'Xin hãy chọn hoạt động';
     return newErrors;
   }, []);
 

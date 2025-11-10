@@ -11,12 +11,12 @@ interface LessonNameInputProps {
 export function VrLessonNameInput({ value, onChange, error }: LessonNameInputProps) {
   return (
     <div className='space-y-2'>
-      <label className='text-sm font-medium text-foreground'>Name:</label>
+      <label className='text-sm font-medium text-foreground'>Tên:</label>
       <Input
         type='text'
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder='Enter lesson name'
+        placeholder='Nhập tên bài học'
         className={error ? 'border-red-500' : ''}
       />
       {error && <p className='text-xs text-red-500'>{error}</p>}

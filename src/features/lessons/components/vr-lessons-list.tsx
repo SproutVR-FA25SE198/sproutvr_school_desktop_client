@@ -6,13 +6,14 @@ import { Button } from '@/common/components/ui/button';
 import { BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import routes from '@/core/configs/routes';
-import type { VrLessonRetrieve } from '../services/lesson.service';
+import type { LessonRetrieve, VrLessonRetrieve } from '../services/lesson.service';
 
 interface VRLessonsListProps {
   vrLessons?: VrLessonRetrieve[];
+  lesson?: LessonRetrieve;
 }
 
-export function VRLessonsList({ vrLessons }: VRLessonsListProps) {
+export function VRLessonsList({ vrLessons, lesson }: VRLessonsListProps) {
   const navigate = useNavigate();
 
   const itemsPerView = 3;
@@ -22,7 +23,7 @@ export function VRLessonsList({ vrLessons }: VRLessonsListProps) {
     <div className='bg-white rounded-lg p-6'>
       <div className='flex items-center justify-between mb-0'>
         <h2 className='text-xl font-semibold text-neutral-900 mb-4'>Bài học VR ({vrLessons?.length || 0})</h2>
-        <Button variant='secondary' size='sm' onClick={() => navigate(routes.vrLessonDesign)}>
+        <Button variant='secondary' size='sm' onClick={() => navigate(routes.vrLessonDesign, { state: { lesson } })}>
           <BookOpen /> Tạo bài học VR
         </Button>
       </div>

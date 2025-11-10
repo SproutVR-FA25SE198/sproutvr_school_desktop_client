@@ -6,16 +6,20 @@ import TeacherSideLayout from '../layouts/teacher-side/teacher-side-layout';
 import LessonsPage from '@/features/lessons/pages/LessonList';
 import LessonDetailsPage from '@/features/lessons/pages/LessonDetails';
 import LessonCreationPage from '@/features/lessons/pages/LessonCreation';
+import TeacherDesignLayout from '../layouts/teacher-side/teacher-design-layout';
 
 export const AppRouter = () => (
   <Router>
-    <TeacherSideLayout>
-      <Routes>
+    <Routes>
+      <Route element={<TeacherSideLayout />}>
         <Route path={routes.home} element={<LessonsPage />} />
         <Route path={routes.lessonDetails} element={<LessonDetailsPage />} />
-        <Route path={routes.lessonCreation} element={<LessonCreationPage />} />
+      </Route>
+
+      <Route element={<TeacherDesignLayout />}>
         <Route path={routes.vrLessonDesign} element={<VrLessonDesignPage />} />
-      </Routes>
-    </TeacherSideLayout>
+        <Route path={routes.lessonCreation} element={<LessonCreationPage />} />
+      </Route>
+    </Routes>
   </Router>
 );

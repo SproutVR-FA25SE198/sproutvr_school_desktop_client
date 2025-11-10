@@ -19,7 +19,7 @@ export function VrTaskForm() {
           currentTab === 'overview' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted text-muted-foreground',
         )}
       >
-        Overview
+        Tổng quan
       </button>
       {taskNumbers.map((taskNum) => (
         <button
@@ -32,7 +32,7 @@ export function VrTaskForm() {
               : 'hover:bg-muted text-muted-foreground',
           )}
         >
-          Task {taskNum}
+          Nhiệm vụ {taskNum}
         </button>
       ))}
     </div>

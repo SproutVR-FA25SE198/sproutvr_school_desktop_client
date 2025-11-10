@@ -1,17 +1,18 @@
 'use client';
 
-import { activityTypes } from '../services/mock-data';
+import type { ActivityTypeRetrieve } from '@/common/types/map.type';
 
 interface ActivitySelectProps {
   value: string;
   onChange: (value: string) => void;
+  activityTypes: ActivityTypeRetrieve[];
   error?: string;
 }
 
-export function ActivitySelect({ value, onChange, error }: ActivitySelectProps) {
+export function ActivitySelect({ value, onChange, activityTypes, error }: ActivitySelectProps) {
   return (
     <div className='space-y-2'>
-      <label className='text-sm font-medium text-neutral-700'>Activity:</label>
+      <label className='text-sm font-medium text-neutral-700'>Hoạt động:</label>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -19,7 +20,7 @@ export function ActivitySelect({ value, onChange, error }: ActivitySelectProps) 
           error ? 'border-red-500' : 'border-neutral-300'
         }`}
       >
-        <option value=''>Select an activity</option>
+        <option value=''>Chọn hoạt động</option>
         {activityTypes.map((activity) => (
           <option key={activity.id} value={activity.id}>
             {activity.name}
