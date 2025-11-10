@@ -22,7 +22,7 @@ export function QuizActivity({ taskNumber, onValidChange }: BaseActivityProps) {
   const quizData = task?.quizData ?? {
     question: '',
     options: [
-      { id: 'a', text: '', isCorrect: false },
+      { id: 'a', text: '', isCorrect: true },
       { id: 'b', text: '', isCorrect: false },
     ],
   };
@@ -41,7 +41,13 @@ export function QuizActivity({ taskNumber, onValidChange }: BaseActivityProps) {
   };
 
   const handleToggleCorrect = (id: string) => {
-    const updated = quizData.options.map((opt) => (opt.id === id ? { ...opt, isCorrect: !opt.isCorrect } : opt));
+    const updated = quizData.options.map(
+      (opt) =>
+        opt.id === id
+          ? { ...opt, isCorrect: true } // ✅ always set selected option to true
+          : { ...opt, isCorrect: false }, // ✅ all others must become false
+    );
+
     updateTaskDetails(taskNumber, {
       quizData: { ...quizData, options: updated },
     });
@@ -49,6 +55,7 @@ export function QuizActivity({ taskNumber, onValidChange }: BaseActivityProps) {
 
   const addOption = () => {
     const nextLetter = String.fromCharCode(97 + quizData.options.length);
+    if (nextLetter > 'd') return;
     updateTaskDetails(taskNumber, {
       quizData: {
         ...quizData,
@@ -83,11 +90,11 @@ export function QuizActivity({ taskNumber, onValidChange }: BaseActivityProps) {
     <div className='space-y-4'>
       {/* Question Input */}
       <div className='flex gap-4 items-center'>
-        <Label>Question</Label>
+        <Label>Câu hỏi</Label>
         <Input
           value={quizData.question}
           onChange={(e) => handleQuestionChange(e.target.value)}
-          placeholder='Enter quiz question'
+          placeholder='Nhập câu hỏi trắc nghiệm'
         />
       </div>
 
@@ -134,9 +141,11 @@ export function QuizActivity({ taskNumber, onValidChange }: BaseActivityProps) {
       </div>
 
       {/* Add Option */}
-      <Button type='button' variant='outline' size='sm' onClick={addOption} className='gap-2 bg-transparent'>
-        <Plus className='h-4 w-4' /> Add Option
-      </Button>
+      {quizData.options.length < 4 && (
+        <Button type='button' variant='outline' size='sm' onClick={addOption} className='gap-2 bg-transparent'>
+          <Plus className='h-4 w-4' /> Thêm lựa chọn
+        </Button>
+      )}
     </div>
   );
 }
@@ -155,7 +164,7 @@ export function InformationActivity({ taskNumber, onValidChange }: BaseActivityP
 
   return (
     <div className='space-y-2'>
-      <Label>Information Content</Label>
+      <Label>Nội dung thông tin</Label>
       <Input value={infoText} onChange={(e) => handleChange(e.target.value)} placeholder='Enter information text...' />
     </div>
   );
@@ -166,5 +175,5 @@ export function InformationActivity({ taskNumber, onValidChange }: BaseActivityP
 /* -------------------------------------------------------------------------- */
 export const activityInputMap = {
   quiz: QuizActivity,
-  information: InformationActivity,
+  info: InformationActivity,
 };

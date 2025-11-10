@@ -1,3 +1,6 @@
+import type { RetrieveAllResponse, Status } from './common.type';
+import type { Subject } from './subject.type';
+
 export interface Map {
   id: string;
   name?: string;
@@ -9,7 +12,7 @@ export interface Map {
   status: string;
 }
 
-export interface MapGeneralRetrieve extends Pick<Map, 'id' | 'name' | 'mapCode'> {}
+export interface MapGeneralRetrieve extends Pick<Map, 'id' | 'name' | 'mapCode' | 'imageUrl'> {}
 
 export interface MapObject {
   id: string;
@@ -32,3 +35,43 @@ export interface TaskLocation {
   locationCode: string;
   imageUrl?: string;
 }
+
+export interface MapRetrieve {
+  id: string;
+  name: string;
+  imageUrl: string;
+  mapCode: string;
+  status: Status;
+  subject: Pick<Subject, 'id' | 'name' | 'description' | 'imageUrl'>;
+  createdAtUtc: string;
+  createdAtVietnam: string;
+}
+
+export interface MapRetrieveResponse extends RetrieveAllResponse<MapRetrieve> {}
+
+export interface MapWithPreviewUrl extends Pick<Map, 'id' | 'name' | 'mapCode' | 'imageUrl'> {
+  previewUrl: string;
+}
+
+export interface TaskLocationRetrieve extends Pick<TaskLocation, 'id' | 'name' | 'locationCode' | 'imageUrl'> {
+  map: MapWithPreviewUrl;
+  createdAtUtc: string;
+  createdAtVietnam: string;
+}
+
+export interface TaskLocationRetrieveResponse extends RetrieveAllResponse<TaskLocationRetrieve> {}
+
+export interface MapObjectRetrieve extends Pick<MapObject, 'id' | 'name' | 'objectCode' | 'imageUrl'> {
+  map: MapWithPreviewUrl;
+  createdAtUtc: string;
+  createdAtVietnam: string;
+}
+
+export interface MapObjectRetrieveResponse extends RetrieveAllResponse<MapObjectRetrieve> {}
+
+export interface ActivityTypeRetrieve extends Pick<ActivityType, 'id' | 'name' | 'activityCode'> {
+  createdAtUtc: string;
+  createdAtVietnam: string;
+}
+
+export interface ActivityTypeRetrieveResponse extends RetrieveAllResponse<ActivityTypeRetrieve> {}

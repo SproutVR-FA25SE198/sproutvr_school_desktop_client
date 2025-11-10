@@ -4,14 +4,12 @@ import { Button } from '@/common/components/ui/button';
 import { Label } from '@/common/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/common/components/ui/radio-group';
 import { useFormContext } from '@/common/contexts/form-context';
-import { lessons, maps, subjects } from '../../services/mock-data';
+import type { VrLessonRetrieve } from '@/common/types/vr-lesson.type';
 
-export function OverviewTab() {
-  const { lessonData, tasks, tasksType, setTasksType, setCurrentTab } = useFormContext();
+export function OverviewTab({ vrLessonData }: { vrLessonData: VrLessonRetrieve }) {
+  const { tasks, tasksType, setTasksType, setCurrentTab } = useFormContext();
 
-  const subjectLabel = subjects.find((s) => s.id === lessonData.subject)?.name || '';
-  const lessonLabel = lessons.find((l) => l.id === lessonData.lesson)?.name || '';
-  const mapLabel = maps.find((m) => m.id === lessonData.map)?.name || '';
+  console.log('OverviewTab vrLessonData:', vrLessonData);
 
   const taskNumbers = Object.keys(tasks)
     .map(Number)
@@ -28,7 +26,7 @@ export function OverviewTab() {
       {/* Header */}
       <div className='space-y-2'>
         <div className='flex items-center justify-between'>
-          <h1 className='text-3xl font-bold'>{lessonData.name || '[VRLesson name]'}</h1>
+          <h1 className='text-3xl font-bold'>{vrLessonData?.name || '[VRLesson name]'}</h1>
           {/* <div className='flex gap-2'>
             <Button variant='ghost' size='sm'>
               Edit
@@ -38,15 +36,13 @@ export function OverviewTab() {
             </Button>
           </div> */}
         </div>
-        <p className='text-sm text-muted-foreground'>
-          {subjectLabel} • {lessonLabel}
-        </p>
-        <p className='text-sm text-foreground leading-relaxed'>{lessonData.description}</p>
+        <p className='text-sm text-muted-foreground'>{vrLessonData?.lesson?.name}</p>
+        <p className='text-sm text-foreground leading-relaxed'>{vrLessonData?.description}</p>
       </div>
 
       {/* Finish Setup Button */}
       <Button onClick={handleFinishSetup} variant='outline' className='w-full bg-transparent'>
-        Finish setting up your vr lesson
+        Hoàn tất thiết lập nhiệm vụ bài học
       </Button>
 
       {/* Overview Details */}
@@ -54,39 +50,32 @@ export function OverviewTab() {
         <div className='grid grid-cols-2 gap-4'>
           <div>
             <div className='mb-4 flex gap-2 items-center'>
-              <p className='text-sm font-medium'>Total duration:</p>
-              <p className='text-sm '>{lessonData.duration}</p>
+              <p className='text-sm font-medium'>Tổng thời lượng:</p>
+              <p className='text-sm '>{vrLessonData?.duration}</p>
             </div>
             <div className='mb-4 flex gap-2 items-center'>
-              <p className='text-sm font-medium'>Map:</p>
-              <p className='text-sm '>{mapLabel}</p>
+              <p className='text-sm font-medium'>Bản đồ:</p>
+              <p className='text-sm '>{vrLessonData?.map?.name}</p>
             </div>
             {/* Task Previews */}
-            <div className='grid grid-cols-3 gap-4'>
-              {taskNumbers.map((taskNum) => (
-                <div
-                  key={taskNum}
-                  className='aspect-video bg-muted rounded-lg flex items-center justify-center text-sm text-muted-foreground'
-                >
-                  Task {taskNum}
-                </div>
-              ))}
+            <div className='max-w-[300px]'>
+              <img src={vrLessonData?.map?.imageUrl} alt='Map Thumbnail' className='w-full h-auto rounded-md mb-2' />
             </div>
           </div>
           <div>
             <div className='space-y-2 rounded-lg border border-secondary p-4 pt-2 flex gap-4'>
-              <Label className='text-sm font-medium'>Tasks Type:</Label>
+              <Label className='text-sm font-medium'>Loại nhiệm vụ:</Label>
               <RadioGroup value={tasksType} onValueChange={(value) => setTasksType(value as 'ordered' | 'unordered')}>
                 <div className='flex items-center space-x-2'>
                   <RadioGroupItem value='unordered' id='unordered' />
                   <Label htmlFor='unordered' className='font-normal cursor-pointer'>
-                    Unordered
+                    Không theo thứ tự
                   </Label>
                 </div>
                 <div className='flex items-center space-x-2'>
                   <RadioGroupItem value='ordered' id='ordered' />
                   <Label htmlFor='ordered' className='font-normal cursor-pointer'>
-                    Ordered
+                    Theo thứ tự
                   </Label>
                 </div>
               </RadioGroup>

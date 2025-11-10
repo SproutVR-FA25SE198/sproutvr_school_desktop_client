@@ -2,7 +2,7 @@
 
 import { useMutation } from '@tanstack/react-query';
 import { useState, useCallback } from 'react';
-import { CreateVrLessonPhaseOne } from '../services/vr-lesson.service';
+import { createVrLessonPhaseOne } from '../services/vr-lesson.service';
 import type { VrLessonCreatePayload } from '@/common/types/vr-lesson.type';
 
 export interface Step3FormData {
@@ -20,7 +20,7 @@ export function useStepThreeForm(initialData: Step3FormData, onUpdate: (data: Pa
   const [errors, setErrors] = useState<Step3FormErrors>({});
 
   const { mutate: createVrLessonPhaseOneMutate, isPending } = useMutation({
-    mutationFn: (data: VrLessonCreatePayload) => CreateVrLessonPhaseOne(data),
+    mutationFn: (data: VrLessonCreatePayload) => createVrLessonPhaseOne(data),
   });
 
   const validateField = useCallback(
@@ -29,7 +29,7 @@ export function useStepThreeForm(initialData: Step3FormData, onUpdate: (data: Pa
 
       if (field === 'name') {
         if (!value.trim()) {
-          newErrors.name = 'Lesson name is required';
+          newErrors.name = 'Xin hãy nhập tên bài học';
         } else {
           delete newErrors.name;
         }
@@ -37,7 +37,7 @@ export function useStepThreeForm(initialData: Step3FormData, onUpdate: (data: Pa
 
       if (field === 'description') {
         if (!value.trim()) {
-          newErrors.description = 'Description is required';
+          newErrors.description = 'Xin hãy nhập mô tả';
         } else {
           delete newErrors.description;
         }
