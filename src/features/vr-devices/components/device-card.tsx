@@ -28,12 +28,12 @@ export function DeviceCard({
         const diffMs = now.getTime() - updated.getTime()
         const diffMins = Math.floor(diffMs / 60000)
 
-        if (diffMins < 1) return "Just now"
-        if (diffMins < 60) return `${diffMins} min ago`
+        if (diffMins < 1) return "Vừa xong"
+        if (diffMins < 60) return `${diffMins} phút trước`
         const diffHours = Math.floor(diffMins / 60)
-        if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`
+        if (diffHours < 24) return `${diffHours} giờ trước`
         const diffDays = Math.floor(diffHours / 24)
-        return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`
+        return `${diffDays} ngày trước`
     }
 
     const handleViewDetails = () => {
@@ -62,28 +62,28 @@ export function DeviceCard({
             <div className="space-y-3 mb-5">
                 <div className="flex items-center gap-2 text-sm">
                     <Clock className="w-4 h-4 text-neutral-400 shrink-0" />
-                    <span className="text-neutral-600">Last Update:</span>
+                    <span className="text-neutral-600">Cập nhật gần nhất:</span>
                     <span className="font-medium text-neutral-900 ml-auto">{getLastSync(updatedAtUtc)}</span>
                 </div>
             </div>
 
             {/* Actions */}
             <div className="flex gap-2 pt-3 border-t border-neutral-200/50">
-                <Button
-                    variant="default"
-                    size="sm"
+                <Button 
+                    variant="default" 
+                    size="sm" 
                     className="flex-1 font-semibold shadow-sm transition-all duration-200"
                     onClick={onEdit}
                 >
-                    Update
+                    Cập nhật
                 </Button>
-                <Button
-                    variant="outline"
-                    size="sm"
+                <Button 
+                    variant="outline" 
+                    size="sm" 
                     className="flex-1 font-semibold bg-white/50 hover:bg-white border-neutral-300 transition-all duration-200"
                     onClick={handleViewDetails}
                 >
-                    Details
+                    Chi tiết
                 </Button>
             </div>
 
