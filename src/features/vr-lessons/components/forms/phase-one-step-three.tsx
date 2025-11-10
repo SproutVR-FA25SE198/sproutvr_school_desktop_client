@@ -39,7 +39,6 @@ export function PhaseOneStepThree() {
           taskNumber: index + 1,
         })) as VrTaskCreatePayload[],
       };
-      console.log('Submitting VR Lesson Payload:', payload);
       createVrLessonPhaseOneMutate(payload, {
         onSuccess: (data) => {
           updateLessonData({ id: data.id });

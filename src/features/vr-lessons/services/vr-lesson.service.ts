@@ -14,6 +14,5 @@ export const createVrLessonPhaseTwo = async ({
   payload: VrLessonPatchPayload;
 }) => {
   const result = await http.patch(`/api/v1/teacher/vrlessons/${lessonId}/design-preset`, payload);
-  console.log('Patch Result:', result);
   return result.status;
 };

@@ -198,14 +198,12 @@ export function FormProvider({ children }: { children: ReactNode }) {
         } as VrTaskDetails;
       }),
     };
-    console.log('Complete form submitted:', completeFormData);
 
     createVrLessonPhaseTwoMutate(
       { vrLessonId: vrLessonData?.id || '', payload: completeFormData },
       {
         onSuccess: () => {
-          console.log('VR Lesson Phase Two created successfully');
-          alert('VR Lesson Phase Two created successfully');
+          alert('Hoàn tất tạo bài học VR!');
           navigate(routes.home);
         },
       },

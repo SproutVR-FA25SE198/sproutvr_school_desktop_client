@@ -27,7 +27,6 @@ export default function LessonCreationPage() {
   const { mutate: createLessonMutation, isPending } = useMutation({
     mutationFn: async (data: LessonCreationPayload) => await createLesson(data),
     onSuccess: (data) => {
-      console.log('Lesson created successfully');
       navigate(routes.lessonDetails.replace(':id', data.id));
     },
   });
@@ -49,7 +48,6 @@ export default function LessonCreationPage() {
       resourceFile: data.resourceFile,
       teacherId: '0199f4b1-8487-4352-8a2a-320a00e40e58',
     };
-    console.log('Lesson Creation Payload:', payload);
 
     createLessonMutation(payload);
     // Here you would typically send the data to your backend

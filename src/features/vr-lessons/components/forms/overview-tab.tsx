@@ -9,8 +9,6 @@ import type { VrLessonRetrieve } from '@/common/types/vr-lesson.type';
 export function OverviewTab({ vrLessonData }: { vrLessonData: VrLessonRetrieve }) {
   const { tasks, tasksType, setTasksType, setCurrentTab } = useFormContext();
 
-  console.log('OverviewTab vrLessonData:', vrLessonData);
-
   const taskNumbers = Object.keys(tasks)
     .map(Number)
     .sort((a, b) => a - b);
