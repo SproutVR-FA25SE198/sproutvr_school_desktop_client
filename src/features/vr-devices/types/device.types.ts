@@ -21,13 +21,13 @@ export type VRDeviceDisplay = VRDevice
 export const getStatusLabel = (status: VRDeviceStatus): string => {
     switch (status) {
         case VRDeviceStatus.Available:
-            return "Available"
+            return "Sẵn sàng"
         case VRDeviceStatus.InUse:
-            return "In Use"
+            return "Đang sử dụng"
         case VRDeviceStatus.UnderMaintenance:
-            return "Maintenance"
+            return "Bảo trì"
         default:
-            return "Unknown"
+            return "Không xác định"
     }
 }
 
