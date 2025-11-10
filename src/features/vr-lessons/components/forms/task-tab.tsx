@@ -17,13 +17,13 @@ export function TaskTab({ taskNumber, setIsValid }: TaskTabProps) {
 
   useEffect(() => {
     // Initialize task details if not present
-    updateTaskDetails(taskNumber, { vrTaskId: vrLessonData?.tasks[taskNumber - 1].id });
+    updateTaskDetails(taskNumber, {
+      vrTaskId: vrLessonData?.tasks[taskNumber - 1].id,
+      activityType: vrLessonData?.tasks[taskNumber - 1].activityType.activityCode,
+    });
   }, []);
 
-  console.log('TaskTab vrLessonData:', vrLessonData);
-
   const taskSetup = vrLessonData?.tasks[taskNumber - 1];
-  console.log(`TaskTab taskSetup for task ${taskNumber}:`, taskSetup);
   const activityType = taskSetup?.activityType?.activityCode.toLowerCase();
   const ActivityComponent = activityInputMap[activityType as keyof typeof activityInputMap];
 

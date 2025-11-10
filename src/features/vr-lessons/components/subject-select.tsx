@@ -10,7 +10,6 @@ interface SubjectSelectProps {
 }
 
 export function SubjectSelect({ value, onChange, error, subjectName }: SubjectSelectProps) {
-  console.log('current subject:', value, subjectName);
   return (
     <div className='space-y-2'>
       <label className='text-sm font-medium text-neutral-700'>Môn học</label>
