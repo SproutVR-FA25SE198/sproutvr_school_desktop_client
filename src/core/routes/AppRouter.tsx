@@ -9,6 +9,7 @@ import LessonCreationPage from '@/features/lessons/pages/LessonCreation';
 import LessonDetailsPage from '@/features/lessons/pages/LessonDetails';
 import LessonsPage from '@/features/lessons/pages/LessonList';
 import AdminSideLayout from '../layouts/admin-side/admin-side-layout';
+import ActivationPage from '@/features/bundles/pages/KeyValidation';
 
 export const AppRouter = () => (
   <Router>
@@ -23,6 +24,7 @@ export const AppRouter = () => (
       <Route element={<AdminSideLayout />}>
         <Route path={routes.vrDevices} element={<VRDeviceList />} />
         <Route path={routes.vrDeviceDetail} element={<VRDeviceDetail />} />
+        <Route path={routes.activation} element={<ActivationPage />} />
       </Route>
     </Routes>
   </Router>

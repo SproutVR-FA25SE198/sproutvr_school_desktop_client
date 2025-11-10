@@ -12,7 +12,7 @@ app.on('ready', () => {
     },
   });
 
-  mainWindow.setFullScreen(true);
+  // mainWindow.setFullScreen(true);
 
   if (isDev()) {
     mainWindow.loadURL('http://localhost:7272');
