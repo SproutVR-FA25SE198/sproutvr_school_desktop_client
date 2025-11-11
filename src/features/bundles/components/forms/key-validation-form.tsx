@@ -8,7 +8,7 @@ import type { Control, FormState } from 'react-hook-form';
 import type { ActivationFormData } from './schema';
 
 /**
- * Define the props the "dumb" form will receive from its "smart" parent.
+ * Define the activation form props
  */
 interface ActivationFormProps {
   onSubmit: (e?: React.BaseSyntheticEvent) => void | Promise<void>;
@@ -48,21 +48,21 @@ export function ActivationForm({
       </div>
 
       {/* Footer Buttons */}
-      <div className='flex justify-center gap-2 pt-0'>
+      <div className='flex justify-end gap-2 pt-0'>
         <Button
           type='submit'
           variant='secondary'
           // Disable the button if the form is invalid (checked by Zod) or currently submitting.
           disabled={!isValid || isPending}
-          className='min-w-32'
+          className='min-w-40'
         >
           {isPending ? (
             <span className='inline-flex items-center'>
-              Activating
+              Đang Kích Hoạt
               <Loader2 className='ms-2 h-4 w-4 animate-spin' />
             </span>
           ) : (
-            'Activate'
+            'Kích Hoạt'
           )}
         </Button>
       </div>

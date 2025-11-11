@@ -81,7 +81,7 @@ export default function ActivationPage() {
         <Button variant='ghost' size='icon' onClick={handleBack} className='rounded-full bg-white shadow-sm'>
           <ChevronLeft className='size-5' />
         </Button>
-        <h1 className='text-3xl self-center font-bold text-neutral-900'>Activate Product</h1>
+        <h1 className='text-3xl self-center font-bold text-neutral-900'>Kích Hoạt Học Liệu</h1>
       </div>
 
       {/* Form Card */}
