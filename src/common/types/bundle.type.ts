@@ -34,3 +34,11 @@ export interface BundlePayload {
   mapCount: number;
   maps: MapPayload[];
 }
+
+/**
+ * Represents a data required to seed map
+ */
+export interface SeedMapBundlePayload {
+  mapId: string,
+  downloadUrl: string
+}

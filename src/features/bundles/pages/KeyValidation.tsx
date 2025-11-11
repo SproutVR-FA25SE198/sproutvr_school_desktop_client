@@ -13,6 +13,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { activationSchema, type ActivationFormData } from '../components/forms/schema';
 import { ActivationForm } from '../components/forms/key-validation-form';
 import routes from '@/core/configs/routes';
+import { toast } from 'sonner';
 
 /**
  * Activation key page
@@ -61,6 +62,9 @@ export default function ActivationPage() {
       // Get order id from response
       const orderId = result.orderId;
 
+      // SUCCESS TOAST
+      toast.success('Kích hoạt gói thành công.');
+
       // Navigate to my bundle details page
       // Which contains map to activate for that bundle
       navigate(`${routes.myBundles}/${orderId}`);
@@ -70,6 +74,9 @@ export default function ActivationPage() {
       const message = apiError.response?.data?.Message || 'An unknown error occurred.';
 
       console.error(message);
+
+      // ERROR TOAST
+      toast.error(`Kích hoạt thất bại: ${message}`);
 
       // Set the server error on the form field
       setError('activationKey', { type: 'manual', message: message });

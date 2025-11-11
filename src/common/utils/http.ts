@@ -72,4 +72,6 @@ const http = new Http().instance;
 
 export const http_provider = new Http(import.meta.env.VITE_PROVIDER_URL).instance;
 
+export const http_school = new Http(import.meta.env.VITE_SCHOOL_URL).instance;
+
 export default http;

@@ -10,6 +10,8 @@ import { MapCard } from '../components/map-card';
 import { useGetBundleDetails } from '../hooks/useGetBundleDetails';
 import { useMarkMapAsDownloaded } from '../hooks/useMapMarkAsDownloaded';
 import type { MapPayload } from '@/common/types/bundle.type';
+import { useSeedMapBundle } from '../hooks/useSeedMapBundle';
+import { toast } from 'sonner';
 
 export default function BundleDetailsPage() {
   const navigate = useNavigate();
@@ -30,6 +32,7 @@ export default function BundleDetailsPage() {
   const [downloadingMapId, setDownloadingMapId] = useState<string | null>(null);
   
   // Get the mutation function from your hook
+  const { mutate: seedMap } = useSeedMapBundle();
   const { mutate: markAsDownloaded } = useMarkMapAsDownloaded();  
 
   // Go back to bundle lists
@@ -39,17 +42,52 @@ export default function BundleDetailsPage() {
 
   /**
    * Handles the download logic for a single map.
+   *
+   * FLOW:
+   * 1. Call seed-bundle API.
+   * 2. On success, call markAsDownloaded API.
+   * 3. On settled (success/error of chain), clear spinner.
    */
   const handleDownload = (map: MapPayload) => {
     // Set local spinner
     setDownloadingMapId(map.mapId);
 
-    // Trigger the mutation to mark as downloaded
-    markAsDownloaded(
-      { orderItemId: map.orderItemId, organizationId },
+    // Trigger the seed-bundle import
+    seedMap(
+      { mapId: map.mapId, downloadUrl: map.downloadUrl }, // Pass new payload
       {
+        onSuccess: () => {
+          // On successful import, trigger mark as downloaded
+          markAsDownloaded(
+            { orderItemId: map.orderItemId, organizationId },
+            {
+              onSuccess: () => {
+                // SUCCESS TOAST
+                toast.success(
+                  `Học liệu "${map.mapName}" đã tải thành công.`,
+                );
+              },
+              onError: (markError: any) => {
+                // ERROR TOAST (MarkAsDownloaded failed)
+                const message = markError.response?.data?.Message ||
+                  'Lỗi khi tải học liệu.';
+                
+                toast.error(
+                  `Nhập thành công, nhưng theo dõi trạng thái tải về thất bại: ${message}`,
+                );
+              }
+            },
+          );
+        },
+        onError: (seedError: any) => {
+          // ERROR TOAST (Seed bundle failed)
+          const message =
+            seedError.response?.data?.Message || 'Lỗi không xác định.';
+          
+          toast.error(`Nhập học liệu thất bại: ${message}`);
+        },
         onSettled: () => {
-          // On success or error, remove the local spinner
+          // This runs after the entire chain is complete
           setDownloadingMapId(null);
         },
       },

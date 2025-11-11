@@ -1,5 +1,5 @@
-import type { BundlePayload } from '@/common/types/bundle.type';
-import { http_provider } from '@/common/utils/http';
+import type { BundlePayload, SeedMapBundlePayload } from '@/common/types/bundle.type';
+import { http_provider, http_school } from '@/common/utils/http';
 
 /**
  * Fetch all bundles for an organization.
@@ -22,5 +22,16 @@ export const getBundleDetails = async (orderId:string, organizationId: string): 
  */
 export const markMapAsDownloaded = async (orderItemId: string, organizationId: string) => {
   const response = await http_provider.patch(`/bundle-payloads/${orderItemId}`, { organizationId });
+  return response.data;
+};
+
+/**
+ * Call the seed-bundle (import) API
+ */
+export const seedMapBundle = async (payload: SeedMapBundlePayload) => {
+  const response = await http_school.post(
+    '/v1/school-admin/maps/seed-bundle',
+    payload,
+  );
   return response.data;
 };
