@@ -3,21 +3,22 @@
 import { Card } from '@/common/components/ui/card';
 import { ChevronLeft } from 'lucide-react';
 import { Button } from '@/common/components/ui/button';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useValidateKey from '../hooks/useValidateKey';
 import type { KeyValidatePayload } from '@/common/types/bundle.type';
 import type { ApiErrorResponse } from '@/common/types/error.type';
 import type { AxiosError } from 'axios';
-import { useForm } from 'react-hook-form'; // Import useForm
-import { zodResolver } from '@hookform/resolvers/zod'; // Import resolver
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { activationSchema, type ActivationFormData } from '../components/forms/schema';
 import { ActivationForm } from '../components/forms/key-validation-form';
+import routes from '@/core/configs/routes';
 
 /**
  * Activation key page
  */
 export default function ActivationPage() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   // Initialize useForm here in the parent.
   // This gives us one source of truth for the form's state.
@@ -57,11 +58,12 @@ export default function ActivationPage() {
       // Call validate key api
       const result = await validateKey(payload);
 
-      // On success do something with the result (e.g., save maps, redirect)
-      console.log('Successfully activated:', result.maps);
+      // Get order id from response
+      const orderId = result.orderId;
 
-      // TODO: Navigate to a success page (bundle download page)
-      // navigate(routes.activationSuccess);
+      // Navigate to my bundle details page
+      // Which contains map to activate for that bundle
+      navigate(`${routes.myBundles}/${orderId}`);
     } catch (err) {
       // The error is already typed as AxiosError<ApiErrorResponse> by the hook
       const apiError = err as AxiosError<ApiErrorResponse>;
@@ -87,7 +89,6 @@ export default function ActivationPage() {
       {/* Form Card */}
       <Card className='p-8 w-full max-w-lg mx-auto'>
         {/*
-          Pass all RHF props and state down to the "dumb" form.
           We pass RHF's handleSubmit *wrapped around* our logic function.
         */}
         <ActivationForm

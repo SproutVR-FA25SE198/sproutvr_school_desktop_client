@@ -1,7 +1,7 @@
-import { useMutation } from '@tanstack/react-query';
-import type { KeyValidatePayload, KeyValidateRetrieve } from '@/common/types/bundle.type';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import type { KeyValidatePayload, KeyValidateResponse } from '@/common/types/bundle.type';
 import type { AxiosError } from 'axios';
-import { ValidateActivationKey } from '../services/key-validation.service';
+import { validateActivationKey } from '../services/key-validation.service';
 import type { ApiErrorResponse } from '@/common/types/error.type';
 
 /**
@@ -10,16 +10,20 @@ import type { ApiErrorResponse } from '@/common/types/error.type';
  * This uses `useMutation` because validating a key is a one-time, user-triggered action
  */
 const useValidateKey = () => {
+  const queryClient = useQueryClient();
+
   const mutation = useMutation<
-    KeyValidateRetrieve,     // Type of data returned on success
+    KeyValidateResponse,     // Type of data returned on success
     AxiosError<ApiErrorResponse>, // Type of error returned from Axios
     KeyValidatePayload       // Type of data passed to the mutation function
   >({
     // Receives the 'payload' from the 'validateKey' function below.
-    mutationFn: (payload: KeyValidatePayload) => ValidateActivationKey(payload),
+    mutationFn: (payload: KeyValidatePayload) => validateActivationKey(payload),
     
     onSuccess: (data) => {
-      console.log('Validation successful:', data);
+      // Invalidate the 'myBundles' list query
+      // so it will be fresh if the user navigates back.
+      queryClient.invalidateQueries({ queryKey: ['myBundles'] });
     },
     onError: (error) => {
       console.error('Validation failed:', error.response?.data.Message);

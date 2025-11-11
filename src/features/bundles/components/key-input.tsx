@@ -11,9 +11,9 @@ interface KeyInputProps {
 export function KeyInput({ value, onChange, error }: KeyInputProps) {
   return (
     <div className='space-y-1'>
-      <label className='text-xl font-bold text-neutral-700'>Nhập Khóa Kích Hoạt Học Liệu</label>
+      <label className='text-xl font-bold text-neutral-700'>Nhập Mã Kích Hoạt Học Liệu</label>
       <div className='text-sm font-normal text-neutral-700 mt-1'>
-        Khóa kích hoạt của bạn thường sẽ nằm trong email từ nhà cung cấp chính hoặc một bên thứ ba.
+        Mã kích hoạt của bạn thường sẽ nằm trong email từ nhà cung cấp chính hoặc một bên thứ ba.
       </div>
       <Input
         value={value}

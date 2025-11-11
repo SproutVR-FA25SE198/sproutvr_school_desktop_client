@@ -10,7 +10,8 @@ const routes = {
   vrDevices: '/vr-devices',
   vrDeviceDetail: '/vr-devices/:id',
   activation: '/activation',
-  bundle: '/bundles',
+  myBundles: '/my-bundles',
+  bundleImport: '/my-bundles/:orderId',
   logout: '/logout',
   notFound: '*',
 };
