@@ -3,6 +3,8 @@ import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { VrLessonDesignPage } from '../../features/vr-lessons/pages/VrLessonDesign';
 import VRDeviceList from '../../features/vr-devices/pages/VRDeviceList';
 import VRDeviceDetail from '../../features/vr-devices/pages/VRDeviceDetail';
+import AccountList from '../../features/accounts/pages/AccountList';
+import AccountDetail from '@/features/accounts/pages/AccountDetail';
 import routes from '../configs/routes';
 import TeacherSideLayout from '../layouts/teacher-side/teacher-side-layout';
 import LessonCreationPage from '@/features/lessons/pages/LessonCreation';
@@ -23,6 +25,8 @@ export const AppRouter = () => (
       <Route element={<AdminSideLayout />}>
         <Route path={routes.vrDevices} element={<VRDeviceList />} />
         <Route path={routes.vrDeviceDetail} element={<VRDeviceDetail />} />
+        <Route path={routes.accounts} element={<AccountList />} />
+        <Route path={routes.accountDetail} element={<AccountDetail />} />
       </Route>
     </Routes>
   </Router>
