@@ -1,3 +1,4 @@
+import type { Status } from './common.type';
 import type { LessonGeneralRetrieve } from './lesson.type';
 import type { ActivityType, MapGeneralRetrieve, MapObject, TaskLocation } from './map.type';
 
@@ -39,7 +40,7 @@ export interface VrTaskCreatePayload {
   taskNumber: number;
 }
 
-export interface VrTaskGeneralRetrieve extends Pick<VrTask, 'id' | 'taskNumber' | 'description'> {
+export interface VrTaskRetrieve extends Pick<VrTask, 'id' | 'taskNumber' | 'description'> {
   taskLocation: TaskLocation;
   mapObject: MapObject;
   activityType: ActivityType;
@@ -74,8 +75,10 @@ export interface VrLessonRetrieve {
   description: string;
   duration: string; // format: "HH:mm:ss"
   presetJsonRelativeFilePath: string;
-  status: VrLessonStatus;
-  tasks: VrTaskGeneralRetrieve[];
+  status: Status;
+  tasks: VrTaskRetrieve[];
+  createdAtUtc: string;
+  createdAtVietnam: string;
 }
 
 export interface VrLessonStatus {

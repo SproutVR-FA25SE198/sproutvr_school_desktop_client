@@ -10,7 +10,7 @@ interface TaskSelectorProps {
 export function TaskSelector({ selectedTask, totalTasks, onTaskSelect, onAddTask }: TaskSelectorProps) {
   return (
     <div className='flex items-center gap-2'>
-      <span className='text-sm font-medium text-neutral-700'>Task:</span>
+      <span className='text-sm font-medium text-neutral-700'>Nhiệm vụ:</span>
       <div className='flex gap-2'>
         {Array.from({ length: totalTasks }).map((_, index) => (
           <button

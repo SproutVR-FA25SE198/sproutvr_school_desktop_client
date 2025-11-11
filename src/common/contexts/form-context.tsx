@@ -1,9 +1,14 @@
 'use client';
 
 import { createContext, useContext, useState, type ReactNode } from 'react';
-import type { VrLessonPatchPayload, VrTaskDetails } from '../types/vr-lesson.type';
+import type { VrLessonPatchPayload, VrLessonRetrieve, VrTaskDetails } from '../types/vr-lesson.type';
+import { createVrLessonPhaseTwo } from '@/features/vr-lessons/services/vr-lesson.service';
+import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import routes from '@/core/configs/routes';
 
 export interface LessonFormData {
+  id: string;
   subject: string;
   lesson: string;
   duration: string;
@@ -42,6 +47,7 @@ export interface TaskSetupData {
 }
 
 export interface TaskDetails {
+  vrTaskId: string;
   activityType: string;
   quizData?: QuizData;
   infoText?: string;
@@ -70,12 +76,19 @@ export interface FormContextType {
 
   // Submit
   submitForm: () => void;
+
+  createVrLessonPhaseTwoMutate: (variables: { vrLessonId: string; payload: VrLessonPatchPayload }) => void;
+  isPending: boolean;
+
+  vrLessonData: VrLessonRetrieve | null;
+  setVrLessonData: (data: VrLessonRetrieve | null) => void;
 }
 
 const FormContext = createContext<FormContextType | undefined>(undefined);
 
 export function FormProvider({ children }: { children: ReactNode }) {
   const [lessonData, setLessonData] = useState<LessonFormData>({
+    id: '',
     subject: '',
     lesson: '',
     duration: '',
@@ -84,6 +97,8 @@ export function FormProvider({ children }: { children: ReactNode }) {
     name: '',
     description: '',
   });
+
+  const navigate = useNavigate();
 
   const [tasks, setTasks] = useState<Record<number, TaskData>>({
     1: {
@@ -95,12 +110,23 @@ export function FormProvider({ children }: { children: ReactNode }) {
     },
   });
 
+  const [vrLessonData, setVrLessonData] = useState<VrLessonRetrieve | null>(null);
+
   const [tasksType, setTasksType] = useState<'ordered' | 'unordered'>('unordered');
   const [currentTab, setCurrentTab] = useState('overview');
   const [taskSetups, setTaskSetups] = useState<Record<number, TaskSetupData>>({});
   const [taskDetails, setTaskDetails] = useState<Record<number, TaskDetails>>({});
 
   const [currentStep, setCurrentStep] = useState(1);
+
+  const { mutate: createVrLessonPhaseTwoMutate, isPending } = useMutation({
+    mutationFn: async (variables: { vrLessonId: string; payload: VrLessonPatchPayload }) => {
+      return await createVrLessonPhaseTwo({
+        lessonId: variables.vrLessonId,
+        payload: variables.payload,
+      });
+    },
+  });
 
   const updateLessonData = (data: Partial<LessonFormData>) => {
     setLessonData((prev) => ({ ...prev, ...data }));
@@ -161,17 +187,27 @@ export function FormProvider({ children }: { children: ReactNode }) {
     const completeFormData: VrLessonPatchPayload = {
       isSequential: tasksType === 'ordered',
       taskConfigs: Object.keys(taskDetails).map((key) => {
+        const vrTaskId = vrLessonData?.tasks[Number.parseInt(key) - 1]?.id || '';
         const quiz = taskDetails[Number.parseInt(key)]?.quizData;
         const info = taskDetails[Number.parseInt(key)]?.infoText || null;
         return {
-          vrTaskId: Number.parseInt(key).toString(),
+          vrTaskId,
           question: quiz?.question || '',
           answers: quiz?.options || [],
           information: info,
         } as VrTaskDetails;
       }),
     };
-    console.log('Complete form submitted:', completeFormData);
+
+    createVrLessonPhaseTwoMutate(
+      { vrLessonId: vrLessonData?.id || '', payload: completeFormData },
+      {
+        onSuccess: () => {
+          alert('Hoàn tất tạo bài học VR!');
+          navigate(routes.home);
+        },
+      },
+    );
     // Send to backend here
   };
 
@@ -193,6 +229,10 @@ export function FormProvider({ children }: { children: ReactNode }) {
         currentStep,
         goToStep,
         submitForm,
+        vrLessonData,
+        setVrLessonData,
+        createVrLessonPhaseTwoMutate,
+        isPending: isPending,
       }}
     >
       {children}
