@@ -56,8 +56,14 @@ export function ActivationForm({
           disabled={!isValid || isPending}
           className='min-w-32'
         >
-          {/* Show a loading message while submitting. */}
-          {isPending ? <Loader2 className='h-4 w-4 animate-spin' /> : 'Activate'}
+          {isPending ? (
+            <span className='inline-flex items-center'>
+              Activating
+              <Loader2 className='ms-2 h-4 w-4 animate-spin' />
+            </span>
+          ) : (
+            'Activate'
+          )}
         </Button>
       </div>
     </form>

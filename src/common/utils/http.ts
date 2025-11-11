@@ -9,9 +9,10 @@ class Http {
   //   private refreshToken: string;
   instance: AxiosInstance;
 
-  constructor() {
+  // Accept optional base url string
+  constructor(baseUrl?: string) {
     this.instance = axios.create({
-      baseURL: import.meta.env.VITE_BASE_URL,
+      baseURL: baseUrl || import.meta.env.VITE_BASE_URL,
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json',
@@ -68,5 +69,7 @@ class Http {
 }
 
 const http = new Http().instance;
+
+export const http_provider = new Http(import.meta.env.VITE_PROVIDER_URL).instance;
 
 export default http;

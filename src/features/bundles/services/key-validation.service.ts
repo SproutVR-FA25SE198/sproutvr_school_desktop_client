@@ -1,10 +1,10 @@
 import type { KeyValidatePayload } from '@/common/types/bundle.type';
-import http from '@/common/utils/http';
+import { http_provider } from '@/common/utils/http';
 
 /**
  * Sends the activation key to the server for validation.
  */
 export const ValidateActivationKey = async (data: KeyValidatePayload) => {
-  const result = await http.post('/keys/validate', data);
+  const result = await http_provider.post('/keys/validate', data);
   return result.data;
 };
