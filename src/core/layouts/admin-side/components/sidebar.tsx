@@ -17,6 +17,8 @@ const navItems: NavItem[] = [
   { label: 'VR Devices', href: routes.vrDevices, icon: '🖥️' },
   { label: 'Accounts', href: '/accounts', icon: '👥' },
   { label: 'Reports', href: '/reports', icon: '📈' },
+  { label: 'Kích Hoạt Gói', href: routes.activation, icon: '🔑' },
+  { label: 'Gói Học Liệu', href: routes.myBundles, icon: '📦' },
 ];
 
 export function AdminSidebar() {
