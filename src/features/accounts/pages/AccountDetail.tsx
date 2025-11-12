@@ -1,239 +1,329 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useNavigate, useParams } from "react-router-dom"
-import { Card } from "@/common/components/ui/card"
-import { Button } from "@/common/components/ui/button"
-import { ArrowLeft, Lock, LockOpen } from "lucide-react"
-import type { AccountDetail } from "../types/account.types"
-import { AccountStatus } from "../types/account.types"
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Card } from "@/common/components/ui/card";
+import { Button } from "@/common/components/ui/button";
+import { Badge } from "@/common/components/ui/badge";
+import { ArrowLeft, Lock, LockOpen, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import type { AccountDetail } from "../types/account.types";
+import {
+  AccountStatus,
+  AccountDetailLessonStatus,
+  getStatusLabel,
+} from "../types/account.types";
+import {
+  fetchAccountById,
+  updateAccountStatus,
+} from "../services/account.services";
 
-export default function AccountDetail() {
-    const navigate = useNavigate()
-    const params = useParams()
-    const accountId = params?.id as string
+export default function AccountDetailPage() {
+  const navigate = useNavigate();
+  const params = useParams();
+  const accountId = params?.id as string;
 
-    const [accountDetail, setAccountDetail] = useState<AccountDetail | null>(null)
+  const [accountDetail, setAccountDetail] = useState<AccountDetail | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        // Fetch account from API
-        const foundAccount = null;
-        setAccountDetail(foundAccount || null)
-    }, [accountId])
-
-    const handleBack = () => {
-        navigate("/accounts")
+  // --- Data Fetching ---
+  const loadAccountDetails = useCallback(async () => {
+    if (!accountId) {
+      setError("Không tìm thấy tài khoản giáo viên.");
+      setIsLoading(false);
+      return;
     }
 
-    const formatDateTime = (dateString: string) => {
-        const date = new Date(dateString);
-
-        const datePart = date.toLocaleDateString("vi-VN", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-        });
-
-        const timePart = date.toLocaleTimeString("vi-VN", {
-            hour: "2-digit",
-            minute: "2-digit",
-        });
-
-        return `${timePart} ngày ${datePart}`;
+    setIsLoading(true);
+    try {
+      const data = await fetchAccountById(accountId);
+      if (data) setAccountDetail(data);
+      else setError("Không tìm thấy tài khoản giáo viên.");
+    } catch (err) {
+      console.error(err);
+      setError("Đã xảy ra lỗi khi tải thông tin chi tiết.");
+    } finally {
+      setIsLoading(false);
     }
+  }, [accountId]);
 
-    const formatDateOnly = (dateString: string | null) => {
-        if(!dateString) return;
+  useEffect(() => {
+    loadAccountDetails();
+  }, [loadAccountDetails]);
 
-        const date = new Date(dateString);
+  // --- Handlers ---
+  const handleBack = () => navigate("/accounts");
 
-        const datePart = date.toLocaleDateString("vi-VN", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-        });
+  const handleStatusChange = async () => {
+    if (!accountDetail) return;
+    const isActivating = accountDetail.status.key === AccountStatus.Disabled;
+    const newStatus = isActivating ? AccountStatus.Active : AccountStatus.Disabled;
+    const actionText = isActivating ? "mở khóa" : "khóa";
 
-        return `${datePart}`;
+    if (window.confirm(`Bạn có chắc bạn muốn ${actionText} tài khoản này?`)) {
+      setIsUpdatingStatus(true);
+      try {
+        await updateAccountStatus(accountDetail.teacherId, newStatus);
+        toast.success("Cập nhật trạng thái tài khoản thành công!");
+        loadAccountDetails();
+      } catch (err) {
+        console.error(err);
+        toast.error("Cập nhật trạng thái tài khoản thất bại.");
+      } finally {
+        setIsUpdatingStatus(false);
+      }
     }
+  };
 
-    const handleDeactivate = () => {
-        if (window.confirm("Bạn có chắc bạn muốn khóa tài khoản này?")) {
-            // Call API to update status
-        }
-    }
+  // --- Formatters ---
+  const formatDateTime = (dateString: string) => {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    const datePart = date.toLocaleDateString("vi-VN", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+    const timePart = date.toLocaleTimeString("vi-VN", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    return `${timePart} ngày ${datePart}`;
+  };
 
-    const handleReactivate = () => {
-        if (window.confirm("Bạn có chắc bạn mở khóa tài khoản này?")) {
-            // Call API to update status
-        }
-    }
+  const formatDateOnly = (dateString: string | null) => {
+    if (!dateString) return "Chưa cập nhật";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("vi-VN", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
-    if (!accountDetail) {
-        return (
-            <div className="flex h-screen bg-neutral-50 items-center justify-center">
-                <Card className="p-8 flex flex-col items-center justify-center text-center">
-                    <p className="text-neutral-600">Không tìm thấy tài khoản người dùng.</p>
-                    <Button onClick={handleBack} className="mt-4">
-                        Quay lại
-                    </Button>
-                </Card>
-            </div>
-        )
-    }
-
+  // --- Loading / Error States ---
+  if (isLoading) {
     return (
-        <div className="flex h-screen bg-neutral-50">
-            <div className="flex-1 flex flex-col overflow-hidden">
-                <div className="flex-1 overflow-auto px-8 pt-8 pb-24">
-                    <div className="max-w-4xl mx-auto">
+      <div className="flex h-full bg-neutral-50 items-center justify-center">
+        <Loader2 className="w-12 h-12 animate-spin text-neutral-400" />
+      </div>
+    );
+  }
 
-                        {/* Header */}
-                        <div className="mb-8">
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={handleBack}
-                                className="mb-6 -ml-2 hover:bg-white/50"
-                            >
-                                <ArrowLeft className="w-4 h-4 mr-2" />
-                                Quản lý tài khoản giáo viên
-                            </Button>
+  if (error || !accountDetail) {
+    return (
+      <div className="flex h-full bg-neutral-50 items-center justify-center">
+        <Card className="p-8 flex flex-col items-center justify-center text-center">
+          <p className="text-neutral-600">{error || "Không tìm thấy tài khoản."}</p>
+          <Button onClick={handleBack} className="mt-4">
+            Quay lại
+          </Button>
+        </Card>
+      </div>
+    );
+  }
 
-                            {/* Header */}
-                            <div className="flex items-start justify-between mb-6">
-                                <div>
-                                    <h1 className="text-3xl font-bold text-neutral-900 mb-2">{accountDetail.fullName}</h1>
-                                    <div className="flex items-center gap-3 text-neutral-600">
-                                        <span className="text-xs font-medium bg-neutral-100 px-2 py-1 rounded uppercase">Trạng thái</span>
-                                        <span className="text-m font-mono font-semibold" style={{ 
-                                            color: accountDetail.status.key === AccountStatus.Active ? '#10b981' :
-                                                accountDetail.status.key === AccountStatus.Disabled ? '#f59e0b' : '#3b82f6'}}
-                                        >
-                                            {accountDetail.status.name}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="flex gap-2">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={accountDetail.status.key === AccountStatus.Active ? handleDeactivate : handleReactivate}
-                                        className="text-error hover:text-error"
-                                    >
-                                        {accountDetail.status.key === AccountStatus.Active ? (
-                                            <>
-                                                <Lock className="w-4 h-4 mr-2" />
-                                                Khóa tài khoản
-                                            </>
-                                        ) : (
-                                            <>
-                                                <LockOpen className="w-4 h-4 mr-2" />
-                                                Mở khóa
-                                            </>
-                                        )}
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
+  // --- Main Content ---
+  return (
+    <div className="flex flex-col h-full bg-neutral-50 overflow-hidden">
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-4xl mx-auto px-8 pt-8 pb-24 space-y-8">
+          {/* Header */}
+          <div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleBack}
+              className="mb-6 -ml-2 hover:bg-white/50"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Quản lý tài khoản giáo viên
+            </Button>
 
-                        {/* Account Information */}
-                        <Card className="overflow-hidden">
-                            <div className="flex items-center justify-between bg-neutral-50 px-8 py-5 border-b border-neutral-200">
-                                <h3 className="text-lg font-bold text-neutral-900">Thông tin tài khoản giáo viên</h3>
-                            </div>
-                            <div className="p-8">
-                                <div className="space-y-6">
-                                    {/* Row 1 - Name & Email */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Họ tên</label>
-                                            <div className="flex items-center gap-2 bg-neutral-50 rounded-lg px-4 py-3 border border-neutral-200">
-                                                <p className="text-sm text-neutral-900 font-mono break-all flex-1">{accountDetail.fullName}</p>
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Email</label>
-                                            <div className="bg-neutral-50 rounded-lg px-4 py-3 border border-neutral-200">
-                                                <p className="text-sm text-neutral-900 font-mono break-all flex-1">{accountDetail.email}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Row 2 - DOB & CreatedAt */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Ngày sinh</label>
-                                            <div className="bg-neutral-50 rounded-lg px-4 py-3 border border-neutral-200">
-                                                <p className="text-sm text-neutral-900">{formatDateOnly(accountDetail.dateOfBirth)}</p>
-                                            </div>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Ngày tạo</label>
-                                            <div className="bg-neutral-50 rounded-lg px-4 py-3 border border-neutral-200">
-                                                <p className="text-sm text-neutral-900">{formatDateTime(accountDetail.joinedAtUtc)}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </Card>
-
-                        {/* Lesson created list */}
-                        <Card className="overflow-hidden">
-                            <div className="flex items-center justify-between bg-neutral-50 px-8 py-5 border-b border-neutral-200">
-                                <h3 className="text-lg font-bold text-neutral-900">Danh sách bài học</h3>
-                                <div className="flex gap-4 p-3 rounded-lg hover:bg-neutral-50 transition-colors">
-                                    <div className="w-2.5 h-2.5 bg-blue-500 rounded-full mt-1.5 flex-shrink-0 shadow-sm"></div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-xs text-neutral-500 mt-1">Tổng số: {} </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* List out each lessons */}
-                            <div className="p-8">
-                                <div className="space-y-6">
-                                    <div className="flex items-start gap-4 p-3 rounded-lg hover:bg-neutral-50 transition-colors">
-                                        <div className="w-2.5 h-2.5 bg-purple-500 rounded-full mt-1.5 flex-shrink-0 shadow-sm"></div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-semibold text-neutral-900">Tên bài học ở đây</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </Card>
-
-                        {/* Session created list */}
-                        <Card className="overflow-hidden">
-                            <div className="flex items-center justify-between bg-neutral-50 px-8 py-5 border-b border-neutral-200">
-                                <h3 className="text-lg font-bold text-neutral-900">Danh sách buổi học</h3>
-                                <div className="flex gap-4 p-3 rounded-lg hover:bg-neutral-50 transition-colors">
-                                    <div className="w-2.5 h-2.5 bg-purple-500 rounded-full mt-1.5 flex-shrink-0 shadow-sm"></div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-xs text-neutral-500 mt-1">Tổng số: {} </p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            {/* List out each sessions */}
-                            <div className="p-8">
-                                <div className="space-y-6">
-                                    <div className="flex items-start gap-4 p-3 rounded-lg hover:bg-neutral-50 transition-colors">
-                                        <div className="w-2.5 h-2.5 bg-purple-500 rounded-full mt-1.5 flex-shrink-0 shadow-sm"></div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-semibold text-neutral-900">Tên lớp ở đây</p>
-                                            <p className="text-xs text-neutral-500 mt-1">Thời gian tạo ở đây</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </Card>
-
-                    </div>
+            <div className="flex items-start justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-neutral-900 mb-2">
+                  {accountDetail.fullName}
+                </h1>
+                <div className="flex items-center gap-3 text-neutral-600">
+                  <span className="text-xs font-medium bg-neutral-100 px-2 py-1 rounded uppercase">
+                    Trạng thái
+                  </span>
+                  <span
+                    className="text-m font-mono font-semibold"
+                    style={{
+                      color:
+                        accountDetail.status.key === AccountStatus.Active
+                          ? "#10b981"
+                          : "#f59e0b",
+                    }}
+                  >
+                    {getStatusLabel(accountDetail.status.key)}
+                  </span>
                 </div>
-            </div>
-        </div>
-    )
-}
+              </div>
 
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleStatusChange}
+                disabled={isUpdatingStatus}
+                className="text-error hover:text-error"
+              >
+                {isUpdatingStatus ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : accountDetail.status.key === AccountStatus.Active ? (
+                  <>
+                    <Lock className="w-4 h-4 mr-2" />
+                    Khóa tài khoản
+                  </>
+                ) : (
+                  <>
+                    <LockOpen className="w-4 h-4 mr-2" />
+                    Mở khóa
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+
+          {/* Account Info */}
+          <Card className="overflow-hidden">
+            <div className="flex items-center justify-between bg-neutral-50 px-8 py-5 border-b border-neutral-200">
+              <h3 className="text-lg font-bold text-neutral-900">
+                Thông tin tài khoản giáo viên
+              </h3>
+            </div>
+            <div className="p-8 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">
+                    Họ tên
+                  </label>
+                  <div className="bg-neutral-50 rounded-lg px-4 py-3 border border-neutral-200">
+                    <p className="text-sm text-neutral-900 font-mono break-all">
+                      {accountDetail.fullName}
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">
+                    Email
+                  </label>
+                  <div className="bg-neutral-50 rounded-lg px-4 py-3 border border-neutral-200">
+                    <p className="text-sm text-neutral-900 font-mono break-all">
+                      {accountDetail.email}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">
+                    Ngày sinh
+                  </label>
+                  <div className="bg-neutral-50 rounded-lg px-4 py-3 border border-neutral-200">
+                    <p className="text-sm text-neutral-900">
+                      {formatDateOnly(accountDetail.dateOfBirth)}
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">
+                    Ngày tạo
+                  </label>
+                  <div className="bg-neutral-50 rounded-lg px-4 py-3 border border-neutral-200">
+                    <p className="text-sm text-neutral-900">
+                      {formatDateTime(accountDetail.joinedAtUtc)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          {/* Lessons */}
+          <Card className="overflow-hidden">
+            <div className="flex items-center justify-between bg-neutral-50 px-8 py-5 border-b border-neutral-200">
+              <h3 className="text-lg font-bold text-neutral-900">Danh sách bài học</h3>
+              <p className="text-sm text-neutral-600 font-medium">
+                Tổng số: {accountDetail.lessons.length}
+              </p>
+            </div>
+            <div className="p-8 space-y-4">
+              {accountDetail.lessons.length === 0 ? (
+                <p className="text-neutral-500 text-sm text-center">
+                  Không có bài học nào.
+                </p>
+              ) : (
+                accountDetail.lessons.map((lesson) => (
+                  <div
+                    key={lesson.lessonId}
+                    className="flex items-center justify-between p-4 rounded-lg bg-neutral-50 border border-neutral-200"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-2 h-2 rounded-full ${
+                          lesson.status === AccountDetailLessonStatus.Active
+                            ? "bg-green-500"
+                            : "bg-neutral-400"
+                        }`}
+                      />
+                      <p className="text-sm font-semibold text-neutral-900">
+                        {lesson.name}
+                      </p>
+                    </div>
+                    <Badge
+                      variant={
+                        lesson.status === AccountDetailLessonStatus.Active
+                          ? "secondary"
+                          : "default"
+                      }
+                    >
+                      {lesson.status === AccountDetailLessonStatus.Active
+                        ? "Hoạt động"
+                        : "Không hoạt động"}
+                    </Badge>
+                  </div>
+                ))
+              )}
+            </div>
+          </Card>
+
+          {/* Sessions */}
+          <Card className="overflow-hidden">
+            <div className="flex items-center justify-between bg-neutral-50 px-8 py-5 border-b border-neutral-200">
+              <h3 className="text-lg font-bold text-neutral-900">Danh sách buổi học</h3>
+              <p className="text-sm text-neutral-600 font-medium">
+                Tổng số: {accountDetail.vrLearningSessions.length}
+              </p>
+            </div>
+            <div className="p-8 space-y-4">
+              {accountDetail.vrLearningSessions.length === 0 ? (
+                <p className="text-neutral-500 text-sm text-center">
+                  Không có buổi học nào.
+                </p>
+              ) : (
+                accountDetail.vrLearningSessions.map((session) => (
+                  <div
+                    key={session.sessionId}
+                    className="flex items-center justify-between p-4 rounded-lg bg-neutral-50 border border-neutral-200"
+                  >
+                    <p className="text-sm font-semibold text-neutral-900">
+                      {session.className}
+                    </p>
+                    <p className="text-xs text-neutral-600">
+                      {formatDateTime(session.createdAtUtc)}
+                    </p>
+                  </div>
+                ))
+              )}
+            </div>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
