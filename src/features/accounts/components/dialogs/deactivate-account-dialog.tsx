@@ -25,7 +25,7 @@ export default function DeactivateAccountDialog({ isOpen, account, onConfirm, on
         <DialogHeader>
           <DialogTitle>Khóa tài khoản</DialogTitle>
           <DialogDescription>
-            Xác nhận khóa tài khoản của <strong>{account?.firstName} {account?.lastName}</strong>?
+            Xác nhận khóa tài khoản của <strong>{account?.fullName}</strong>?
           </DialogDescription>
         </DialogHeader>
 
