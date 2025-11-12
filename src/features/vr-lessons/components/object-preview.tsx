@@ -1,16 +1,16 @@
 'use client';
 
-import { mapObjects } from '../services/mock-data';
+import type { MapObjectRetrieve } from '@/common/types/map.type';
 
 interface ObjectPreviewProps {
   selectedObjectId: string;
+  objects: MapObjectRetrieve[];
 }
 
-export function ObjectPreview({ selectedObjectId }: ObjectPreviewProps) {
-  const selectedObject = mapObjects.find((obj) => obj.id === selectedObjectId);
-
+export function ObjectPreview({ selectedObjectId, objects }: ObjectPreviewProps) {
+  const selectedObject = objects.find((obj) => obj.id === selectedObjectId);
   return (
-    <div className='flex justify-center items-center bg-neutral-100 rounded-lg p-4 h-40'>
+    <div className='flex justify-center items-center bg-accent rounded-2xl p-4 h-40'>
       {selectedObject ? (
         <div className='text-center'>
           <img
@@ -21,7 +21,7 @@ export function ObjectPreview({ selectedObjectId }: ObjectPreviewProps) {
           <p className='text-sm font-medium text-neutral-700 mt-2'>{selectedObject.name}</p>
         </div>
       ) : (
-        <p className='text-neutral-500 text-sm'>Select an object to preview</p>
+        <p className='text-neutral-500 text-sm'>Chọn một đồ vật để xem</p>
       )}
     </div>
   );

@@ -28,28 +28,28 @@ export const useStepOneForm = (initialData: LessonFormData, onUpdate: (data: Par
     const newErrors: FormErrors = {};
 
     if (!formData.subject) {
-      newErrors.subject = 'Subject is required';
+      newErrors.subject = 'Xin hãy chọn môn học';
     }
 
     if (!formData.lesson) {
-      newErrors.lesson = 'Lesson is required';
+      newErrors.lesson = 'Xin hãy nhập tên bài học';
     }
 
     if (!formData.duration) {
-      newErrors.duration = 'Duration is required';
+      newErrors.duration = 'Xin hãy nhập thời lượng';
     } else {
       const duration = Number.parseInt(formData.duration, 10);
-      if (isNaN(duration) || duration < 1 || duration > 60) {
-        newErrors.duration = 'Duration must be between 1 and 60 minutes';
+      if (isNaN(duration) || duration < 5 || duration > 60) {
+        newErrors.duration = 'Thời lượng phải từ 5 đến 60 phút';
       }
     }
 
     if (!formData.instructions) {
-      newErrors.instructions = 'Instructions are required';
+      newErrors.instructions = 'Xin hãy nhập hướng dẫn';
     }
 
     if (!formData.map) {
-      newErrors.map = 'Map selection is required';
+      newErrors.map = 'Xin hãy chọn bản đồ';
     }
 
     setErrors(newErrors);

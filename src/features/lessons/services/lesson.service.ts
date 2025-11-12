@@ -24,7 +24,7 @@ export type LessonRetrieveParams = {
 export interface LessonRetrieve
   extends Pick<Lesson, 'id' | 'name' | 'resourceRelativeFilePath' | 'description' | 'vrLessonsCount'> {
   status: Status;
-  subject: Pick<Subject, 'name' | 'description' | 'imageUrl'>;
+  subject: Pick<Subject, 'id' | 'name' | 'description' | 'imageUrl'>;
   masterSubject: Pick<MasterSubject, 'name' | 'description' | 'imageUrl'>;
   teacher: {
     firstName: string;
@@ -73,7 +73,6 @@ export const createLesson = async (data: LessonCreationPayload) => {
       'Content-Type': 'multipart/form-data',
     },
   });
-  console.log('Lesson created successfully:', result.data);
   return result.data;
 };
 

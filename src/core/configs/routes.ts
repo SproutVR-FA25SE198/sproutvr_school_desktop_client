@@ -12,6 +12,8 @@ const routes = {
   activation: '/activation',
   myBundles: '/my-bundles',
   bundleImport: '/my-bundles/:orderId',
+  accounts: '/accounts',
+  accountDetail: '/accounts/:id',
   logout: '/logout',
   notFound: '*',
 };

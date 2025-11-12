@@ -51,7 +51,7 @@ export default function LessonDetailsPage() {
         {/* Lesson Details */}
         <LessonDetailsHeader lesson={lesson} totalVrLessons={vrLessons?.items?.length} />
 
-        <VRLessonsList vrLessons={vrLessons?.items} />
+        <VRLessonsList vrLessons={vrLessons?.items} lesson={lesson} />
 
         {/* Open Folder Action
         <div className='mt-8 flex gap-3'>

@@ -46,7 +46,7 @@ export function DurationInput({ value, onChange, error }: DurationInputProps) {
 
   return (
     <div className='space-y-2'>
-      <label className='text-sm font-medium text-neutral-700'>Duration</label>
+      <label className='text-sm font-medium text-neutral-700'>Thời lượng</label>
       <div className='flex items-center gap-3'>
         {/* Minutes Input */}
         <div className='flex items-center gap-1'>
@@ -60,7 +60,7 @@ export function DurationInput({ value, onChange, error }: DurationInputProps) {
               localError ? 'border-red-500' : ''
             }`}
           />
-          <span className='text-sm text-neutral-600'>min</span>
+          <span className='text-sm text-neutral-600'>phút</span>
         </div>
 
         {/* Seconds Input */}
@@ -75,7 +75,7 @@ export function DurationInput({ value, onChange, error }: DurationInputProps) {
               localError ? 'border-red-500' : ''
             }`}
           />
-          <span className='text-sm text-neutral-600'>sec</span>
+          <span className='text-sm text-neutral-600'>giây</span>
         </div>
       </div>
       {(localError || error) && <p className='text-xs text-red-500'>{localError || error}</p>}

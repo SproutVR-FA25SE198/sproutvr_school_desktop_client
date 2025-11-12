@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { Button } from "@/common/components/ui/button"
 import { Card } from "@/common/components/ui/card"
 import { DeviceCard } from "../components/device-card"
@@ -8,97 +8,94 @@ import ImportDevicesDialog from "../components/dialogs/import-devices-dialog"
 import EditDeviceDialog from "../components/dialogs/edit-device-dialog"
 import type { VRDeviceDisplay } from "../types/device.types"
 import { VRDeviceStatus } from "../types/device.types"
-
-const initialDevices: VRDeviceDisplay[] = [
-    {
-        id: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
-        name: "VR Headset 01",
-        status: VRDeviceStatus.Available,
-        serialNumber: "SN-100001",
-        createdAtUtc: "2024-09-01T10:30:00Z",
-        updatedAtUtc: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
-    },
-    {
-        id: "550e8400-e29b-41d4-a716-446655440000",
-        name: "VR Headset 02",
-        status: VRDeviceStatus.InUse,
-        serialNumber: "SN-100002",
-        createdAtUtc: "2024-09-05T09:15:00Z",
-        updatedAtUtc: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
-    },
-    {
-        id: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
-        name: "VR Headset 03",
-        status: VRDeviceStatus.Available,
-        serialNumber: "SN-100003",
-        createdAtUtc: "2024-08-15T14:20:00Z",
-        updatedAtUtc: new Date(Date.now() - 1 * 60 * 1000).toISOString(),
-    },
-    {
-        id: "6ba7b811-9dad-11d1-80b4-00c04fd430c8",
-        name: "VR Headset 04",
-        status: VRDeviceStatus.InUse,
-        serialNumber: "SN-100004",
-        createdAtUtc: "2024-07-20T16:45:00Z",
-        updatedAtUtc: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
-    },
-    {
-        id: "6ba7b812-9dad-11d1-80b4-00c04fd430c8",
-        name: "VR Headset 05",
-        status: VRDeviceStatus.UnderMaintenance,
-        serialNumber: "SN-100005",
-        createdAtUtc: "2024-06-01T11:30:00Z",
-        updatedAtUtc: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-        id: "6ba7b813-9dad-11d1-80b4-00c04fd430c8",
-        name: "VR Headset 06",
-        status: VRDeviceStatus.Available,
-        serialNumber: "SN-100006",
-        createdAtUtc: "2024-05-10T08:00:00Z",
-        updatedAtUtc: new Date(Date.now() - 30 * 1000).toISOString(),
-    },
-    {
-        id: "6ba7b814-9dad-11d1-80b4-00c04fd430c8",
-        name: "VR Headset 07",
-        status: VRDeviceStatus.Available,
-        serialNumber: "SN-100007",
-        createdAtUtc: "2024-04-25T13:15:00Z",
-        updatedAtUtc: new Date(Date.now() - 3 * 60 * 1000).toISOString(),
-    },
-    {
-        id: "6ba7b815-9dad-11d1-80b4-00c04fd430c8",
-        name: "VR Headset 08",
-        status: VRDeviceStatus.InUse,
-        serialNumber: "SN-100008",
-        createdAtUtc: "2024-03-12T15:45:00Z",
-        updatedAtUtc: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    },
-]
+import { fetchVRDevices, type FetchVRDevicesParams, updateVRDeviceStatus } from "../services/vr-device.service"
 
 export default function DevicesPage() {
     const [filterStatus, setFilterStatus] = useState<string>("all")
-    const [devices, setDevices] = useState<VRDeviceDisplay[]>(initialDevices)
+    const [devices, setDevices] = useState<VRDeviceDisplay[]>([])
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+    const [pageIndex, setPageIndex] = useState(1)
+    const [pageSize, setPageSize] = useState(12)
+    const [totalItems, setTotalItems] = useState(0)
+    const [statusTotals, setStatusTotals] = useState({
+        [VRDeviceStatus.Available]: 0,
+        [VRDeviceStatus.InUse]: 0,
+        [VRDeviceStatus.UnderMaintenance]: 0,
+    })
     const [isImportDialogOpen, setIsImportDialogOpen] = useState(false)
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
     const [selectedDevice, setSelectedDevice] = useState<VRDeviceDisplay | null>(null)
 
-    const filteredDevices = filterStatus === "all" ? devices : devices.filter((d) => String(d.status) === filterStatus)
+    const buildQueryParams = useCallback((): FetchVRDevicesParams => {
+        const params: FetchVRDevicesParams = {
+            pageIndex,
+            pageSize,
+            sortBy: "createdAtUtcDesc",
+            isPaginated: true,
+        }
 
-    const availableCount = devices.filter((d) => d.status === VRDeviceStatus.Available).length
-    const inUseCount = devices.filter((d) => d.status === VRDeviceStatus.InUse).length
-    const maintenanceCount = devices.filter((d) => d.status === VRDeviceStatus.UnderMaintenance).length
+        if (filterStatus !== "all") {
+            params.vrDeviceStatus = Number(filterStatus) as VRDeviceStatus
+        }
 
-    const handleImportDevices = (newDevices: any[]) => {
-        const formattedDevices: VRDeviceDisplay[] = newDevices.map((device, index) => ({
-            id: `${crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${index}`}`,
-            name: device.name,
-            status: device.status !== undefined ? device.status : VRDeviceStatus.Available,
-            serialNumber: `SN-${String(100000 + devices.length + index + 1).padStart(6, "0")}`,
-            createdAtUtc: new Date().toISOString(),
-            updatedAtUtc: new Date().toISOString(),
-        }))
-        setDevices([...devices, ...formattedDevices])
+        return params
+    }, [filterStatus, pageIndex, pageSize])
+
+    const loadDevices = useCallback(async () => {
+        try {
+            setIsLoading(true)
+            setError(null)
+            const { items, totalItems } = await fetchVRDevices(buildQueryParams())
+            setDevices(items)
+            setTotalItems(totalItems)
+        } catch (err) {
+            console.error("Failed to fetch VR devices", err)
+            setError("Không thể tải danh sách thiết bị.")
+        } finally {
+            setIsLoading(false)
+        }
+    }, [buildQueryParams])
+
+    const loadStatusCounters = useCallback(async () => {
+        try {
+            const [available, inUse, maintenance] = await Promise.all([
+                fetchVRDevices({ pageIndex: 1, pageSize: 1, sortBy: "createdAtUtcDesc", isPaginated: true, vrDeviceStatus: VRDeviceStatus.Available }),
+                fetchVRDevices({ pageIndex: 1, pageSize: 1, sortBy: "createdAtUtcDesc", isPaginated: true, vrDeviceStatus: VRDeviceStatus.InUse }),
+                fetchVRDevices({ pageIndex: 1, pageSize: 1, sortBy: "createdAtUtcDesc", isPaginated: true, vrDeviceStatus: VRDeviceStatus.UnderMaintenance }),
+            ])
+
+            setStatusTotals({
+                [VRDeviceStatus.Available]: available.totalItems,
+                [VRDeviceStatus.InUse]: inUse.totalItems,
+                [VRDeviceStatus.UnderMaintenance]: maintenance.totalItems,
+            })
+        } catch (err) {
+            console.error("Failed to load status counters", err)
+        }
+    }, [])
+
+    useEffect(() => {
+        void loadDevices()
+    }, [loadDevices])
+
+    useEffect(() => {
+        void loadStatusCounters()
+    }, [loadStatusCounters])
+
+    const filteredDevices = useMemo(() => {
+        if (filterStatus === "all") return devices
+        return devices.filter((d) => String(d.status) === filterStatus)
+    }, [devices, filterStatus])
+
+    const availableCount = statusTotals[VRDeviceStatus.Available]
+    const inUseCount = statusTotals[VRDeviceStatus.InUse]
+    const maintenanceCount = statusTotals[VRDeviceStatus.UnderMaintenance]
+    const totalPages = Math.max(1, Math.ceil(totalItems / pageSize))
+
+    const handleImportDevices = async () => {
+        await loadDevices()
+        await loadStatusCounters()
         setIsImportDialogOpen(false)
     }
 
@@ -107,14 +104,18 @@ export default function DevicesPage() {
         setIsEditDialogOpen(true)
     }
 
-    const handleSaveDevice = (updatedDevice: VRDeviceDisplay) => {
-        const deviceWithTimestamp = {
-            ...updatedDevice,
-            updatedAtUtc: new Date().toISOString(),
+    const handleSaveDevice = async (newStatus: VRDeviceStatus) => {
+        if (!selectedDevice) return
+        try {
+            await updateVRDeviceStatus(selectedDevice.id, newStatus)
+            await loadDevices()
+            await loadStatusCounters()
+            setIsEditDialogOpen(false)
+            setSelectedDevice(null)
+        } catch (err) {
+            console.error("Failed to update device status", err)
+            throw err
         }
-        setDevices(devices.map((d) => (d.id === deviceWithTimestamp.id ? deviceWithTimestamp : d)))
-        setIsEditDialogOpen(false)
-        setSelectedDevice(null)
     }
 
     return (
@@ -129,11 +130,11 @@ export default function DevicesPage() {
                         {/* Header */}
                         <div className="flex items-center justify-between mb-8">
                             <div>
-                                <h2 className="text-3xl font-bold text-neutral-900 mb-2">Device Management</h2>
-                                <p className="text-neutral-500">Monitor and manage VR devices across your school</p>
+                                <h2 className="text-3xl font-bold text-neutral-900 mb-2">Quản lý thiết bị VR</h2>
+                                <p className="text-neutral-500">Theo dõi và quản lý thiết bị VR trong trường học</p>
                             </div>
                             <Button variant="default" size="lg" onClick={() => setIsImportDialogOpen(true)}>
-                                + Add Device
+                                + Thêm thiết bị
                             </Button>
                         </div>
 
@@ -142,7 +143,7 @@ export default function DevicesPage() {
                             <Card className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-neutral-500 mb-1">Available</p>
+                                        <p className="text-sm text-neutral-500 mb-1">Sẵn sàng</p>
                                         <p className="text-3xl font-bold text-neutral-900">{availableCount}</p>
                                     </div>
                                     <span className="text-4xl">🟢</span>
@@ -151,7 +152,7 @@ export default function DevicesPage() {
                             <Card className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-neutral-500 mb-1">In Use</p>
+                                        <p className="text-sm text-neutral-500 mb-1">Đang sử dụng</p>
                                         <p className="text-3xl font-bold text-neutral-900">{inUseCount}</p>
                                     </div>
                                     <span className="text-4xl">🔵</span>
@@ -160,7 +161,7 @@ export default function DevicesPage() {
                             <Card className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-neutral-500 mb-1">Maintenance</p>
+                                        <p className="text-sm text-neutral-500 mb-1">Bảo trì</p>
                                         <p className="text-3xl font-bold text-neutral-900">{maintenanceCount}</p>
                                     </div>
                                     <span className="text-4xl">🟠</span>
@@ -175,46 +176,118 @@ export default function DevicesPage() {
                                 size="sm"
                                 onClick={() => setFilterStatus("all")}
                             >
-                                All
+                                Tất cả
                             </Button>
                             <Button
                                 variant={filterStatus === String(VRDeviceStatus.Available) ? "default" : "outline"}
                                 size="sm"
-                                onClick={() => setFilterStatus(String(VRDeviceStatus.Available))}
+                                onClick={() => {
+                                    setFilterStatus(String(VRDeviceStatus.Available))
+                                    setPageIndex(1)
+                                }}
                             >
-                                Available
+                                Sẵn sàng
                             </Button>
                             <Button
                                 variant={filterStatus === String(VRDeviceStatus.InUse) ? "default" : "outline"}
                                 size="sm"
-                                onClick={() => setFilterStatus(String(VRDeviceStatus.InUse))}
+                                onClick={() => {
+                                    setFilterStatus(String(VRDeviceStatus.InUse))
+                                    setPageIndex(1)
+                                }}
                             >
-                                In Use
+                                Đang sử dụng
                             </Button>
                             <Button
                                 variant={filterStatus === String(VRDeviceStatus.UnderMaintenance) ? "default" : "outline"}
                                 size="sm"
-                                onClick={() => setFilterStatus(String(VRDeviceStatus.UnderMaintenance))}
+                                onClick={() => {
+                                    setFilterStatus(String(VRDeviceStatus.UnderMaintenance))
+                                    setPageIndex(1)
+                                }}
                             >
-                                Maintenance
+                                Bảo trì
                             </Button>
                         </div>
 
                         {/* Devices grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {filteredDevices.map((device) => (
-                                <DeviceCard
-                                    key={device.id}
-                                    {...device}
-                                    onEdit={() => handleEditDevice(device)}
-                                />
-                            ))}
-                        </div>
-
-                        {filteredDevices.length === 0 && (
-                            <Card className="text-center py-12">
-                                <p className="text-neutral-500">No devices found for the selected filter.</p>
+                        {isLoading ? (
+                            <Card className="py-12 text-center">
+                                <p className="text-neutral-500">Đang tải danh sách thiết bị...</p>
                             </Card>
+                        ) : error ? (
+                            <Card className="py-12 text-center space-y-4">
+                                <p className="text-error">{error}</p>
+                                <div className="flex justify-center gap-2">
+                                    <Button variant="outline" onClick={() => setFilterStatus("all")}>Đặt lại bộ lọc</Button>
+                                    <Button onClick={() => loadDevices()}>Thử lại</Button>
+                                </div>
+                            </Card>
+                        ) : (
+                            <>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                    {filteredDevices.map((device) => (
+                                        <DeviceCard
+                                            key={device.id}
+                                            {...device}
+                                            onEdit={() => handleEditDevice(device)}
+                                        />
+                                    ))}
+                                </div>
+
+                                {filteredDevices.length === 0 && (
+                                    <Card className="text-center py-12">
+                                        <p className="text-neutral-500">Không có thiết bị nào phù hợp bộ lọc.</p>
+                                    </Card>
+                                )}
+
+                                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-8">
+                                    <div className="text-sm text-neutral-600">
+                                        Tổng cộng {totalItems} thiết bị • Trang {pageIndex} / {totalPages}
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-sm text-neutral-600">Hiển thị</span>
+                                            <select
+                                                className="border border-neutral-300 rounded-md px-2 py-1 text-sm"
+                                                value={pageSize}
+                                                onChange={(e) => {
+                                                    setPageSize(Number(e.target.value))
+                                                    setPageIndex(1)
+                                                }}
+                                            >
+                                                {[6, 12, 24, 48].map((size) => (
+                                                    <option key={size} value={size}>
+                                                        {size}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                disabled={pageIndex === 1}
+                                                onClick={() => setPageIndex((prev) => Math.max(1, prev - 1))}
+                                            >
+                                                Trước
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                disabled={pageIndex >= totalPages}
+                                                onClick={() =>
+                                                    setPageIndex((prev) =>
+                                                        prev >= totalPages ? prev : prev + 1,
+                                                    )
+                                                }
+                                            >
+                                                Sau
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
                         )}
                     </div>
                 </div>

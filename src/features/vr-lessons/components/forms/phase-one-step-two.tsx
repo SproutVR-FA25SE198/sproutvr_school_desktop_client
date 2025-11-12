@@ -11,8 +11,19 @@ import { MapPreview } from '../map-preview';
 import { Button } from '@/common/components/ui/button';
 import { useStepTwoForm } from '../../hooks/use-step-two-form';
 import { Trash2 } from 'lucide-react';
+import type { MapRetrieveResponse } from '@/common/types/map.type';
+import useGetTaskLocations from '@/common/hooks/useGetTaskLocations';
+import Loading from '@/common/components/loading';
+import useGetMapObjects from '@/common/hooks/useGetMapObjects';
+import useGetActivityTypes from '@/common/hooks/useGetActivityTypes';
 
-export function PhaseOneStepTwo() {
+export function PhaseOneStepTwo({
+  maps,
+  // locations,
+}: {
+  maps: MapRetrieveResponse;
+  // locations: TaskLocationRetrieveResponse;
+}) {
   const { tasks, updateTask, goToStep, lessonData } = useFormContext();
   const {
     tasks: formTasks,
@@ -28,13 +39,34 @@ export function PhaseOneStepTwo() {
   // Track which task (by index) user is currently editing
   const [selectedTask, setSelectedTask] = useState(0);
 
+  const { data: locations, isLoading: isLocationsLoading } = useGetTaskLocations({ mapId: lessonData.map || '' });
+
+  const { data: objects, isLoading: isObjectsLoading } = useGetMapObjects({
+    mapId: lessonData.map || '',
+    locationId: formTasks[selectedTask]?.taskLocationId || '',
+  });
+
+  const { data: activityTypes, isLoading: isActivityTypesLoading } = useGetActivityTypes({
+    objectId: formTasks[selectedTask]?.mapObjectId || '',
+  });
+
+  // Compute which locations are already used by other tasks
+  const blockedLocations = Object.values(formTasks)
+    .map((t) => t.taskLocationId)
+    .filter((id) => id !== '' && id !== formTasks[selectedTask]?.taskLocationId);
+
   /** --------------------------- Actions --------------------------- */
 
   const handleAddTask = () => {
-    if (formTasks.length < 5) {
-      addTask();
-      setSelectedTask(formTasks.length); // select the new one
+    if (!validateAll()) return;
+
+    if (formTasks.length >= (locations?.items.length || 0)) {
+      alert('Số lượng nhiệm vụ đã đạt giới hạn của Bản đồ này.');
+      return;
     }
+
+    addTask();
+    setSelectedTask(formTasks.length); // auto-select new task
   };
 
   const handleRemoveTask = (index: number) => {
@@ -76,6 +108,9 @@ export function PhaseOneStepTwo() {
 
   const currentTask = formTasks[selectedTask];
   const currentError = errors[selectedTask] || {};
+  const isLoading = isLocationsLoading || isObjectsLoading || isActivityTypesLoading;
+
+  if (isLoading) return <Loading isLoading />;
 
   return (
     <div className='min-h-screen bg-neutral-50 p-6'>
@@ -85,14 +120,21 @@ export function PhaseOneStepTwo() {
           {/* Left Column - Map + Instruction */}
           <div className='space-y-6'>
             <div className='bg-white rounded-lg border border-neutral-200 p-6 space-y-4'>
-              <MapPreview selectedMapId={lessonData.map} />
+              <MapPreview
+                isLocationPreview={true}
+                selectedLocationId={currentTask.taskLocationId}
+                selectedMapId={lessonData.map}
+                locationPreviewUrl={locations?.items[0]?.map.previewUrl}
+                maps={maps?.items || []}
+                locations={locations?.items || []}
+              />
             </div>
 
             <div className='bg-gray-200 rounded-lg border border-neutral-200 p-6'>
-              You can assign multiple tasks to this VR lesson. Each task will guide the student to interact with
-              specific objects in the VR environment based on the activity type you select.
+              Bạn có thể gán nhiều nhiệm vụ cho bài học VR này. Mỗi nhiệm vụ sẽ hướng dẫn học sinh tương tác với các đồ
+              vật cụ thể trong môi trường VR dựa trên loại hoạt động bạn chọn.
               <br />
-              <strong>The maximum number of tasks you can add to a single VR lesson is 5.</strong>
+              <strong>Số lượng nhiệm vụ tối đa sẽ tùy thuộc vào bản đồ bạn chọn.</strong>
             </div>
           </div>
 
@@ -115,7 +157,7 @@ export function PhaseOneStepTwo() {
                     className='p-0 m-0 bg-transparent text-destructive hover:text-destructive/50 hover:cursor-pointer hover:underline '
                   >
                     <Trash2 className='w-36 h-36' />
-                    <span className='text-sm'>Remove Task</span>
+                    <span className='text-sm'>Xóa nhiệm vụ</span>
                   </Button>
                 )}
               </div>
@@ -127,6 +169,8 @@ export function PhaseOneStepTwo() {
 
               <TaskLocationSelect
                 value={currentTask.taskLocationId}
+                locations={locations?.items || []}
+                blockedLocations={blockedLocations}
                 onChange={(v) => updateField(selectedTask, 'taskLocationId', v)}
                 error={currentError.taskLocationId}
               />
@@ -134,6 +178,7 @@ export function PhaseOneStepTwo() {
               <div className='grid grid-cols-1 py-3 md:grid-cols-2 gap-4'>
                 <div className='space-y-4'>
                   <ObjectSelect
+                    objects={objects?.items || []}
                     value={currentTask.mapObjectId}
                     onChange={(v) => updateField(selectedTask, 'mapObjectId', v)}
                     error={currentError.mapObjectId}
@@ -141,13 +186,14 @@ export function PhaseOneStepTwo() {
 
                   <ActivitySelect
                     value={currentTask.activityTypeId}
+                    activityTypes={activityTypes?.items || []}
                     onChange={(v) => updateField(selectedTask, 'activityTypeId', v)}
                     error={currentError.activityTypeId}
                   />
                 </div>
 
                 {/* Object Preview */}
-                <ObjectPreview selectedObjectId={currentTask.mapObjectId} />
+                <ObjectPreview objects={objects?.items || []} selectedObjectId={currentTask.mapObjectId} />
               </div>
             </div>
           </div>
@@ -160,7 +206,7 @@ export function PhaseOneStepTwo() {
             variant='outline'
             className='px-8 py-2 border border-neutral-300 text-neutral-700 rounded-md font-medium hover:bg-neutral-50 bg-transparent'
           >
-            Back
+            Quay lại
           </Button>
 
           <div className='flex gap-4'>
@@ -169,14 +215,14 @@ export function PhaseOneStepTwo() {
               variant='outline'
               className='px-8 py-2 border border-neutral-300 text-neutral-700 rounded-md font-medium hover:bg-neutral-50 bg-transparent'
             >
-              Clear
+              Xóa
             </Button>
 
             <Button
               onClick={handleNext}
               className='px-8 py-2 bg-primary hover:bg-primary-light text-white rounded-md font-medium'
             >
-              Next
+              Tiếp theo
             </Button>
           </div>
         </div>

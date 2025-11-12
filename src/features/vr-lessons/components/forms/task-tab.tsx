@@ -1,63 +1,81 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { activityInputMap } from '../activity-input';
 import { useFormContext } from '@/common/contexts/form-context';
-import { Button } from '@/common/components/ui/button';
+import type { VrLessonRetrieve } from '@/common/types/vr-lesson.type';
 
 interface TaskTabProps {
   taskNumber: number;
+  vrLessonData: VrLessonRetrieve;
+  valid?: boolean;
+  setIsValid?: (isValid: boolean) => void;
 }
 
-export function TaskTab({ taskNumber }: TaskTabProps) {
-  const { taskSetups } = useFormContext();
-  const [isValid, setIsValid] = useState(false);
+export function TaskTab({ taskNumber, setIsValid }: TaskTabProps) {
+  const { vrLessonData, updateTaskDetails } = useFormContext();
 
-  const taskSetup = taskSetups[taskNumber];
-  const activityType = taskSetup?.activityType?.toLowerCase();
+  useEffect(() => {
+    // Initialize task details if not present
+    updateTaskDetails(taskNumber, {
+      vrTaskId: vrLessonData?.tasks[taskNumber - 1].id,
+      activityType: vrLessonData?.tasks[taskNumber - 1].activityType.activityCode,
+    });
+  }, []);
+
+  const taskSetup = vrLessonData?.tasks[taskNumber - 1];
+  const activityType = taskSetup?.activityType?.activityCode.toLowerCase();
   const ActivityComponent = activityInputMap[activityType as keyof typeof activityInputMap];
 
   return (
     <div className='space-y-6'>
       {/* Task Info */}
-      <div>
-        <p className='text-sm font-medium'>Description:</p>
-        <p className='text-sm text-muted-foreground'>{taskSetup.description}</p>
+      <div className='flex gap-2 items-center'>
+        <p className='text-sm font-medium'>Mô tả:</p>
+        <p className='text-sm text-muted-foreground'>{taskSetup?.description}</p>
       </div>
       <div className='grid grid-cols-2 gap-6'>
         <div className='space-y-4'>
           <div className='flex gap-2 items-center'>
-            <p className='text-sm font-medium'>Task location:</p>
-            <p className='text-sm text-muted-foreground'>{taskSetup.taskLocation}</p>
+            <p className='text-sm font-medium'>Vị trí nhiệm vụ:</p>
+            <p className='text-sm text-muted-foreground'>{taskSetup?.taskLocation?.name}</p>
           </div>
-          <div className='aspect-video bg-muted rounded-lg' />
+          <div className='max-w-[300px]'>
+            <img
+              src={taskSetup?.taskLocation?.imageUrl || '/placeholder.svg'}
+              alt={taskSetup?.taskLocation?.name}
+              className='rounded-xl object-cover'
+            />
+          </div>
         </div>
 
         <div className='space-y-4'>
           <div className='flex gap-2 items-center'>
-            <p className='text-sm font-medium'>Map object:</p>
-            <p className='text-sm text-muted-foreground'>{taskSetup.mapObject}</p>
+            <p className='text-sm font-medium'>Đồ vật:</p>
+            <p className='text-sm text-muted-foreground'>{taskSetup?.mapObject?.name}</p>
           </div>
-          <div className='aspect-square bg-muted rounded-lg max-w-[200px]' />
+          <div className='max-h-[400px]'>
+            <img
+              src={taskSetup?.mapObject?.imageUrl || '/placeholder.svg'}
+              alt={taskSetup?.mapObject?.name}
+              className='h-full rounded-xl'
+            />
+          </div>
         </div>
       </div>
 
       {/* Activity Type */}
-      <div className='flex gap-2 mb-5 mt-7 items-center justify-center'>
+      <div className='flex gap-2 mt-12 mb-5 items-center justify-center'>
         <hr className='bg-primary w-50' />
-        <h4 className='text-lg font-bold'>{taskSetup.activityType.toUpperCase()}</h4>
+        <h4 className='text-lg font-bold'>HOẠT ĐỘNG: {taskSetup?.activityType?.name?.toUpperCase()}</h4>
         <hr className='bg-primary w-50' />
       </div>
 
       {ActivityComponent ? (
         <ActivityComponent taskNumber={taskNumber} onValidChange={setIsValid} />
       ) : (
-        <p className='text-sm text-muted-foreground'>No activity type selected.</p>
+        <p className='text-sm text-muted-foreground text-center mb-5'>{`Học sinh sẽ ${activityType === 'grab' ? 'cầm nắm' : 'tương tác với'} đồ vật`}</p>
       )}
-
-      <div className='flex justify-end'>
-        <Button disabled={!isValid}>Save Task</Button>
-      </div>
     </div>
   );
 }
