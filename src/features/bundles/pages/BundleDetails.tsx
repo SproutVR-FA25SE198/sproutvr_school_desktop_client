@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Card } from '@/common/components/ui/card';
 import { Button } from '@/common/components/ui/button';
-import { ChevronLeft, Loader2 } from 'lucide-react';
+import { ChevronLeft, Loader2, Search } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import routes from '@/core/configs/routes';
 import { MapCard } from '../components/map-card';
@@ -12,6 +12,7 @@ import { useMarkMapAsDownloaded } from '../hooks/useMapMarkAsDownloaded';
 import type { MapPayload } from '@/common/types/bundle.type';
 import { useSeedMapBundle } from '../hooks/useSeedMapBundle';
 import { toast } from 'sonner';
+import { Input } from '@/common/components/ui/input';
 
 export default function BundleDetailsPage() {
   const navigate = useNavigate();
@@ -30,6 +31,9 @@ export default function BundleDetailsPage() {
   
   // State for downloading
   const [downloadingMapId, setDownloadingMapId] = useState<string | null>(null);
+
+  // State for search query
+  const [searchQuery, setSearchQuery] = useState('');
   
   // Get the mutation function from your hook
   const { mutate: seedMap } = useSeedMapBundle();
@@ -82,7 +86,7 @@ export default function BundleDetailsPage() {
         onError: (seedError: any) => {
           // ERROR TOAST (Seed bundle failed)
           const message =
-            seedError.response?.data?.Message || 'Lỗi không xác định.';
+            seedError?.response?.data?.detail || 'Lỗi không xác định.';
           
           toast.error(`Nhập học liệu thất bại: ${message}`);
         },
@@ -113,6 +117,14 @@ export default function BundleDetailsPage() {
       </div>
     );
   }
+
+  // Filtering logic
+  // Create the filtered list based on search query
+ const filteredMaps = bundle.maps.filter((map) => {
+  const query = searchQuery.toLowerCase().trim();
+  const nameMatch = map.mapName.toLowerCase().includes(query);
+  return nameMatch;
+ });
 
   return (
     <div className="flex-1 overflow-y-auto px-8 pt-8 pb-24 bg-neutral-50 min-h-screen">
@@ -147,10 +159,22 @@ export default function BundleDetailsPage() {
             </Card>
         </div>
 
+        {/* Search Bar UI */}
+        <div className="relative w-full md:max-w-sm mb-6">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
+          <Input
+            type="text"
+            placeholder="Tìm theo tên học liệu..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
 
         {/* Maps Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {bundle.maps.map((map) => (
+          {/*Use filteredMaps*/}
+          {filteredMaps.map((map) => (
             <MapCard
               key={map.mapId}
               map={map}
@@ -162,9 +186,19 @@ export default function BundleDetailsPage() {
           ))}
         </div>
 
+        {/* Handle no search results */}
+        {bundle.maps.length > 0 && filteredMaps.length === 0 && (
+          <Card className="text-center py-12 mt-6">
+            <p className="text-neutral-500">
+              Không tìm thấy học liệu nào khớp với "{searchQuery}".
+            </p>
+          </Card>
+        )}
+
+        {/* Handle unfiltered empty results */}
         {bundle.maps.length === 0 && (
           <Card className="text-center py-12">
-            <p className="text-neutral-500">Không tìm thấy học liệu nào trong gói này.</p>
+            <p className="text-neutral-500">Không tìm thấy học liệu nào trong gói này. Vui lòng liên hệ với nhà cung cấp để xử lý thêm.</p>
           </Card>
         )}
       </div>
