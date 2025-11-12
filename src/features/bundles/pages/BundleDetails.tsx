@@ -15,6 +15,7 @@ import { toast } from 'sonner';
 import { Input } from '@/common/components/ui/input';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_BUNDLE_DETAILS_QUERY__KEY, GET_BUNDLES_LIST_QUERY_KEY } from '../services/bundle.service';
+import { ApkDownloadAlert } from '../components/apk-download-alert';
 
 export default function BundleDetailsPage() {
   const navigate = useNavigate();
@@ -169,6 +170,9 @@ export default function BundleDetailsPage() {
                 </div>
             </Card>
         </div>
+
+        {/* APK Download Alert UI */}
+        <ApkDownloadAlert />
 
         {/* Search Bar UI */}
         <div className="relative w-full md:max-w-sm mb-6">

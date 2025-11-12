@@ -2,13 +2,14 @@
 
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/common/components/ui/card';
-import { Loader2, Search } from 'lucide-react';
+import { DownloadCloud, Loader2, Search } from 'lucide-react';
 import { useGetMyBundles } from '../hooks/useGetMyBundles';
 import type { BundlePayload } from '@/common/types/bundle.type';
 import { BundleCard } from '../components/bundle-card';
 import routes from '@/core/configs/routes';
 import { useState } from 'react';
 import { Input } from '@/common/components/ui/input';
+import { ApkDownloadAlert } from '../components/apk-download-alert';
 
 export default function MyBundlesPage() {
   const navigate = useNavigate();
@@ -79,6 +80,9 @@ export default function MyBundlesPage() {
             />
           </div>
         </div>
+
+        {/* APK Download Alert UI */}
+        <ApkDownloadAlert />
 
         {/* Bundles Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
