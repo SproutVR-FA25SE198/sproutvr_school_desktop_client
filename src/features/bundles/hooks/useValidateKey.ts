@@ -21,7 +21,7 @@ const useValidateKey = () => {
     mutationFn: (payload: KeyValidatePayload) => validateActivationKey(payload),
     
     onSuccess: () => {
-      // Invalidate the 'myBundles' list query
+      // Invalidate the GET_BUNDLES_LIST_QUERY_KEY list query
       // so it will be fresh if the user navigates back.
       queryClient.invalidateQueries({ queryKey: ['myBundles'] });
     },

@@ -13,10 +13,13 @@ import type { MapPayload } from '@/common/types/bundle.type';
 import { useSeedMapBundle } from '../hooks/useSeedMapBundle';
 import { toast } from 'sonner';
 import { Input } from '@/common/components/ui/input';
+import { useQueryClient } from '@tanstack/react-query';
+import { GET_BUNDLE_DETAILS_QUERY__KEY, GET_BUNDLES_LIST_QUERY_KEY } from '../services/bundle.service';
 
 export default function BundleDetailsPage() {
   const navigate = useNavigate();
   const {orderId} = useParams<{orderId: string}>();
+  const queryClient = useQueryClient();
 
   // TODO: Get organization id from auth context
   const organizationId = 'c0000001-0000-0000-0000-000000000002';
@@ -62,14 +65,22 @@ export default function BundleDetailsPage() {
       {
         onSuccess: () => {
           // On successful import, trigger mark as downloaded
-          markAsDownloaded(
+          return markAsDownloaded(
             { orderItemId: map.orderItemId, organizationId },
             {
-              onSuccess: () => {
+              onSuccess: async () => {
                 // SUCCESS TOAST
                 toast.success(
                   `Học liệu "${map.mapName}" đã tải thành công.`,
                 );
+
+                // Invalidate the query for to get fresh maps list
+                await queryClient.invalidateQueries({ 
+                  queryKey: [GET_BUNDLE_DETAILS_QUERY__KEY, orderId, organizationId] 
+                });
+                
+                // Invalidate the query for the *list page* (from your hook)
+                await queryClient.invalidateQueries({ queryKey: [GET_BUNDLES_LIST_QUERY_KEY, organizationId] });
               },
               onError: (markError: any) => {
                 // ERROR TOAST (MarkAsDownloaded failed)

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import type { ApiErrorResponse } from '@/common/types/error.type';
-import { markMapAsDownloaded } from '../services/bundle.service';
+import { GET_BUNDLES_LIST_QUERY_KEY, markMapAsDownloaded } from '../services/bundle.service';
 
 interface MarkAsDownloadedParams {
   orderItemId: string;
@@ -22,16 +22,15 @@ export const useMarkMapAsDownloaded = () => {
     mutationFn: (params: MarkAsDownloadedParams) =>
       markMapAsDownloaded(params.orderItemId, params.organizationId),
     
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       console.log('Successfully marked as downloaded.');
       // IMPORTANT: Invalidate the 'myBundles' query.
       // This tells React Query to re-fetch the bundle list,
       // which will now have the updated 'isDownloaded: true' flag.
-      queryClient.invalidateQueries({ queryKey: ['myBundles'] });
+      queryClient.invalidateQueries({ queryKey: [GET_BUNDLES_LIST_QUERY_KEY, variables.organizationId]});
     },
     onError: (error) => {
       console.error('Failed to mark as downloaded:', error.response?.data?.Message);
-      // TODO: Show an error toast to the user
     },
   });
 };

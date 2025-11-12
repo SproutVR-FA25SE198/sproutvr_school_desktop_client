@@ -1,6 +1,9 @@
 import type { BundlePayload, SeedMapBundlePayload } from '@/common/types/bundle.type';
 import { http_provider, http_school } from '@/common/utils/http';
 
+export const GET_BUNDLES_LIST_QUERY_KEY = 'GET_BUNDLES_LIST_QUERY_KEY';
+export const GET_BUNDLE_DETAILS_QUERY__KEY = 'GET_BUNDLE_DETAILS_QUERY__KEY';
+
 /**
  * Fetch all bundles for an organization.
  */
@@ -21,7 +24,7 @@ export const getBundleDetails = async (orderId:string, organizationId: string): 
  * Marked a map as downloaded
  */
 export const markMapAsDownloaded = async (orderItemId: string, organizationId: string) => {
-  const response = await http_provider.patch(`/bundle-payloads/${orderItemId}`, { organizationId });
+  const response = await http_provider.patch(`/bundle-payloads/items/${orderItemId}`, { organizationId });
   return response.data;
 };
 
