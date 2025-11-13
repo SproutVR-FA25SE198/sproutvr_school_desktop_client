@@ -1,0 +1,12 @@
+import { z } from 'zod';
+
+// Define the schema for the form data
+export const activationSchema = z.object({
+  activationKey: z
+    .string()
+    .min(1, 'Activation key is required.')
+    .regex(/^([A-Z0-9]{5}-){4}[A-Z0-9]{5}$/, 'Invalid activation key format.'),
+});
+
+// Infer the TypeScript type from the schema
+export type ActivationFormData = z.infer<typeof activationSchema>;
