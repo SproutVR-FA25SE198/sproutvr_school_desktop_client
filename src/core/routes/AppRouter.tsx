@@ -12,6 +12,7 @@ import TeacherDesignLayout from '../layouts/teacher-side/teacher-design-layout';
 import LessonDetailsPage from '@/features/lessons/pages/LessonDetails';
 import LessonsPage from '@/features/lessons/pages/LessonList';
 import AdminSideLayout from '../layouts/admin-side/admin-side-layout';
+import MonitoringPage from '@/features/learning-sessions/pages/MonitoringPage';
 
 export const AppRouter = () => (
   <Router>
@@ -23,6 +24,7 @@ export const AppRouter = () => (
 
       <Route element={<TeacherDesignLayout />}>
         <Route path={routes.vrLessonDesign} element={<VrLessonDesignPage />} />
+        <Route path={routes.learningSessionMonitoring} element={<MonitoringPage />} />
         <Route path={routes.lessonCreation} element={<LessonCreationPage />} />
       </Route>
 

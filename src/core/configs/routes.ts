@@ -9,6 +9,7 @@ const routes = {
   vrLessonDesign: '/vr-lessons-design',
   vrDevices: '/vr-devices',
   vrDeviceDetail: '/vr-devices/:id',
+  learningSessionMonitoring: '/learning-sessions/monitoring/:id',
   accounts: '/accounts',
   accountDetail: '/accounts/:id',
   logout: '/logout',

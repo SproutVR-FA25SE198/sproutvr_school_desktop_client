@@ -1,0 +1,131 @@
+import { type VRLearningSession } from './session.type';
+
+export const MOCK_VR_LEARNING_SESSION: VRLearningSession = {
+  vr_learning_session_id: '43cd43ae-ddd6-45b8-9042-c7c7ca8516bf',
+  class_name: 'Lớp 12 Học Vui Banh Chành',
+  room_code: 'IG9KDN',
+  duration_in_seconds: 1800,
+  status: 'Active',
+  teacher: {
+    teacher_id: '0199f4b1-8487-4352-8a2a-320a00e40e58',
+    teacher_name: 'Bảy Nguyễn Thị',
+  },
+  vrlesson: {
+    vr_lesson_id: 'c5b2062c-9c6e-4b64-99ef-562a64cb30d3',
+    name: 'Đây là bài học VR Lesson mới',
+    description: 'A test lesson for phase 1.',
+    preset_json_relative_file_path:
+      '/content/0199f4b1-8487-4352-8a2a-320a00e40e58/53d6a4c4-abd7-4db5-8881-e090a1cf0888/c5b2062c-9c6e-4b64-99ef-562a64cb30d3/Presets/preset.json',
+  },
+  devices: [
+    {
+      vr_device_serial_number: 'VR-DEVICE-001',
+      student_name: 'Vũ Kim Duy',
+      status: 'Connected',
+      tasks: [
+        {
+          vr_task_id: '344bef17-8a02-44a6-8516-85fd6c3ba770',
+          question_name: 'Giải thích khái niệm lực ma sát',
+          is_completed: true,
+          is_correct: true,
+          completion_time_at_vietnam: '2025-11-13T09:15:00+07:00',
+          status: 'Completed',
+        },
+        {
+          vr_task_id: '30128af4-52d7-4334-b6b5-f2d1b9ece106',
+          question_name: 'Phân biệt lực hướng tâm và lực quán tính',
+          is_completed: true,
+          is_correct: false,
+          completion_time_at_vietnam: '2025-11-13T09:20:00+07:00',
+          status: 'Completed',
+        },
+        {
+          vr_task_id: '9ce9aa6a-a401-408b-96b3-c118dbbc57f4',
+          is_completed: false,
+          is_correct: false,
+          completion_time_at_vietnam: '',
+          status: 'Uncompleted',
+        },
+        {
+          vr_task_id: 'aab775e3-1ce6-4fb9-b9b1-53a7b3a46a87',
+          is_completed: false,
+          is_correct: false,
+          completion_time_at_vietnam: '',
+          status: 'Uncompleted',
+        },
+      ],
+    },
+    {
+      vr_device_serial_number: 'VR-DEVICE-002',
+      student_name: 'Sao Lâu Pụ',
+      status: 'Disconnected',
+      tasks: [
+        {
+          vr_task_id: '344bef17-8a02-44a6-8516-85fd6c3ba770',
+          question_name: 'Giải thích khái niệm lực ma sát',
+          is_completed: false,
+          is_correct: false,
+          completion_time_at_vietnam: '',
+          status: 'Uncompleted',
+        },
+        {
+          vr_task_id: '30128af4-52d7-4334-b6b5-f2d1b9ece106',
+          is_completed: false,
+          is_correct: false,
+          completion_time_at_vietnam: '',
+          status: 'Uncompleted',
+        },
+        {
+          vr_task_id: '9ce9aa6a-a401-408b-96b3-c118dbbc57f4',
+          is_completed: false,
+          is_correct: false,
+          completion_time_at_vietnam: '',
+          status: 'Uncompleted',
+        },
+        {
+          vr_task_id: 'aab775e3-1ce6-4fb9-b9b1-53a7b3a46a87',
+          is_completed: false,
+          is_correct: false,
+          completion_time_at_vietnam: '',
+          status: 'Uncompleted',
+        },
+      ],
+    },
+    {
+      vr_device_serial_number: 'VR-DEVICE-003',
+      student_name: 'Trần Hải Đăng',
+      status: 'Connected',
+      tasks: [
+        {
+          vr_task_id: '344bef17-8a02-44a6-8516-85fd6c3ba770',
+          question_name: 'Định nghĩa chuyển động tròn đều',
+          is_completed: true,
+          is_correct: true,
+          completion_time_at_vietnam: '2025-11-13T09:05:00+07:00',
+          status: 'Completed',
+        },
+        {
+          vr_task_id: '30128af4-52d7-4334-b6b5-f2d1b9ece106',
+          is_completed: true,
+          is_correct: true,
+          completion_time_at_vietnam: '2025-11-13T09:10:00+07:00',
+          status: 'Completed',
+        },
+        {
+          vr_task_id: '9ce9aa6a-a401-408b-96b3-c118dbbc57f4',
+          is_completed: false,
+          is_correct: false,
+          completion_time_at_vietnam: '',
+          status: 'Uncompleted',
+        },
+        {
+          vr_task_id: 'aab775e3-1ce6-4fb9-b9b1-53a7b3a46a87',
+          is_completed: false,
+          is_correct: false,
+          completion_time_at_vietnam: '',
+          status: 'Uncompleted',
+        },
+      ],
+    },
+  ],
+};
