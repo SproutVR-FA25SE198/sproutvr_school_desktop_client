@@ -3,25 +3,22 @@
 import { Button } from "@/common/components/ui/button";
 import { Badge } from "@/common/components/ui/badge";
 import { useNavigate } from "react-router-dom";
-import type { Account } from "../types/account.types";
-import {
-  AccountStatus,
-  getStatusLabel,
-} from "../types/account.types";
+import type { MapListItem } from "../types/map.types";
 
-interface AccountRowProps extends Account {}
+interface MapRowProps extends MapListItem {}
 
-export function AccountRow({
-  userId,
-  fullName,
-  email,
+export function MapRow({
+  id,
+  mapCode,
+  name,
+  subject,
   status,
   createdAtVietNam,
-}: AccountRowProps) {
+}: MapRowProps) {
   const navigate = useNavigate();
 
   const handleViewDetails = () => {
-    navigate(`/accounts/${userId}`);
+    //navigate();
   };
 
   const formatDateOnly = (dateString: string) => {
@@ -37,15 +34,16 @@ export function AccountRow({
 
   return (
     <tr className="border-b hover:bg-neutral-50 transition">
-      <td className="px-4 py-3 font-medium text-neutral-900">{fullName}</td>
-      <td className="px-4 py-3 text-neutral-600">{email}</td>
+      <td className="px-4 py-3 font-medium text-neutral-900">{mapCode}</td>
+      <td className="px-4 py-3 font-medium text-neutral-900">{name}</td>
+      <td className="px-4 py-3 text-neutral-600">{subject.name}</td>
       <td className="px-4 py-3 text-neutral-600">{formatDateOnly(createdAtVietNam)}</td>
       <td className="px-4 py-3">
         <Badge
-          variant={status === AccountStatus.Active ? "secondary" : "default"}
+          variant={status.key === 1 ? "secondary" : "default"}
           className="font-semibold"
         >
-          {getStatusLabel(status)}
+          {status.key === 1 ? "Hoạt động" : "Không hoạt động"}
         </Badge>
       </td>
       <td className="px-4 py-3 text-right">

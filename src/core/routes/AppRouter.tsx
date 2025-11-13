@@ -15,6 +15,7 @@ import AdminSideLayout from '../layouts/admin-side/admin-side-layout';
 import ActivationPage from '@/features/school-admin/bundles/pages/KeyValidation';
 import MyBundlesPage from '@/features/school-admin/bundles/pages/BundlesList';
 import BundleDetailsPage from '@/features/school-admin/bundles/pages/BundleDetails';
+import ResourcesPage from '@/features/school-admin/resources/pages/ResourcesPage';
 
 export const AppRouter = () => (
   <Router>
@@ -37,6 +38,7 @@ export const AppRouter = () => (
         <Route path={routes.bundleImport} element={<BundleDetailsPage />} />
         <Route path={routes.accounts} element={<AccountList />} />
         <Route path={routes.accountDetail} element={<AccountDetail />} />
+        <Route path={routes.resources} element={<ResourcesPage />} />
       </Route>
     </Routes>
   </Router>
