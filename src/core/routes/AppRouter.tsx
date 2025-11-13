@@ -1,10 +1,10 @@
 // src/core/routes/AppRouter.tsx
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { VrLessonDesignPage } from '../../features/vr-lessons/pages/VrLessonDesign';
-import VRDeviceList from '../../features/vr-devices/pages/VRDeviceList';
-import VRDeviceDetail from '../../features/vr-devices/pages/VRDeviceDetail';
-import AccountList from '../../features/accounts/pages/AccountList';
-import AccountDetail from '@/features/accounts/pages/AccountDetail';
+import VRDeviceList from '../../features/school-admin/vr-devices/pages/VRDeviceList';
+import VRDeviceDetail from '../../features/school-admin/vr-devices/pages/VRDeviceDetail';
+import AccountList from '../../features/school-admin/accounts/pages/AccountList';
+import AccountDetail from '@/features/school-admin/accounts/pages/AccountDetail';
 import routes from '../configs/routes';
 import TeacherSideLayout from '../layouts/teacher-side/teacher-side-layout';
 import LessonCreationPage from '@/features/lessons/pages/LessonCreation';
@@ -12,9 +12,9 @@ import TeacherDesignLayout from '../layouts/teacher-side/teacher-design-layout';
 import LessonDetailsPage from '@/features/lessons/pages/LessonDetails';
 import LessonsPage from '@/features/lessons/pages/LessonList';
 import AdminSideLayout from '../layouts/admin-side/admin-side-layout';
-import ActivationPage from '@/features/bundles/pages/KeyValidation';
-import MyBundlesPage from '@/features/bundles/pages/BundlesList';
-import BundleDetailsPage from '@/features/bundles/pages/BundleDetails';
+import ActivationPage from '@/features/school-admin/bundles/pages/KeyValidation';
+import MyBundlesPage from '@/features/school-admin/bundles/pages/BundlesList';
+import BundleDetailsPage from '@/features/school-admin/bundles/pages/BundleDetails';
 
 export const AppRouter = () => (
   <Router>
