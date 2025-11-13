@@ -14,6 +14,7 @@ const routes = {
   bundleImport: '/my-bundles/:orderId',
   accounts: '/accounts',
   accountDetail: '/accounts/:id',
+  resources: '/resources',
   logout: '/logout',
   notFound: '*',
 };
