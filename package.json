@@ -15,12 +15,15 @@
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check \"src/**/(*.tsx|*.ts|*.css|*.scss)\"",
     "prettier:fix": "prettier --write \"src/**/(*.tsx|*.ts|*.css|*.scss)\"",
-    "transpile:electron": "tsc --project \"electron/tsconfig.json\"",
+    "transpile:electron": "tsc --project \"electron/tsconfig.json\" && npm run copy-proto",
     "dist:mac": "npm run transpile:electron && npm run build && electron-builder --mac --arm64",
     "dist:win": "npm run transpile:electron && npm run build && electron-builder --win --x64",
-    "dist:linux": "npm run transpile:electron && npm run build && electron-builder --linux --x64"
+    "dist:linux": "npm run transpile:electron && npm run build && electron-builder --linux --x64",
+    "copy-proto": "copyfiles --up 4 electron/main/grpc/proto/**/* dist-electron/main/grpc/proto"
   },
   "dependencies": {
+    "@grpc/grpc-js": "^1.14.1",
+    "@grpc/proto-loader": "^0.8.0",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-checkbox": "^1.3.3",
     "@radix-ui/react-dialog": "1.1.4",
@@ -35,6 +38,7 @@
     "axios": "^1.12.2",
     "class-variance-authority": "^0.7.1",
     "embla-carousel-react": "^8.6.0",
+    "google-proto-files": "^5.0.1",
     "lucide-react": "^0.544.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
@@ -56,6 +60,7 @@
     "@vitejs/plugin-react": "^5.0.4",
     "autoprefixer": "^10.4.21",
     "clsx": "^2.1.1",
+    "copyfiles": "^2.4.1",
     "cross-env": "^10.1.0",
     "electron": "^38.3.0",
     "electron-builder": "^25.1.8",

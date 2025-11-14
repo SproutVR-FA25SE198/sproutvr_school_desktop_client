@@ -1,15 +1,26 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { VRLearningSession, VRDevice, VRTask } from '../services/session.type';
+import type { VRLearningSession } from '../services/session.type';
 
-interface MonitoringState {
-  session: VRLearningSession | null;
-  isLoading: boolean;
+interface RoomStateEvent extends VRLearningSession {}
+
+interface VrMessage {
+  // Define your VR message structure
+  device_serial?: string;
+  data?: any;
+  // Add other fields from your proto
+}
+
+interface GrpcState {
+  roomStateEvents: RoomStateEvent[];
+  vrMessages: VrMessage[];
+  isConnected: boolean;
   error: string | null;
 }
 
-const initialState: MonitoringState = {
-  session: null,
-  isLoading: false,
+const initialState: GrpcState = {
+  roomStateEvents: [],
+  vrMessages: [],
+  isConnected: false,
   error: null,
 };
 
@@ -17,44 +28,31 @@ const monitoringSlice = createSlice({
   name: 'monitoring',
   initialState,
   reducers: {
-    startLoading(state) {
-      state.isLoading = true;
+    teacherRoomUpdated(state, action: PayloadAction<RoomStateEvent>) {
+      state.roomStateEvents.push(action.payload);
+      state.isConnected = true;
+      state.error = null;
     },
-    setSession(state, action: PayloadAction<VRLearningSession>) {
-      state.session = action.payload;
-      state.isLoading = false;
+    vrStreamUpdated(state, action: PayloadAction<VrMessage>) {
+      state.vrMessages.push(action.payload);
     },
-    updateDevice(state, action: PayloadAction<VRDevice>) {
-      if (!state.session) return;
-      const index = state.session.devices.findIndex(
-        (d) => d.vr_device_serial_number === action.payload.vr_device_serial_number,
-      );
-      if (index !== -1) state.session.devices[index] = action.payload;
-    },
-    updateTask(
-      state,
-      action: PayloadAction<{
-        deviceSerial: string;
-        task: VRTask;
-      }>,
-    ) {
-      if (!state.session) return;
-      const device = state.session.devices.find((d) => d.vr_device_serial_number === action.payload.deviceSerial);
-      if (!device) return;
-      const taskIndex = device.tasks.findIndex((t) => t.vr_task_id === action.payload.task.vr_task_id);
-      if (taskIndex !== -1) {
-        device.tasks[taskIndex] = action.payload.task;
-      }
-    },
-    endSession(state) {
-      state.session = null;
-    },
-    setError(state, action: PayloadAction<string>) {
+    grpcError(state, action: PayloadAction<string>) {
       state.error = action.payload;
-      state.isLoading = false;
+      state.isConnected = false;
+    },
+    grpcDisconnected(state) {
+      state.isConnected = false;
+    },
+    clearRoomEvents(state) {
+      state.roomStateEvents = [];
+    },
+    clearVrMessages(state) {
+      state.vrMessages = [];
     },
   },
 });
 
-export const { startLoading, setSession, updateDevice, updateTask, endSession, setError } = monitoringSlice.actions;
+export const { teacherRoomUpdated, vrStreamUpdated, grpcError, grpcDisconnected, clearRoomEvents, clearVrMessages } =
+  monitoringSlice.actions;
+
 export default monitoringSlice.reducer;
