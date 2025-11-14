@@ -11,9 +11,13 @@ import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search } from '
 import { Input } from '@/common/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/common/components/ui/select';
 import { Button } from '@/common/components/ui/button';
+import { fetchLessons } from '../services/lesson.services';
+import { fetchVRLessons } from '../services/vr-lesson.services';
+import { VRLessonRow } from '../components/vr-lesson-row';
+import { LessonRow } from '../components/lesson-row';
 
 export default function ResourcesPage() {
-  const [activeTab, setActiveTab] = useState<'master' | 'subject' | 'map'>('master');
+  const [activeTab, setActiveTab] = useState<'master' | 'subject' | 'map' | 'lesson' | 'vrlesson'>('master');
   const [sortBy, setSortBy] = useState('createdAtUtcDesc');
   const [filterStatus, setFilterStatus] = useState<number | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState('');
@@ -21,6 +25,8 @@ export default function ResourcesPage() {
   const [masterSubjects, setMasterSubjects] = useState<any[]>([]);
   const [subjects, setSubjects] = useState<any[]>([]);
   const [maps, setMaps] = useState<any[]>([]);
+  const [lessons, setLessons] = useState<any[]>([]);
+  const [vrLessons, setVrLessons] = useState<any[]>([]);
 
   // Pagination
   const [pageIndex, setPageIndex] = useState(1);
@@ -61,6 +67,28 @@ export default function ResourcesPage() {
     setTotalItems(res.totalItems || 0);
   };
 
+  const loadLessons = async (page = pageIndex) => {
+    const res = await fetchLessons({
+      lessonStatus: filterStatus === undefined ? undefined : filterStatus,
+      sortBy,
+      pageIndex: page,
+      pageSize,
+    });
+    setLessons(res.items || []);
+    setTotalItems(res.totalItems || 0);
+  };
+
+  const loadVrLessons = async (page = pageIndex) => {
+    const res = await fetchVRLessons({
+      vrLessonStatus: filterStatus === undefined ? undefined : filterStatus,
+      sortBy,
+      pageIndex: page,
+      pageSize,
+    });
+    setVrLessons(res.items || []);
+    setTotalItems(res.totalItems || 0);
+  };
+
   // Load initial data
   useEffect(() => {
     loadMasterSubjects();
@@ -71,6 +99,8 @@ export default function ResourcesPage() {
     if (activeTab === 'master') loadMasterSubjects();
     else if (activeTab === 'subject') loadSubjects();
     else if (activeTab === 'map') loadMaps();
+    else if (activeTab === 'lesson') loadLessons();
+    else if (activeTab === 'vrlesson') loadVrLessons();
   }, [activeTab, sortBy, pageIndex, filterStatus]);
 
   const totalPages = Math.ceil(totalItems / pageSize);
@@ -87,7 +117,9 @@ export default function ResourcesPage() {
   const getActiveData = () => {
     if (activeTab === 'master') return filterBySearch(masterSubjects);
     if (activeTab === 'subject') return filterBySearch(subjects);
-    return filterBySearch(maps);
+    if(activeTab === 'map') return filterBySearch(maps);
+    if(activeTab === 'lesson') return filterBySearch(lessons);
+    return filterBySearch(vrLessons);
   };
 
   const displayedData = getActiveData();
@@ -128,6 +160,22 @@ export default function ResourcesPage() {
           }`}
         >
           Học liệu VR
+        </button>
+        <button
+          onClick={() => setActiveTab('lesson')}
+          className={`px-4 py-2 font-semibold ${
+            activeTab === 'lesson' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-neutral-600'
+          }`}
+        >
+          Bài giảng
+        </button>
+        <button
+          onClick={() => setActiveTab('vrlesson')}
+          className={`px-4 py-2 font-semibold ${
+            activeTab === 'vrlesson' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-neutral-600'
+          }`}
+        >
+          Bài học VR
         </button>
       </div>
 
@@ -196,9 +244,28 @@ export default function ResourcesPage() {
       {/* Table */}
       <div className="border rounded-xl overflow-hidden">
         <table className="w-full border-collapse">
-          <thead className="bg-neutral-100 text-left">
+          <thead className="bg-neutral-100 text-neutral-600 text-sm font-semibold text-left">
             <tr>
-              {activeTab === 'map' ? (
+              {activeTab === 'vrlesson' ? (
+                <>
+                  <th className="px-4 py-2">Tên</th>
+                  <th className="px-4 py-2">Mã học liệu VR</th>
+                  <th className="px-4 py-2">Bài giảng</th>
+                  <th className="px-4 py-2">Thời lượng</th>
+                  <th className="px-4 py-2">Ngày tạo</th>
+                  <th className="px-4 py-2">Trạng thái</th>
+                  <th className="px-4 py-2 text-right">Thao tác</th>
+                </>
+              ) : activeTab === 'lesson' ? (
+                <>
+                  <th className="px-4 py-2">Tên</th>
+                  <th className="px-4 py-2">Môn học</th>
+                  <th className="px-4 py-2">Tạo bởi</th>
+                  <th className="px-4 py-2">Ngày tạo</th>
+                  <th className="px-4 py-2">Trạng thái</th>
+                  <th className="px-4 py-2 text-right">Thao tác</th>
+                </>
+              ) : activeTab === 'map' ? (
                 <>
                   <th className="px-4 py-2">Mã</th>
                   <th className="px-4 py-2">Tên</th>
@@ -225,10 +292,14 @@ export default function ResourcesPage() {
               )}
             </tr>
           </thead>
-          <tbody>
+          <tbody className="text-sm text-neutral-800">
             {displayedData.length > 0 ? (
               displayedData.map((item) =>
-                activeTab === 'map' ? (
+                activeTab === 'vrlesson' ? (
+                  <VRLessonRow key={item.id} {...item} />
+                ) : activeTab === 'lesson' ? (
+                  <LessonRow key={item.id} {...item}/>
+                ) : activeTab === 'map' ? (
                   <MapRow key={item.id} {...item} />
                 ) : activeTab === 'subject' ? (
                   <SubjectRow key={item.id} {...item} />
