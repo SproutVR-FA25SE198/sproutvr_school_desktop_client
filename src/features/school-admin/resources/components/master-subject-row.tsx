@@ -5,7 +5,7 @@ import { Badge } from "@/common/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import type { MasterSubject } from "../types/master-subject.types";
 
-interface MasterSubjectRowProps extends MasterSubject {}
+interface MasterSubjectRowProps extends MasterSubject { }
 
 export function MasterSubjectRow({
   id,

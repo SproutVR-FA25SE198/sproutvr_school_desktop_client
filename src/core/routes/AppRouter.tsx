@@ -16,7 +16,9 @@ import ActivationPage from '@/features/school-admin/bundles/pages/KeyValidation'
 import MyBundlesPage from '@/features/school-admin/bundles/pages/BundlesList';
 import BundleDetailsPage from '@/features/school-admin/bundles/pages/BundleDetails';
 import ResourcesPage from '@/features/school-admin/resources/pages/ResourcesPage';
-import CreateSessionPage from '@/features/sessions/pages/CreateSession';
+import CreateSessionPage from '@/features/learning-sessions/pages/CreateSessionPage';
+import MonitoringPage from '@/features/learning-sessions/pages/MonitoringPage';
+import SessionListPage from '@/features/learning-sessions/pages/SessionListPage';
 
 export const AppRouter = () => (
   <Router>
@@ -25,10 +27,12 @@ export const AppRouter = () => (
         <Route path={routes.home} element={<LessonsPage />} />
         <Route path={routes.lessonDetails} element={<LessonDetailsPage />} />
         <Route path={routes.vrSessionCreate} element={<CreateSessionPage />} />
+        <Route path={routes.sessionList} element={<SessionListPage />} />
       </Route>
 
       <Route element={<TeacherDesignLayout />}>
         <Route path={routes.vrLessonDesign} element={<VrLessonDesignPage />} />
+        <Route path={routes.learningSessionMonitoring} element={<MonitoringPage />} />
         <Route path={routes.lessonCreation} element={<LessonCreationPage />} />
       </Route>
 

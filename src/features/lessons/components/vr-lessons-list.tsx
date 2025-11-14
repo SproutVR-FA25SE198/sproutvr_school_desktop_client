@@ -23,7 +23,16 @@ export function VRLessonsList({ vrLessons, lesson }: VRLessonsListProps) {
     <div className='bg-white rounded-lg p-6'>
       <div className='flex items-center justify-between mb-0'>
         <h2 className='text-xl font-semibold text-neutral-900 mb-4'>Bài học VR ({vrLessons?.length || 0})</h2>
-        <Button variant='secondary' size='sm' onClick={() => navigate(routes.vrLessonDesign, { state: { lesson } })}>
+        <Button 
+          variant='secondary' 
+          size='sm' 
+          onClick={() => navigate(routes.vrSessionCreate, { 
+            state: { lessonId: lesson?.id } 
+          })}
+        >
+          <BookOpen /> Mở phòng học
+        </Button>
+        <Button variant='default' size='sm' onClick={() => navigate(routes.vrLessonDesign, { state: { lesson } })}>
           <BookOpen /> Tạo bài học VR
         </Button>
       </div>

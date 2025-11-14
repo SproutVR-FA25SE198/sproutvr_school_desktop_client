@@ -1,17 +1,18 @@
 import { Button } from '@/common/components/ui/button'
 import { Input } from '@/common/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/common/components/ui/select'
-import type { VRDevice } from '@/features/school-admin/vr-devices/services/mock-data'
+import type { VRDeviceDisplay } from '@/features/school-admin/vr-devices/types/device.types'
 import { X } from 'lucide-react'
 
 interface DeviceAssignmentRowProps {
     device: {
         id: string
         deviceId: string | null
+        serialNumber: string | null
         studentName: string
     }
-    availableDevices: VRDevice[]
-    onUpdate: (id: string, field: "deviceId" | "studentName", value: string) => void
+    availableDevices: VRDeviceDisplay[]
+    onUpdate: (id: string, field: "deviceId" | "serialNumber" | "studentName", value: string) => void
     onRemove: (id: string) => void
 }
 
@@ -22,17 +23,17 @@ export function DeviceAssignmentRow({ device, availableDevices, onUpdate, onRemo
             <div className="flex-1 min-w-0">
                 <Select value={device.deviceId || ""} onValueChange={(value) => onUpdate(device.id, "deviceId", value)}>
                     <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select Device" />
+                        <SelectValue placeholder="Chọn thiết bị VR" />
                     </SelectTrigger>
                     <SelectContent>
                         {availableDevices.length > 0 ? (
                             availableDevices.map((dev) => (
                                 <SelectItem key={dev.id} value={dev.id}>
-                                    {dev.name}
+                                    {dev.name} ({dev.serialNumber})
                                 </SelectItem>
                             ))
                         ) : (
-                            <div className="px-2 py-1.5 text-sm text-neutral-500">No devices available</div>
+                            <div className="px-2 py-1.5 text-sm text-neutral-500">Không có thiết bị nào sẵn sàng</div>
                         )}
                     </SelectContent>
                 </Select>
@@ -41,7 +42,7 @@ export function DeviceAssignmentRow({ device, availableDevices, onUpdate, onRemo
             {/* Student Name Input */}
             <div className="flex-1 min-w-0">
                 <Input
-                    placeholder="Student name"
+                    placeholder="Tên học sinh"
                     value={device.studentName}
                     onChange={(e) => onUpdate(device.id, "studentName", e.target.value)}
                     className="w-full"
