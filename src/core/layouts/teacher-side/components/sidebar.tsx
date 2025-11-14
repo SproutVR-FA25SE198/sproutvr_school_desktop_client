@@ -11,7 +11,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: 'Dashboard', href: '/dashboard', icon: '📊' },
   { label: 'Lessons', href: '/', icon: '📚' },
-  { label: 'Sessions', href: '/sessions', icon: '▶️' },
+  { label: 'Sessions', href: '/vr-sessions-create', icon: '▶️' },
   { label: 'VR Devices', href: '/vr-devices', icon: '🖥️' },
   { label: 'Accounts', href: '/accounts', icon: '👥' },
   { label: 'Reports', href: '/reports', icon: '📈' },
@@ -22,9 +22,8 @@ export function Sidebar() {
 
   return (
     <aside
-      className={`${
-        isOpen ? 'w-64' : 'w-20'
-      } bg-primary text-white transition-all duration-300 flex flex-col h-screen shadow-lg`}
+      className={`${isOpen ? 'w-64' : 'w-20'
+        } bg-primary text-white transition-all duration-300 flex flex-col h-screen shadow-lg`}
     >
       {/* Logo */}
       <div className='p-6 border-b border-primary-light flex items-center justify-between'>

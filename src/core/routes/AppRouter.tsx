@@ -16,6 +16,7 @@ import ActivationPage from '@/features/school-admin/bundles/pages/KeyValidation'
 import MyBundlesPage from '@/features/school-admin/bundles/pages/BundlesList';
 import BundleDetailsPage from '@/features/school-admin/bundles/pages/BundleDetails';
 import ResourcesPage from '@/features/school-admin/resources/pages/ResourcesPage';
+import CreateSessionPage from '@/features/sessions/pages/CreateSession';
 
 export const AppRouter = () => (
   <Router>
@@ -23,6 +24,7 @@ export const AppRouter = () => (
       <Route element={<TeacherSideLayout />}>
         <Route path={routes.home} element={<LessonsPage />} />
         <Route path={routes.lessonDetails} element={<LessonDetailsPage />} />
+        <Route path={routes.vrSessionCreate} element={<CreateSessionPage />} />
       </Route>
 
       <Route element={<TeacherDesignLayout />}>
