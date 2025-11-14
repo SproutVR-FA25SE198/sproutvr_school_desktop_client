@@ -1,5 +1,5 @@
 import type { RetrieveAllResponse, Status } from "@/common/types/common.type";
-import type { Subject } from "./subject.types";
+import type { SubjectRef } from "./reference.types";
 
 export interface Map {
     id: string ,
@@ -15,7 +15,5 @@ export interface Map {
 }
 
 export interface MapListItem extends Pick<Map, 'id' | 'name' | 'subject' | 'mapCode' | 'status' | 'imageUrl' | 'createdAtVietNam'> {}
-
-export interface SubjectRef extends Pick<Subject, 'id' | 'name'> {}
 
 export type MapList = RetrieveAllResponse<MapListItem>;

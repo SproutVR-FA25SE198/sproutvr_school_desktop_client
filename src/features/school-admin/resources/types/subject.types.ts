@@ -1,5 +1,5 @@
 import type { RetrieveAllResponse, Status } from "@/common/types/common.type"
-import type { MasterSubject } from "./master-subject.types"
+import type { MasterSubjectRef } from "./reference.types";
 
 export interface Subject {
     id: string ,
@@ -11,7 +11,5 @@ export interface Subject {
     createdAtUtc: string,
     createdAtVietNam: string
 }
-
-export interface MasterSubjectRef extends Pick<MasterSubject, 'id' | 'name'> {}
 
 export type SubjectList = RetrieveAllResponse<Subject>;
