@@ -8,6 +8,8 @@ import {
   AccountStatus,
   getStatusLabel,
 } from "../types/account.types";
+import routes from "@/core/configs/routes";
+import { formatDateOnly } from "@/common/utils/date-time-vn-converter";
 
 interface AccountRowProps extends Account {}
 
@@ -21,18 +23,7 @@ export function AccountRow({
   const navigate = useNavigate();
 
   const handleViewDetails = () => {
-    navigate(`/accounts/${userId}`);
-  };
-
-  const formatDateOnly = (dateString: string) => {
-    if (!dateString) return "N/A";
-    const date = new Date(dateString);
-    const datePart = date.toLocaleDateString("vi-VN", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-    return `${datePart}`;
+    navigate(`${routes.accounts}/${userId}`);
   };
 
   return (

@@ -16,6 +16,9 @@ import ActivationPage from '@/features/school-admin/bundles/pages/KeyValidation'
 import MyBundlesPage from '@/features/school-admin/bundles/pages/BundlesList';
 import BundleDetailsPage from '@/features/school-admin/bundles/pages/BundleDetails';
 import ResourcesPage from '@/features/school-admin/resources/pages/ResourcesPage';
+import MasterSubjectDetail from '@/features/school-admin/resources/pages/MasterSubjectDetail';
+import SubjectDetail from '@/features/school-admin/resources/pages/SubjectDetail';
+import MapDetail from '@/features/school-admin/resources/pages/MapDetail';
 
 export const AppRouter = () => (
   <Router>
@@ -39,6 +42,9 @@ export const AppRouter = () => (
         <Route path={routes.accounts} element={<AccountList />} />
         <Route path={routes.accountDetail} element={<AccountDetail />} />
         <Route path={routes.resources} element={<ResourcesPage />} />
+        <Route path={routes.rsMasterSubjectDetail} element={<MasterSubjectDetail />} />
+        <Route path={routes.rsSubjectDetail} element={<SubjectDetail />} />
+        <Route path={routes.rsMapDetail} element={<MapDetail />} />
       </Route>
     </Routes>
   </Router>

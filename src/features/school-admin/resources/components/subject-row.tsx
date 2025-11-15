@@ -4,6 +4,8 @@ import { Button } from "@/common/components/ui/button";
 import { Badge } from "@/common/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import type { Subject } from "../types/subject.types";
+import routes from "@/core/configs/routes";
+import { formatDateOnly } from "@/common/utils/date-time-vn-converter";
 
 interface SubjectRowProps extends Subject {}
 
@@ -17,18 +19,7 @@ export function SubjectRow({
   const navigate = useNavigate();
 
   const handleViewDetails = () => {
-    //navigate();
-  };
-
-  const formatDateOnly = (dateString: string) => {
-    if (!dateString) return "N/A";
-    const date = new Date(dateString);
-    const datePart = date.toLocaleDateString("vi-VN", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-    return `${datePart}`;
+    navigate(`${routes.rsSubjects}/${id}`);
   };
 
   return (
