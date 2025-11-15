@@ -19,6 +19,8 @@ import ResourcesPage from '@/features/school-admin/resources/pages/ResourcesPage
 import MasterSubjectDetail from '@/features/school-admin/resources/pages/MasterSubjectDetail';
 import SubjectDetail from '@/features/school-admin/resources/pages/SubjectDetail';
 import MapDetail from '@/features/school-admin/resources/pages/MapDetail';
+import LessonDetail from '@/features/school-admin/resources/pages/LessonDetail';
+import VRLessonDetail from '@/features/school-admin/resources/pages/VRLessonDetail';
 import CreateSessionPage from '@/features/learning-sessions/pages/CreateSessionPage';
 import MonitoringPage from '@/features/learning-sessions/pages/MonitoringPage';
 import SessionListPage from '@/features/learning-sessions/pages/SessionListPage';
@@ -51,6 +53,8 @@ export const AppRouter = () => (
         <Route path={routes.rsMasterSubjectDetail} element={<MasterSubjectDetail />} />
         <Route path={routes.rsSubjectDetail} element={<SubjectDetail />} />
         <Route path={routes.rsMapDetail} element={<MapDetail />} />
+        <Route path={routes.rsLessonDetail} element={<LessonDetail />} />
+        <Route path={routes.rsVrLessonDetail} element={<VRLessonDetail />} />
       </Route>
     </Routes>
   </Router>

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import type { VRLesson } from "../types/vr-lesson.types";
 import routes from "@/core/configs/routes";
 import { formatDateOnly } from "@/common/utils/date-time-vn-converter";
+import { HHMMSSToDuration } from "@/common/utils/duration-converter";
 
 interface VRLessonRowProps extends VRLesson {}
 
@@ -29,7 +30,10 @@ export function VRLessonRow({
       <td className="px-4 py-3 font-medium text-neutral-900">{name}</td>
       <td className="px-4 py-3 text-neutral-600">{map.mapCode}</td>
       <td className="px-4 py-3 text-neutral-600">{lesson.name}</td>
-      <td className="px-4 py-3 text-neutral-600">{maxDuration}</td>
+      <td className="px-4 py-3 text-neutral-600">
+        {HHMMSSToDuration(maxDuration).minutes} phút 
+        {HHMMSSToDuration(maxDuration).seconds === 0 ? "" : ` ${HHMMSSToDuration(maxDuration).seconds} giây`}
+      </td>
       <td className="px-4 py-3 text-neutral-600">{formatDateOnly(createdAtVietNam)}</td>
       <td className="px-4 py-3">
         <Badge
