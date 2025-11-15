@@ -9,7 +9,7 @@ export interface VRLesson {
     description: string,
     maxDuration: string,
     duration: string,
-    presetJsonRelativeFilePath: string,
+    //presetJsonRelativeFilePath: string,
     status: Status,
     createdAtUtc: string,
     createdAtVietNam: string

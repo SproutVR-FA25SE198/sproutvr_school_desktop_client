@@ -125,7 +125,7 @@ export default function MapDetail() {
 
             <div className="flex items-start justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-neutral-900 mb-2">{map.name}</h1>
+                <h1 className="text-3xl font-bold text-neutral-900 mb-2 ml-2 mr-2">{map.name}</h1>
                 <div className="flex items-center gap-3 text-neutral-600">
                   <span className="text-xs font-medium bg-neutral-100 px-2 py-1 rounded uppercase">
                     Trạng thái
@@ -221,7 +221,7 @@ export default function MapDetail() {
                   <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">
                     Môn học
                   </label>
-                  <div className="bg-neutral-50 rounded-lg px-4 py-3 border border-neutral-200 mt-2 min-h-[100px]">
+                  <div className="bg-neutral-50 rounded-lg px-4 py-3 border border-neutral-200 mt-2">
                     <p className="text-sm text-neutral-900 whitespace-pre-wrap">{map.subject.name}</p>
                   </div>
                 </div>
