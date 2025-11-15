@@ -50,7 +50,7 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
 
   // Fetch VR lessons - filter by lessonId if provided, otherwise get all
   const { data: vrLessonsData } = useQuery({
-    queryKey: lessonId 
+    queryKey: lessonId
       ? [GET_VR_LESSON_LIST_QUERY__KEY, lessonId]
       : [GET_ALL_VR_LESSONS_QUERY_KEY],
     queryFn: async () => {
@@ -66,15 +66,15 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
   // Fetch active VR devices
   const { data: vrDevicesData, isLoading: isLoadingDevices } = useQuery({
     queryKey: ['vr-devices-active'],
-    queryFn: async () => await fetchVRDevices({ 
-      vrDeviceStatus: VRDeviceStatus.Available, 
-      isPaginated: false 
+    queryFn: async () => await fetchVRDevices({
+      vrDeviceStatus: VRDeviceStatus.Available,
+      isPaginated: false
     }),
     refetchOnWindowFocus: false,
   })
 
   // Handle different response structures
-  const vrLessons = lessonId 
+  const vrLessons = lessonId
     ? (vrLessonsData?.items || []) // getVrLessonList returns { items: [...] }
     : (vrLessonsData?.items || []) // getAllVrLessons also returns { items: [...] }
   const selectedVrLesson = initialVrLesson || vrLessons.find(vl => vl.id === selectedVrLessonId)
@@ -211,7 +211,7 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
 
       // Show success with room code
       setCreatedSession({ sessionId: vrLearningSessionId, roomCode })
-      
+
       // Store session data in sessionStorage as fallback (in case location.state is lost)
       const sessionData = {
         roomCode,
@@ -220,12 +220,12 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
         vrLessonId: selectedVrLessonId
       }
       sessionStorage.setItem(`session_${vrLearningSessionId}`, JSON.stringify(sessionData))
-      
+
       // Navigate to monitoring page with room code and other session data
       navigate(routes.learningSessionMonitoring.replace(':id', vrLearningSessionId), {
         state: sessionData
       })
-      
+
       // Show desktop notification or alert
       if (window.electron?.showNotification) {
         window.electron.showNotification({
@@ -258,8 +258,8 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
                 className="w-full bg-neutral-100"
               />
             ) : (
-              <Select 
-                value={selectedVrLessonId} 
+              <Select
+                value={selectedVrLessonId}
                 onValueChange={setSelectedVrLessonId}
                 disabled={!!vrLearningSessionId}
               >
@@ -377,8 +377,8 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
           )}
 
           {/* Play VR Lesson Button */}
-          <Button 
-            className="w-full bg-[#5B9FD8] hover:bg-[#4A8CC5] gap-2" 
+          <Button
+            className="w-full bg-[#5B9FD8] hover:bg-[#4A8CC5] gap-2"
             onClick={handleSubmit}
             disabled={isActivating || !!createdSession || !vrLearningSessionId || isCreatingRoom}
           >

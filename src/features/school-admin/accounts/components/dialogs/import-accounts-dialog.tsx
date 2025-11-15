@@ -74,7 +74,7 @@ export default function ImportAccountsDialog({
         <div className="space-y-4 py-4">
           <div className="border-2 border-dashed border-neutral-300 rounded-lg p-6 text-center">
             <p className="text-sm text-neutral-600 mb-3">
-              {selectedFile ? `Đã chọn: ${selectedFile.name}` : 'Chưa có tệp nào được chọn'}
+              {selectedFile ? `Đã chọn: ${selectedFile.name}` : 'Chưa có file nào được chọn'}
             </p>
 
             <input
@@ -92,11 +92,11 @@ export default function ImportAccountsDialog({
               className={`inline-flex items-center justify-center px-4 py-2 rounded-md font-semibold cursor-pointer transition-colors duration-200 ${
                 isLoading
                   ? 'bg-neutral-200 text-neutral-500 cursor-not-allowed'
-                  : 'bg-blue-600 text-white hover:bg-blue-500'
+                  : 'bg-primary text-white hover:bg-primary/90'
               }`}
             >
               {isLoading ? 'Đang tải...' : selectedFile
-                ? 'Chọn tệp khác' : 'Chọn tệp để tải lên'}
+                ? 'Chọn file khác' : 'Chọn file để tải lên'}
             </label>
           </div>
         </div>

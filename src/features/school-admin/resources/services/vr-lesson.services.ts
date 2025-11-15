@@ -9,6 +9,7 @@ export interface FetchVRLessonsParams {
   sortBy?: string;
   vrLessonStatus?: number; 
   lessonId?: string;
+  mapId?: string;
   isPaginated?: boolean;
 }
 

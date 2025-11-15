@@ -8,15 +8,10 @@ import { Badge } from "@/common/components/ui/badge";
 import { ArrowLeft, Lock, LockOpen, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import type { AccountDetail } from "../types/account.types";
-import {
-  AccountStatus,
-  AccountDetailLessonStatus,
-  getStatusLabel,
-} from "../types/account.types";
-import {
-  fetchAccountById,
-  updateAccountStatus,
-} from "../services/account.services";
+import { AccountStatus, AccountDetailLessonStatus, getStatusLabel } from "../types/account.types";
+import { fetchAccountById, updateAccountStatus } from "../services/account.services";
+import routes from "@/core/configs/routes";
+import { formatDateTime } from "@/common/utils/date-time-vn-converter";
 
 export default function AccountDetailPage() {
   const navigate = useNavigate();
@@ -54,7 +49,7 @@ export default function AccountDetailPage() {
   }, [loadAccountDetails]);
 
   // --- Handlers ---
-  const handleBack = () => navigate("/accounts");
+  const handleBack = () => navigate(routes.accounts);
 
   const handleStatusChange = async () => {
     if (!accountDetail) return;
@@ -75,22 +70,6 @@ export default function AccountDetailPage() {
         setIsUpdatingStatus(false);
       }
     }
-  };
-
-  // --- Formatters ---
-  const formatDateTime = (dateString: string) => {
-    if (!dateString) return "N/A";
-    const date = new Date(dateString);
-    const datePart = date.toLocaleDateString("vi-VN", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-    const timePart = date.toLocaleTimeString("vi-VN", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    return `${timePart} ngày ${datePart}`;
   };
 
   const formatDateOnly = (dateString: string | null) => {

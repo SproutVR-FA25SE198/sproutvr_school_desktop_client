@@ -15,9 +15,13 @@ import { fetchLessons } from '../services/lesson.services';
 import { fetchVRLessons } from '../services/vr-lesson.services';
 import { VRLessonRow } from '../components/vr-lesson-row';
 import { LessonRow } from '../components/lesson-row';
+import { useSearchParams } from 'react-router-dom';
 
 export default function ResourcesPage() {
-  const [activeTab, setActiveTab] = useState<'master' | 'subject' | 'map' | 'lesson' | 'vrlesson'>('master');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialTab = searchParams.get('tab') || 'master';
+  const [activeTab, setActiveTab] = useState(initialTab);
+
   const [sortBy, setSortBy] = useState('createdAtUtcDesc');
   const [filterStatus, setFilterStatus] = useState<number | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState('');
@@ -94,6 +98,17 @@ export default function ResourcesPage() {
     loadMasterSubjects();
   }, []);
 
+  // Tab changes and handling URL updates
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    setSearchParams({ tab }); 
+  };
+
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab) setActiveTab(tab);
+  }, [searchParams]);
+
   // Refresh when tab/sort/page/filter changes
   useEffect(() => {
     if (activeTab === 'master') loadMasterSubjects();
@@ -138,41 +153,41 @@ export default function ResourcesPage() {
       {/* Tabs */}
       <div className="flex gap-4 border-b pb-2">
         <button
-          onClick={() => setActiveTab('master')}
+          onClick={() => handleTabChange('master')}
           className={`px-4 py-2 font-semibold ${
-            activeTab === 'master' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-neutral-600'
+            activeTab === 'master' ? 'border-b-2 border-green-500 text-green-600' : 'text-neutral-600'
           }`}
         >
           Bộ môn
         </button>
         <button
-          onClick={() => setActiveTab('subject')}
+          onClick={() => handleTabChange('subject')}
           className={`px-4 py-2 font-semibold ${
-            activeTab === 'subject' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-neutral-600'
+            activeTab === 'subject' ? 'border-b-2 border-green-500 text-green-600' : 'text-neutral-600'
           }`}
         >
           Môn học
         </button>
         <button
-          onClick={() => setActiveTab('map')}
+          onClick={() => handleTabChange('map')}
           className={`px-4 py-2 font-semibold ${
-            activeTab === 'map' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-neutral-600'
+            activeTab === 'map' ? 'border-b-2 border-green-500 text-green-600' : 'text-neutral-600'
           }`}
         >
           Học liệu VR
         </button>
         <button
-          onClick={() => setActiveTab('lesson')}
+          onClick={() => handleTabChange('lesson')}
           className={`px-4 py-2 font-semibold ${
-            activeTab === 'lesson' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-neutral-600'
+            activeTab === 'lesson' ? 'border-b-2 border-green-500 text-green-600' : 'text-neutral-600'
           }`}
         >
           Bài giảng
         </button>
         <button
-          onClick={() => setActiveTab('vrlesson')}
+          onClick={() => handleTabChange('vrlesson')}
           className={`px-4 py-2 font-semibold ${
-            activeTab === 'vrlesson' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-neutral-600'
+            activeTab === 'vrlesson' ? 'border-b-2 border-green-500 text-green-600' : 'text-neutral-600'
           }`}
         >
           Bài học VR
