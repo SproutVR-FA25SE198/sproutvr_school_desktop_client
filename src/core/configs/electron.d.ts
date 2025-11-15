@@ -1,8 +1,9 @@
-export {};
+export { };
 
 declare global {
   interface Window {
     electron: {
+      showNotification: any;
       // Streams
       onTeacherUpdate: (cb: (data: any) => void) => () => void;
       onTeacherError: (cb: (error: string) => void) => () => void;

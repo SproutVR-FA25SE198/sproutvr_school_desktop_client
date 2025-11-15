@@ -1,14 +1,26 @@
 'use client';
 
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/common/components/ui/button';
 import { Card } from '@/common/components/ui/card';
 import { Plus, Play } from 'lucide-react';
 import routes from '@/core/configs/routes';
 import Loading from '@/common/components/loading';
+import { ConfirmDialog } from '../components/confirm-dialog';
+import { CREATE_SESSION_CONFIRMATION } from '../constants';
 
 export default function SessionListPage() {
   const navigate = useNavigate();
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+
+  const handleCreateSessionClick = () => {
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmCreate = () => {
+    navigate(routes.vrSessionCreate);
+  };
 
   // TODO: Fetch sessions from API
   const sessions: Array<{
@@ -32,10 +44,10 @@ export default function SessionListPage() {
             <h2 className="text-2xl font-bold text-neutral-900 mb-1">Danh sách phiên học</h2>
             <p className="text-neutral-500 text-sm">Xem lại các phiên học VR đã tạo</p>
           </div>
-          <Button 
-            variant="default" 
+          <Button
+            variant="default"
             size="sm"
-            onClick={() => navigate(routes.vrSessionCreate)}
+            onClick={handleCreateSessionClick}
           >
             <Plus size={16} className="mr-2" />
             Tạo phiên học mới
@@ -46,9 +58,9 @@ export default function SessionListPage() {
       {sessions.length === 0 ? (
         <Card className="p-12 text-center">
           <p className="text-neutral-500 mb-4">Chưa có phiên học nào được tạo.</p>
-          <Button 
+          <Button
             variant="outline"
-            onClick={() => navigate(routes.vrSessionCreate)}
+            onClick={handleCreateSessionClick}
           >
             <Plus size={16} className="mr-2" />
             Tạo phiên học đầu tiên
@@ -69,11 +81,10 @@ export default function SessionListPage() {
               </div>
               <div className="flex items-center justify-between text-xs text-neutral-500 mb-3">
                 <span>{new Date(session.createdAt).toLocaleDateString('vi-VN')}</span>
-                <span className={`px-2 py-1 rounded ${
-                  session.status === 'Active' 
-                    ? 'bg-green-100 text-green-700' 
-                    : 'bg-neutral-100 text-neutral-600'
-                }`}>
+                <span className={`px-2 py-1 rounded ${session.status === 'Active'
+                  ? 'bg-green-100 text-green-700'
+                  : 'bg-neutral-100 text-neutral-600'
+                  }`}>
                   {session.status}
                 </span>
               </div>
@@ -93,6 +104,17 @@ export default function SessionListPage() {
           ))}
         </div>
       )}
+
+      <ConfirmDialog
+        open={showConfirmDialog}
+        onOpenChange={setShowConfirmDialog}
+        title={CREATE_SESSION_CONFIRMATION.title}
+        message={CREATE_SESSION_CONFIRMATION.message}
+        question={CREATE_SESSION_CONFIRMATION.question}
+        onConfirm={handleConfirmCreate}
+        confirmText="Tiếp tục"
+        cancelText="Hủy"
+      />
     </div>
   );
 }

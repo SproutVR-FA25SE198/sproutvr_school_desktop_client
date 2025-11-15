@@ -1,11 +1,14 @@
 'use client';
 
+import { useState } from 'react';
 import { usePagination } from '@/common/hooks/usePagination';
 import Pagination from '@/common/components/pagination';
 import { Button } from '@/common/components/ui/button';
 import { BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import routes from '@/core/configs/routes';
+import { ConfirmDialog } from '@/features/learning-sessions/components/confirm-dialog';
+import { CREATE_SESSION_CONFIRMATION } from '@/features/learning-sessions/constants';
 import type { LessonRetrieve, VrLessonRetrieve } from '../services/lesson.service';
 
 interface VRLessonsListProps {
@@ -15,6 +18,17 @@ interface VRLessonsListProps {
 
 export function VRLessonsList({ vrLessons, lesson }: VRLessonsListProps) {
   const navigate = useNavigate();
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+
+  const handleOpenVrClassroom = () => {
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmCreate = () => {
+    navigate(routes.vrSessionCreate, {
+      state: { lessonId: lesson?.id },
+    });
+  };
 
   const itemsPerView = 3;
   const { currentData, currentPage, setPage, totalPages } = usePagination(vrLessons || [], itemsPerView);
@@ -23,12 +37,10 @@ export function VRLessonsList({ vrLessons, lesson }: VRLessonsListProps) {
     <div className='bg-white rounded-lg p-6'>
       <div className='flex items-center justify-between mb-0'>
         <h2 className='text-xl font-semibold text-neutral-900 mb-4'>Bài học VR ({vrLessons?.length || 0})</h2>
-        <Button 
-          variant='secondary' 
-          size='sm' 
-          onClick={() => navigate(routes.vrSessionCreate, { 
-            state: { lessonId: lesson?.id } 
-          })}
+        <Button
+          variant='secondary'
+          size='sm'
+          onClick={handleOpenVrClassroom}
         >
           <BookOpen /> Mở phòng học
         </Button>
@@ -62,6 +74,17 @@ export function VRLessonsList({ vrLessons, lesson }: VRLessonsListProps) {
         </div>
       </div>
       <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
+
+      <ConfirmDialog
+        open={showConfirmDialog}
+        onOpenChange={setShowConfirmDialog}
+        title={CREATE_SESSION_CONFIRMATION.title}
+        message={CREATE_SESSION_CONFIRMATION.message}
+        question={CREATE_SESSION_CONFIRMATION.question}
+        onConfirm={handleConfirmCreate}
+        confirmText="Tiếp tục"
+        cancelText="Hủy"
+      />
     </div>
   );
 }

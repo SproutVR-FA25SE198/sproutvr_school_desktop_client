@@ -3,19 +3,21 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useQuery, useMutation } from "@tanstack/react-query"
-import { Plus, Play, CheckCircle2 } from 'lucide-react'
+import { Plus, Play, CheckCircle2, Info } from 'lucide-react'
 import { Label } from "@/common/components/ui/label"
 import { Input } from "@/common/components/ui/input"
 import { Button } from "@/common/components/ui/button"
 import { Card } from "@/common/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/common/components/ui/select"
 import { DeviceAssignmentRow } from "./device-assignment-row"
+import { InstructionDialog } from "./instruction-dialog"
 import { getAllVrLessons, GET_ALL_VR_LESSONS_QUERY_KEY } from "@/common/services/vr-lesson.service"
 import { getVrLessonList, GET_VR_LESSON_LIST_QUERY__KEY } from "@/features/lessons/services/lesson.service"
 import { fetchVRDevices } from "@/features/school-admin/vr-devices/services/vr-device.service"
 import { VRDeviceStatus } from "@/features/school-admin/vr-devices/types/device.types"
 import { createRoom, activateRoom } from "@/core/ipc/grpc"
 import routes from "@/core/configs/routes"
+import { MAX_DEVICES } from "@/features/learning-sessions/constants"
 import type { VrLessonRetrieve } from "@/common/types/vr-lesson.type"
 import type { VRDeviceDisplay } from "@/features/school-admin/vr-devices/types/device.types"
 
@@ -37,13 +39,12 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
   const [classroomLetter, setClassroomLetter] = useState("")
   const [selectedVrLessonId, setSelectedVrLessonId] = useState<string>(initialVrLesson?.id || "")
   const [devices, setDevices] = useState<DeviceAssignment[]>([])
-  const [duration, setDuration] = useState("00:30:00")
-  const [startTimeType, setStartTimeType] = useState("now")
-  const [startTime, setStartTime] = useState(new Date().toISOString().slice(11, 16))
+  const [durationMinutes, setDurationMinutes] = useState<number>(30)
   const [isCreatingRoom, setIsCreatingRoom] = useState(false)
   const [isActivating, setIsActivating] = useState(false)
   const [vrLearningSessionId, setVrLearningSessionId] = useState<string | null>(null)
   const [createdSession, setCreatedSession] = useState<{ sessionId: string; roomCode: string } | null>(null)
+  const [showInstructionDialog, setShowInstructionDialog] = useState(false)
 
   // Hardcoded teacher ID - should be from auth context in production
   const teacherId = '0199f4b1-8487-4352-8a2a-320a00e40e58'
@@ -64,7 +65,7 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
   })
 
   // Fetch active VR devices
-  const { data: vrDevicesData, isLoading: isLoadingDevices } = useQuery({
+  const { data: vrDevicesData } = useQuery({
     queryKey: ['vr-devices-active'],
     queryFn: async () => await fetchVRDevices({
       vrDeviceStatus: VRDeviceStatus.Available,
@@ -77,7 +78,6 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
   const vrLessons = lessonId
     ? (vrLessonsData?.items || []) // getVrLessonList returns { items: [...] }
     : (vrLessonsData?.items || []) // getAllVrLessons also returns { items: [...] }
-  const selectedVrLesson = initialVrLesson || vrLessons.find(vl => vl.id === selectedVrLessonId)
   const activeDevices = vrDevicesData?.items || []
 
   // Create room when component mounts with a VR lesson, or when VR lesson is selected
@@ -115,9 +115,10 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
     setClassroomNumber(value)
   }
 
-  // Handle classroom letter input - alphanumeric, no special chars
+  // Handle classroom letter input - allow Vietnamese and alphanumeric, no special chars
   const handleClassroomLetterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^a-zA-Z0-9]/g, '') // Only alphanumeric
+    // Allow letters (including Vietnamese), numbers, and spaces, remove special characters
+    const value = e.target.value.replace(/[^a-zA-Z0-9\u00C0-\u1EF9\s]/g, '')
     setClassroomLetter(value)
   }
 
@@ -129,7 +130,7 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
   }
 
   const addDeviceRow = () => {
-    if (devices.length < 8) {
+    if (devices.length < MAX_DEVICES) {
       const newId = `device-${Date.now()}`
       setDevices([...devices, { id: newId, deviceId: null, serialNumber: null, studentName: "" }])
     }
@@ -173,16 +174,8 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
 
     setIsActivating(true)
     try {
-      // Calculate start time and convert to protobuf Timestamp format
-      let startDate: Date
-      if (startTimeType === "now") {
-        startDate = new Date()
-      } else {
-        // Parse time and create date
-        const [hours, minutes] = startTime.split(':')
-        startDate = new Date()
-        startDate.setHours(parseInt(hours), parseInt(minutes), 0, 0)
-      }
+      // Use current time as start time and convert to protobuf Timestamp format
+      const startDate = new Date()
 
       // Convert to protobuf Timestamp format: { seconds, nanos }
       const startTimeAtUtc = {
@@ -245,10 +238,10 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
     <div className="grid grid-cols-4 gap-6">
       {/* Main Form - 3 columns */}
       <div className="col-span-3">
-        <Card className="p-6 mb-6">
+        <Card className="p-4">
           {/* VR Lesson Selection */}
-          <div className="mb-6">
-            <Label className="text-sm font-medium mb-2 block">
+          <div className="mb-4">
+            <Label className="text-sm font-medium mb-1.5 block">
               Bài học VR
             </Label>
             {initialVrLesson ? (
@@ -280,16 +273,16 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
               </Select>
             )}
             {isCreatingRoom && (
-              <p className="text-xs text-blue-600 mt-1">Đang tạo phòng...</p>
+              <p className="text-xs text-blue-600 mt-1">Kích hoạt phiên học VR</p>
             )}
             {vrLearningSessionId && (
-              <p className="text-xs text-green-600 mt-1">Phòng đã được tạo (ID: {vrLearningSessionId.slice(0, 8)}...)</p>
+              <p className="text-xs text-green-600 mt-1">ID: {vrLearningSessionId.slice(0, 8)}...</p>
             )}
           </div>
 
           {/* Classroom Name - Split into 2 fields */}
-          <div className="mb-6">
-            <Label className="text-sm font-medium mb-2 block">
+          <div className="mb-4">
+            <Label className="text-sm font-medium mb-1.5 block">
               Lớp học
             </Label>
             <div className="flex gap-2">
@@ -302,38 +295,36 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
                   type="text"
                   inputMode="numeric"
                 />
-                <p className="text-xs text-neutral-500 mt-1">Chỉ nhập số</p>
               </div>
               <div className="flex-1">
                 <Input
-                  placeholder="A, B, 1, 2..."
+                  placeholder="1, 2, A, B..."
                   value={classroomLetter}
                   onChange={handleClassroomLetterChange}
                   className="w-full"
                 />
-                <p className="text-xs text-neutral-500 mt-1">Chữ hoặc số, không ký tự đặc biệt</p>
               </div>
             </div>
           </div>
 
           {/* Device Assignments */}
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <Label className="text-sm font-medium">VR Devices ({devices.length}/8)</Label>
+          <div className="mb-4">
+            <div className="flex items-center justify-between mb-2">
+              <Label className="text-sm font-medium">Thiết bị VR ({devices.length}/{MAX_DEVICES})</Label>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={addDeviceRow}
-                disabled={devices.length >= 8}
-                className="gap-1"
+                disabled={devices.length >= MAX_DEVICES}
+                className="gap-1 h-8"
               >
                 <Plus size={16} />
-                Add Device
+                Thêm thiết bị
               </Button>
             </div>
 
             {/* Device rows */}
-            <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
+            <div className="space-y-2">
               {devices.map((device) => (
                 <DeviceAssignmentRow
                   key={device.id}
@@ -345,19 +336,24 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
               ))}
 
               {devices.length === 0 && (
-                <div className="border-2 border-dashed border-neutral-200 rounded-lg p-6 text-center">
-                  <p className="text-neutral-500 text-sm">No devices added yet. Click "Add Device" to get started.</p>
+                <div className="border-2 border-dashed border-neutral-200 rounded-lg p-4 text-center">
+                  <p className="text-neutral-500 text-sm">Chưa có thiết bị nào. Nhấn "Thêm thiết bị" để bắt đầu.</p>
                 </div>
               )}
             </div>
 
-            <p className="text-xs text-neutral-500 mt-3">Maximum: 8 devices in 1 VR learning session</p>
+            <p className="text-xs text-neutral-500 mt-2">Tối đa: {MAX_DEVICES} thiết bị trong 1 phiên học VR</p>
           </div>
 
           {/* Instruction box */}
-          <div className="bg-neutral-100 rounded-lg p-4 mb-6">
-            <p className="text-xs text-neutral-600">Instruction for teacher</p>
-          </div>
+          <button
+            type="button"
+            onClick={() => setShowInstructionDialog(true)}
+            className="w-full bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg p-3 mb-4 transition-colors flex items-center justify-center gap-2 group"
+          >
+            <Info size={16} className="text-blue-600 group-hover:scale-110 transition-transform" />
+            <p className="text-sm text-blue-700 font-medium">Xem hướng dẫn cho giáo viên</p>
+          </button>
 
           {/* Success Message */}
           {createdSession && (
@@ -383,7 +379,7 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
             disabled={isActivating || !!createdSession || !vrLearningSessionId || isCreatingRoom}
           >
             <Play size={16} />
-            {isActivating ? 'Đang kích hoạt phiên học...' : createdSession ? 'Đã kích hoạt phiên học' : !vrLearningSessionId ? 'Đang tạo phòng...' : 'Kích hoạt phiên học VR'}
+            {isActivating ? 'Đang kích hoạt phiên học...' : createdSession ? 'Đã kích hoạt phiên học' : !vrLearningSessionId ? 'Đang tải...' : 'Kích hoạt phiên học VR'}
           </Button>
         </Card>
       </div>
@@ -392,59 +388,33 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
       <div className="col-span-1">
         <Card className="p-6 sticky top-0">
           {/* Duration */}
-          <div className="mb-6">
-            <Label className="text-sm font-medium mb-2 block">Duration</Label>
-            <Input
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-              placeholder="00:30:00"
-              className="font-mono text-sm"
-            />
-          </div>
-
-          {/* Start Time */}
           <div>
-            <Label className="text-sm font-medium mb-2 block">Start Time</Label>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  id="start-timer"
-                  value="timer"
-                  checked={startTimeType === "timer"}
-                  onChange={(e) => setStartTimeType(e.target.value)}
-                  className="w-4 h-4"
-                />
-                <label htmlFor="start-timer" className="text-sm text-neutral-700">
-                  Timer chọn giờ
-                </label>
-              </div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  id="start-now"
-                  value="now"
-                  checked={startTimeType === "now"}
-                  onChange={(e) => setStartTimeType(e.target.value)}
-                  className="w-4 h-4"
-                />
-                <label htmlFor="start-now" className="text-sm text-neutral-700">
-                  Now
-                </label>
-              </div>
-            </div>
-
-            {startTimeType === "timer" && (
-              <Input
-                type="time"
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-                className="mt-2"
-              />
-            )}
+            <Label className="text-sm font-medium mb-2 block">Thời lượng</Label>
+            <Select
+              value={durationMinutes.toString()}
+              onValueChange={(value) => setDurationMinutes(parseInt(value))}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="15">15 phút</SelectItem>
+                <SelectItem value="30">30 phút</SelectItem>
+                <SelectItem value="45">45 phút</SelectItem>
+                <SelectItem value="60">60 phút</SelectItem>
+                <SelectItem value="90">90 phút</SelectItem>
+                <SelectItem value="120">120 phút</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-neutral-500 mt-2">Thời gian bắt đầu: Ngay bây giờ</p>
           </div>
         </Card>
       </div>
+
+      <InstructionDialog
+        open={showInstructionDialog}
+        onOpenChange={setShowInstructionDialog}
+      />
     </div>
   )
 }
