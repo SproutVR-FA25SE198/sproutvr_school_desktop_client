@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { DeviceCard } from './device-card';
-import { MOCK_VR_LEARNING_SESSION } from '../services/mock-data';
 import type { VRDevice } from '../services/session.type';
 
 interface DeviceCarouselProps {
