@@ -1,4 +1,3 @@
-// src/core/routes/AppRouter.tsx
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { VrLessonDesignPage } from '../../features/vr-lessons/pages/VrLessonDesign';
 import VRDeviceList from '../../features/school-admin/vr-devices/pages/VRDeviceList';
@@ -31,11 +30,11 @@ export const AppRouter = () => (
       <Route element={<TeacherSideLayout />}>
         <Route path={routes.home} element={<LessonsPage />} />
         <Route path={routes.lessonDetails} element={<LessonDetailsPage />} />
-        <Route path={routes.vrSessionCreate} element={<CreateSessionPage />} />
         <Route path={routes.sessionList} element={<SessionListPage />} />
       </Route>
 
       <Route element={<TeacherDesignLayout />}>
+        <Route path={routes.vrSessionCreate} element={<CreateSessionPage />} />
         <Route path={routes.vrLessonDesign} element={<VrLessonDesignPage />} />
         <Route path={routes.learningSessionMonitoring} element={<MonitoringPage />} />
         <Route path={routes.lessonCreation} element={<LessonCreationPage />} />
