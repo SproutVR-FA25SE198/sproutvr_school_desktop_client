@@ -9,7 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import routes from '@/core/configs/routes';
 import { ConfirmDialog } from '@/features/learning-sessions/components/confirm-dialog';
 import { CREATE_SESSION_CONFIRMATION } from '@/features/learning-sessions/constants';
-import type { LessonRetrieve, VrLessonRetrieve } from '../services/lesson.service';
+import type { LessonRetrieve } from '../services/lesson.service';
+import type { VrLessonRetrieve } from '@/common/types/vr-lesson.type';
 
 interface VRLessonsListProps {
   vrLessons?: VrLessonRetrieve[];
@@ -37,11 +38,7 @@ export function VRLessonsList({ vrLessons, lesson }: VRLessonsListProps) {
     <div className='bg-white rounded-lg p-6'>
       <div className='flex items-center justify-between mb-0'>
         <h2 className='text-xl font-semibold text-neutral-900 mb-4'>Bài học VR ({vrLessons?.length || 0})</h2>
-        <Button
-          variant='secondary'
-          size='sm'
-          onClick={handleOpenVrClassroom}
-        >
+        <Button variant='secondary' size='sm' onClick={handleOpenVrClassroom}>
           <BookOpen /> Mở phòng học
         </Button>
         <Button variant='default' size='sm' onClick={() => navigate(routes.vrLessonDesign, { state: { lesson } })}>
@@ -82,8 +79,8 @@ export function VRLessonsList({ vrLessons, lesson }: VRLessonsListProps) {
         message={CREATE_SESSION_CONFIRMATION.message}
         question={CREATE_SESSION_CONFIRMATION.question}
         onConfirm={handleConfirmCreate}
-        confirmText="Tiếp tục"
-        cancelText="Hủy"
+        confirmText='Tiếp tục'
+        cancelText='Hủy'
       />
     </div>
   );

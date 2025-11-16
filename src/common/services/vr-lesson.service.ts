@@ -11,6 +11,8 @@ export const getVrLessonById = async (lessonId: string) => {
 };
 
 export const getAllVrLessons = async () => {
-  const result = await http.get<RetrieveAllResponse<VrLessonRetrieve>>(`/api/v1/authorized/vrlessons?isPaginated=false`);
+  const result = await http.get<RetrieveAllResponse<VrLessonRetrieve>>(
+    `/api/v1/authorized/vrlessons?isPaginated=false`,
+  );
   return result.data;
 };

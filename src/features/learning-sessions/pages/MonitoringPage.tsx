@@ -20,42 +20,42 @@ export default function MonitoringPage() {
   const location = useLocation();
   const params = useParams();
   const sessionId = params.id;
-  
+
   // Get room code and other data from location state or sessionStorage (fallback)
-  const locationState = location.state as { 
-    roomCode?: string
-    sessionId?: string
-    className?: string
-    vrLessonId?: string
+  const locationState = location.state as {
+    roomCode?: string;
+    sessionId?: string;
+    className?: string;
+    vrLessonId?: string;
   } | null;
-  
+
   // const session = useSelector((state: RootState) => state.monitoring.session);
-  const isLoading = useSelector((state: RootState) => state.monitoring.isLoading);
+  // const isLoading = useSelector((state: RootState) => state.monitoring.isLoading);
 
   // Use sessionId from params or state
-  const stateSessionId = locationState?.sessionId
+  const stateSessionId = locationState?.sessionId;
   const activeSessionId = sessionId || stateSessionId || 'a1b2c3d4-e5f6-7890-1234-567890abcdef';
-  
+
   // Try to get from location state first, then from sessionStorage
   const getSessionData = () => {
     if (locationState?.roomCode) {
-      return locationState
+      return locationState;
     }
     // Fallback to sessionStorage
     try {
-      const stored = sessionStorage.getItem(`session_${activeSessionId}`)
+      const stored = sessionStorage.getItem(`session_${activeSessionId}`);
       if (stored) {
-        return JSON.parse(stored)
+        return JSON.parse(stored);
       }
     } catch (e) {
-      console.error('Error reading sessionStorage:', e)
+      console.error('Error reading sessionStorage:', e);
     }
-    return null
-  }
-  
-  const sessionData = getSessionData()
-  const roomCode = locationState?.roomCode || sessionData?.roomCode
-  const className = locationState?.className || sessionData?.className
+    return null;
+  };
+
+  const sessionData = getSessionData();
+  const roomCode = locationState?.roomCode || sessionData?.roomCode;
+  const className = locationState?.className || sessionData?.className;
   const { data: vrLessons, isLoading: tasksLoading } = useGetVrLessonById(activeSessionId);
 
   // useEffect(() => {
@@ -63,7 +63,7 @@ export default function MonitoringPage() {
   //   const stopStream = subscribeToSessionStream(dispatch, activeSessionId);
   //   return () => stopStream(); // Gracefully close connection
   // }, [dispatch, activeSessionId]);
-  
+
   // Update mock session with data from state if available
   // Priority: location state > mock data
   const session = {
@@ -79,9 +79,9 @@ export default function MonitoringPage() {
   console.log('MonitoringPage - roomCode:', roomCode);
   console.log('MonitoringPage - session.room_code:', session.room_code);
 
-  if (isLoading) {
-    return <Loading isLoading />;
-  }
+  // if (isLoading) {
+  //   return <Loading isLoading />;
+  // }
 
   return <SessionMonitoringDashboard session={session} vrLessonDetails={vrLessons || ({} as VrLessonRetrieve)} />;
 }

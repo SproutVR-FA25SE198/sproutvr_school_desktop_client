@@ -1,8 +1,7 @@
 import type { RetrieveAllResponse, Status } from '@/common/types/common.type';
 import type { Lesson } from '@/common/types/lesson.type';
-import type { Map } from '@/common/types/map.type';
 import type { MasterSubject, Subject } from '@/common/types/subject.type';
-import type { VrLesson } from '@/common/types/vr-lesson.type';
+import type { VrLessonRetrieve } from '@/common/types/vr-lesson.type';
 import http from '@/common/utils/http';
 import { toFormData } from 'axios';
 
@@ -30,15 +29,6 @@ export interface LessonRetrieve
     firstName: string;
     lastName: string;
   };
-  createdAtUtc: string;
-  createdAtVietnam: string;
-}
-
-export interface VrLessonRetrieve
-  extends Pick<VrLesson, 'id' | 'name' | 'description' | 'presetJsonRelativeFilePath' | 'maxDuration'> {
-  status: Status;
-  map: Pick<Map, 'id' | 'name' | 'mapCode' | 'imageUrl'>;
-  lesson: Pick<Lesson, 'id' | 'name' | 'description'>;
   createdAtUtc: string;
   createdAtVietnam: string;
 }
