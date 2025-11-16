@@ -49,15 +49,17 @@ export async function createRoom(teacher_id: string, vr_lesson_id: string, class
 export async function activateRoom(
   vr_learning_session_id: string,
   vr_lesson_id: string,
-  start_time_at_utc: any,
+  room_duration_in_minutes: number,
   assigned_device_serials: Array<{ vr_device_serial_number: string; student_name: string }>,
 ) {
-  return window.electron.activateRoom({
+  const req = {
     vr_learning_session_id,
     vr_lesson_id,
-    start_time_at_utc,
+    room_duration_in_minutes,
     assigned_device_serials,
-  });
+  };
+  console.log('Activating room with request:', req);
+  return window.electron.activateRoom(req);
 }
 
 export async function cancelRoom(vr_learning_session_id: string) {

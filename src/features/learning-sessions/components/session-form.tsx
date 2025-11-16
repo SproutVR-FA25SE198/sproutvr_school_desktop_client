@@ -186,10 +186,10 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
       const startDate = new Date();
 
       // Convert to protobuf Timestamp format: { seconds, nanos }
-      const startTimeAtUtc = {
-        seconds: Math.floor(startDate.getTime() / 1000),
-        nanos: (startDate.getTime() % 1000) * 1000000,
-      };
+      // const roomDurationInMinutes = {
+      //   seconds: Math.floor(startDate.getTime() / 1000),
+      //   nanos: (startDate.getTime() % 1000) * 1000000,
+      // };
 
       // Prepare device assignments
       const assignedDeviceSerials = devices
@@ -199,11 +199,13 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
           student_name: d.studentName,
         }));
 
+      const roomDurationInMinutes = durationMinutes;
+
       // Activate room (room_code is returned here)
       const activateResponse = await activateRoom(
         vrLearningSessionId,
         selectedVrLessonId,
-        startTimeAtUtc,
+        roomDurationInMinutes,
         assignedDeviceSerials,
       );
       console.log('Room activated:', activateResponse);

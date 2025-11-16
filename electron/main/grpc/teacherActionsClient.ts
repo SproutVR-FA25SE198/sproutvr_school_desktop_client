@@ -41,7 +41,7 @@ export const createRoom = (teacher_id: string, vr_lesson_id: string, class_name:
 export const activateRoom = (req: {
   vr_learning_session_id: string;
   vr_lesson_id: string;
-  start_time_at_utc: any;
+  room_duration_in_minutes: number;
   assigned_device_serials: Array<{ vr_device_serial_number: string; student_name: string }>;
 }) => unaryCall('ActivateRoom', req);
 
