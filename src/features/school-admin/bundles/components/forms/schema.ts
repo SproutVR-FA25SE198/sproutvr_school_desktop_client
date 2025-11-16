@@ -5,7 +5,7 @@ export const activationSchema = z.object({
   activationKey: z
     .string()
     .min(1, 'Activation key is required.')
-    .regex(/^([A-Z0-9]{5}-){4}[A-Z0-9]{5}$/, 'Invalid activation key format.'),
+    .regex(/^([A-Z0-9]{5}-){4}[A-Z0-9]{5}$/, 'Mã kích hoạt không đúng định dạng'),
 });
 
 // Infer the TypeScript type from the schema

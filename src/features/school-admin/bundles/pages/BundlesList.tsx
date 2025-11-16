@@ -2,7 +2,7 @@
 
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/common/components/ui/card';
-import { DownloadCloud, Loader2, Search } from 'lucide-react';
+import { Loader2, Search } from 'lucide-react';
 import { useGetMyBundles } from '../hooks/useGetMyBundles';
 import type { BundlePayload } from '@/common/types/bundle.type';
 import { BundleCard } from '../components/bundle-card';
@@ -10,6 +10,7 @@ import routes from '@/core/configs/routes';
 import { useState } from 'react';
 import { Input } from '@/common/components/ui/input';
 import { ApkDownloadAlert } from '../components/apk-download-alert';
+import { ActivationDialog } from '../components/dialogs/activation-dialog';
 
 export default function MyBundlesPage() {
   const navigate = useNavigate();
@@ -58,7 +59,7 @@ export default function MyBundlesPage() {
     <div className="flex-1 overflow-y-auto px-8 pt-8 pb-24 bg-neutral-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
           <div>
             <h2 className="text-3xl font-bold text-neutral-900 mb-2">
               Danh Sách Học Liệu
@@ -68,16 +69,19 @@ export default function MyBundlesPage() {
             </p>
           </div>
 
-          {/* Add the Search Bar UI */}
-          <div className="relative w-full md:max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
-            <Input
-              type="text"
-              placeholder="Tìm theo mã đơn hàng..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
+          {/* Group search and activate button */}
+          <div className="flex items-center gap-2">
+            <div className="relative w-full md:max-w-sm">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
+              <Input
+                type="text"
+                placeholder="Tìm theo mã đơn hàng..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <ActivationDialog />
           </div>
         </div>
 
@@ -85,7 +89,7 @@ export default function MyBundlesPage() {
         <ApkDownloadAlert />
 
         {/* Bundles Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Map over the NEW filtered list */}
           {filteredBundles?.map((bundle) => (
             <BundleCard
