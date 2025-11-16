@@ -12,7 +12,7 @@ interface BundleCardProps {
 
 export function BundleCard({ bundle, onView }: BundleCardProps) {
   return (
-    <Card className="group relative overflow-hidden p-5 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+    <Card className="w-full group relative overflow-hidden p-5 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
       {/* Header */}
       <div className="mb-4">
         <div className="flex items-start justify-between">
