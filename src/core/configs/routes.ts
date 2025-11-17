@@ -24,6 +24,7 @@ const routes = {
   rsMapDetail: '/resources/maps/:id',
   rsLessonDetail: '/resources/lessons/:id',
   rsVrLessonDetail: '/resources/vrlessons/:id',
+  adminDashboard: '/admin-dashboard',
   logout: '/logout',
   notFound: '*',
 };
