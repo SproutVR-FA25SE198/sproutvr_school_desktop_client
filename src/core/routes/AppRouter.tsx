@@ -1,4 +1,3 @@
-// src/core/routes/AppRouter.tsx
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { VrLessonDesignPage } from '../../features/vr-lessons/pages/VrLessonDesign';
 import VRDeviceList from '../../features/school-admin/vr-devices/pages/VRDeviceList';
@@ -20,6 +19,7 @@ import SubjectDetail from '@/features/school-admin/resources/pages/SubjectDetail
 import MapDetail from '@/features/school-admin/resources/pages/MapDetail';
 import LessonDetail from '@/features/school-admin/resources/pages/LessonDetail';
 import VRLessonDetail from '@/features/school-admin/resources/pages/VRLessonDetail';
+import Dashboard from '@/features/school-admin/dashboard/pages/Dashboard';
 
 export const AppRouter = () => (
   <Router>
@@ -47,6 +47,7 @@ export const AppRouter = () => (
         <Route path={routes.rsMapDetail} element={<MapDetail />} />
         <Route path={routes.rsLessonDetail} element={<LessonDetail />} />
         <Route path={routes.rsVrLessonDetail} element={<VRLessonDetail />} />
+        <Route path={routes.adminDashboard} element={<Dashboard />} />
       </Route>
     </Routes>
   </Router>
