@@ -173,6 +173,27 @@ export default function Dashboard() {
     return arr.slice(0, 5);
   }, [lessons, masterSubjects]);
 
+  // Count of VRLessons per MasterSubject
+  const vrLessonsByMasterSubject = useMemo(() => {
+    const mapCounts = new Map<string, { name: string; count: number }>();
+    masterSubjects.forEach((ms) => {
+      mapCounts.set(ms.id, { name: ms.name, count: 0 });
+    });
+    vrLessons.forEach((v) => {
+      const lessonId = v.lesson.id;
+      if (!lessonId) return;
+      const lessonRef = lessons.find(l => l.id === lessonId);
+      if(!lessonRef) return;
+      const msId = lessonRef.masterSubject.id;
+      const existing = mapCounts.get(msId);
+      if (existing) existing.count++;
+      else mapCounts.set(msId, { name: lessonRef.masterSubject?.name ?? "Không xác định", count: 1 });
+    });
+    const arr = Array.from(mapCounts.values()).sort((a, b) => b.count - a.count);
+    // Limit to top 5 for readability
+    return arr.slice(0, 5);
+  }, [vrLessons, lessons, masterSubjects])
+
   // Recent Lessons created
   const recentLessons = useMemo(() => {
     return [...lessons]
@@ -207,42 +228,23 @@ export default function Dashboard() {
       </div>
 
       {/* Pie charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div>
         {/* Pie chart: MasterSubjects count by Status */}
-        <StatusPieCard 
-          title="Tỉ lệ bộ môn theo trạng thái"
-          data={msStatusData} 
-        />
-
-        {/* Pie chart: Subjects count by Status */}
-        <StatusPieCard 
-          title="Tỉ lệ môn học theo trạng thái"
-          data={subjectsStatusData} 
-        />
-
-        {/* Pie chart: Maps count by Status */}
-        <StatusPieCard 
-          title="Tỉ lệ học liệu VR theo trạng thái"
-          data={mapsStatusData} 
-        />
-
-        {/* Pie chart: Lessons count by Status */}
-        <StatusPieCard 
-          title="Tỉ lệ bài giảng theo trạng thái"
-          data={lessonsStatusData} 
-        />
-
-        {/* Pie chart: VRLessons count by Status */}
-        <StatusPieCard 
-          title="Tỉ lệ bài học VR theo trạng thái"
-          data={vrStatusData} 
+        <StatusPieCard
+          datasets={{
+            masterSubjects: msStatusData,
+            subjects: subjectsStatusData,
+            maps: mapsStatusData,
+            lessons: lessonsStatusData,
+            vrLessons: vrStatusData,
+          }}
         />
       </div>
 
       {/* Bar charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Bar chart: Lessons count by MasterSubject */}
-        <Card className="p-4 lg:col-span-2">
+        <Card className="p-4">
           <h3 className="text-lg font-semibold mb-2">Số lượng bài giảng theo bộ môn</h3>
           <div style={{ height: 240 }}>
             <ResponsiveContainer>
@@ -259,6 +261,21 @@ export default function Dashboard() {
         </Card>
 
         {/* Bar chart: VRLessons count by MasterSubject */}
+        <Card className="p-4">
+          <h3 className="text-lg font-semibold mb-2">Số lượng bài học VR theo bộ môn</h3>
+          <div style={{ height: 240 }}>
+            <ResponsiveContainer>
+              <BarChart data={vrLessonsByMasterSubject} layout="horizontal" margin={{ left: 10 }}>
+                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                <YAxis allowDecimals={false} />
+                <ReTooltip />
+                <Legend />
+                <Bar dataKey="count" name="Số lượng" fill="#b592f6ff" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="mt-3 text-sm text-neutral-600">Hiển thị top {vrLessonsByMasterSubject.length}</div>
+        </Card>
       </div>
       
       {/* Recent resources tables */}
