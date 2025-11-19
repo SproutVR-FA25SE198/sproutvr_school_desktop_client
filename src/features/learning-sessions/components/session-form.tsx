@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Plus, Play, CheckCircle2, Info } from 'lucide-react';
 import { Label } from '@/common/components/ui/label';
 import { Input } from '@/common/components/ui/input';
@@ -11,15 +11,17 @@ import { Card } from '@/common/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/common/components/ui/select';
 import { DeviceAssignmentRow } from './device-assignment-row';
 import { InstructionDialog } from './instruction-dialog';
-import { getAllVrLessons, GET_ALL_VR_LESSONS_QUERY_KEY } from '@/common/services/vr-lesson.service';
-import { getVrLessonList, GET_VR_LESSON_LIST_QUERY__KEY } from '@/features/lessons/services/lesson.service';
 import { fetchVRDevices } from '@/features/school-admin/vr-devices/services/vr-device.service';
 import { VRDeviceStatus } from '@/features/school-admin/vr-devices/types/device.types';
-import { createRoom, activateRoom } from '@/core/ipc/grpc';
+import { activateRoom } from '@/core/ipc/grpc';
 import routes from '@/core/configs/routes';
 import { MAX_DEVICES } from '@/features/learning-sessions/constants';
 import type { VRDeviceDisplay } from '@/features/school-admin/vr-devices/types/device.types';
 import type { VrLessonRetrieve } from '@/common/types/vr-lesson.type';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSessionTimes } from '../store/sessionSlice';
+import { HHMMSSToDuration } from '@/common/utils/duration-converter';
+import Loading from '@/common/components/loading';
 
 interface DeviceAssignment {
   id: string;
@@ -31,37 +33,28 @@ interface DeviceAssignment {
 interface SessionFormProps {
   vrLesson?: VrLessonRetrieve;
   lessonId?: string; // Filter VR lessons by lessonId if provided
+  classroomNumber?: string;
+  classroomLetter?: string;
 }
 
-export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionFormProps) {
+export function SessionForm({
+  vrLesson: initialVrLesson,
+  classroomNumber: initialClassroomNumber = '',
+  classroomLetter: initialClassroomLetter = '',
+}: SessionFormProps) {
   const navigate = useNavigate();
-  const [classroomNumber, setClassroomNumber] = useState('');
-  const [classroomLetter, setClassroomLetter] = useState('');
   const [selectedVrLessonId, setSelectedVrLessonId] = useState<string>(initialVrLesson?.id || '');
   const [devices, setDevices] = useState<DeviceAssignment[]>([]);
-  const [durationMinutes, setDurationMinutes] = useState<number>(30);
-  const [isCreatingRoom, setIsCreatingRoom] = useState(false);
+  const mapDuration = HHMMSSToDuration(initialVrLesson?.maxDuration || '00:30:00').minutes;
+  const [durationMinutes, setDurationMinutes] = useState<number>(mapDuration + 15);
   const [isActivating, setIsActivating] = useState(false);
-  const [vrLearningSessionId, setVrLearningSessionId] = useState<string | null>(null);
+  const vrLearningSessionId = useSelector((state: any) => state.session.vrLearningSessionId);
   const [createdSession, setCreatedSession] = useState<{ sessionId: string; roomCode: string } | null>(null);
   const [showInstructionDialog, setShowInstructionDialog] = useState(false);
-  const [selectedVrLesson, setSelectedVrLesson] = useState<VrLessonRetrieve | null>(null);
 
-  // Hardcoded teacher ID - should be from auth context in production
-  const teacherId = '0199f4b1-8487-4352-8a2a-320a00e40e58';
+  const dispatch = useDispatch();
 
-  // Fetch VR lessons - filter by lessonId if provided, otherwise get all
-  const { data: vrLessonsData } = useQuery({
-    queryKey: lessonId ? [GET_VR_LESSON_LIST_QUERY__KEY, lessonId] : [GET_ALL_VR_LESSONS_QUERY_KEY],
-    queryFn: async () => {
-      if (lessonId) {
-        return await getVrLessonList(lessonId);
-      }
-      return await getAllVrLessons();
-    },
-    enabled: !initialVrLesson, // Only fetch if no initial VR lesson
-    refetchOnWindowFocus: false,
-  });
+  const className = `${initialClassroomNumber}${initialClassroomLetter ? ' ' + initialClassroomLetter : ''}`.trim();
 
   // Fetch active VR devices
   const { data: vrDevicesData } = useQuery({
@@ -74,59 +67,7 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
     refetchOnWindowFocus: false,
   });
 
-  // Handle different response structures
-  const vrLessons = lessonId
-    ? vrLessonsData?.items || [] // getVrLessonList returns { items: [...] }
-    : vrLessonsData?.items || []; // getAllVrLessons also returns { items: [...] }
   const activeDevices = vrDevicesData?.items || [];
-
-  // Create room when component mounts with a VR lesson, or when VR lesson is selected
-  const { mutate: createRoomMutation } = useMutation({
-    mutationFn: async ({ vrLessonId, className }: { vrLessonId: string; className: string }) => {
-      return await createRoom(teacherId, vrLessonId, className);
-    },
-    onSuccess: (response) => {
-      console.log('Room created:', response);
-      setVrLearningSessionId(response.vr_learning_session_id);
-      setIsCreatingRoom(false);
-    },
-    onError: (error: any) => {
-      console.error('Create room error:', error);
-      alert(`Lỗi khi tạo phòng: ${error?.message || 'Unknown error'}`);
-      setIsCreatingRoom(false);
-    },
-  });
-
-  // Auto-create room when VR lesson is available and class name is provided
-  useEffect(() => {
-    if (selectedVrLessonId && !vrLearningSessionId && !isCreatingRoom) {
-      const className = `${classroomNumber}${classroomLetter ? ' ' + classroomLetter : ''}`.trim();
-      setSelectedVrLesson(vrLessonsData?.items?.find((lesson) => lesson.id === selectedVrLessonId) || null);
-      // Only create room if class name is provided
-      if (className) {
-        setIsCreatingRoom(true);
-        createRoomMutation({ vrLessonId: selectedVrLessonId, className });
-      }
-    }
-  }, [selectedVrLessonId, classroomNumber, classroomLetter, vrLearningSessionId, isCreatingRoom]);
-
-  // Handle classroom number input - only numbers
-  const handleClassroomNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
-    if (value === '') {
-      setClassroomNumber(value);
-    }
-    if (Number(value) <= 12) {
-      setClassroomNumber(value);
-    } else setClassroomNumber('12');
-  };
-
-  // Handle classroom letter input - allow Vietnamese and alphanumeric, no special chars
-  const handleClassroomLetterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Allow letters (including Vietnamese), numbers, and spaces, remove special characters
-    const value = e.target.value.replace(/[^a-zA-Z0-9\u00C0-\u1EF9\s]/g, '');
-    setClassroomLetter(value);
-  };
 
   const getAvailableDevices = (currentRowId: string): VRDeviceDisplay[] => {
     const selectedSerialNumbers = devices
@@ -162,12 +103,7 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
     );
   };
 
-  const classroomName = `${classroomNumber}${classroomLetter ? ' ' + classroomLetter : ''}`.trim();
-  const isFormValid =
-    classroomNumber.trim() &&
-    selectedVrLessonId &&
-    devices.length > 0 &&
-    devices.every((d) => d.serialNumber && d.studentName);
+  const isFormValid = devices.length > 0 && devices.every((d) => d.serialNumber && d.studentName);
 
   const handleSubmit = async () => {
     if (!isFormValid) {
@@ -183,13 +119,6 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
     setIsActivating(true);
     try {
       // Use current time as start time and convert to protobuf Timestamp format
-      const startDate = new Date();
-
-      // Convert to protobuf Timestamp format: { seconds, nanos }
-      // const roomDurationInMinutes = {
-      //   seconds: Math.floor(startDate.getTime() / 1000),
-      //   nanos: (startDate.getTime() % 1000) * 1000000,
-      // };
 
       // Prepare device assignments
       const assignedDeviceSerials = devices
@@ -212,6 +141,13 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
 
       const roomCode = activateResponse.room_code;
 
+      dispatch(
+        setSessionTimes({
+          start_time_at_utc: activateResponse.start_time_at_utc,
+          end_time_at_utc: activateResponse.end_time_at_utc,
+        }),
+      );
+
       // Show success with room code
       setCreatedSession({ sessionId: vrLearningSessionId, roomCode });
 
@@ -219,7 +155,7 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
       const sessionData = {
         roomCode,
         sessionId: vrLearningSessionId,
-        className: classroomName,
+        className: className,
         vrLessonId: selectedVrLessonId,
       };
       sessionStorage.setItem(`session_${vrLearningSessionId}`, JSON.stringify(sessionData));
@@ -228,14 +164,6 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
       navigate(routes.learningSessionMonitoring.replace(':id', vrLearningSessionId), {
         state: sessionData,
       });
-
-      // Show desktop notification or alert
-      if (window.electron?.showNotification) {
-        window.electron.showNotification({
-          title: 'Phiên học đã được kích hoạt thành công',
-          body: `Mã phòng: ${roomCode}`,
-        });
-      }
     } catch (err: any) {
       console.error('Activate room error:', err);
       alert(`Lỗi khi kích hoạt phiên học: ${err?.message || 'Unknown error'}`);
@@ -244,65 +172,45 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
     }
   };
 
+  if (isActivating) {
+    return <Loading isLoading={isActivating} />;
+  }
+
   return (
     <div className='grid grid-cols-4 gap-6'>
       {/* Main Form - 3 columns */}
       <div className='col-span-3'>
         <Card className='p-4'>
-          {/* VR Lesson Selection */}
-          <div className='mb-4'>
-            <Label className='text-sm font-medium mb-1.5 block'>Bài học VR</Label>
-            {initialVrLesson ? (
-              <Input value={initialVrLesson.name} readOnly className='w-full bg-neutral-100' />
-            ) : (
-              <Select value={selectedVrLessonId} onValueChange={setSelectedVrLessonId} disabled={!!vrLearningSessionId}>
-                <SelectTrigger className='w-full'>
-                  <SelectValue placeholder='Chọn bài học VR' />
-                </SelectTrigger>
-                <SelectContent>
-                  {vrLessons.length > 0 ? (
-                    vrLessons.map((vrLesson) => (
-                      <SelectItem key={vrLesson.id} value={vrLesson.id}>
-                        {vrLesson.name}
-                      </SelectItem>
-                    ))
-                  ) : (
-                    <div className='px-2 py-1.5 text-sm text-neutral-500'>Không có bài học VR nào</div>
-                  )}
-                </SelectContent>
-              </Select>
-            )}
-            {isCreatingRoom && <p className='text-xs text-blue-600 mt-1'>Kích hoạt phiên học VR</p>}
-            {vrLearningSessionId && (
-              <p className='text-xs text-green-600 mt-1'>ID: {vrLearningSessionId.slice(0, 8)}...</p>
-            )}
-          </div>
+          <div className='flex flex-row gap-4'>
+            {/* VR Lesson Selection */}
+            <div className='mb-4 flex-1'>
+              <Label className='text-sm font-medium mb-1.5 block'>Bài học VR</Label>
+              {initialVrLesson ? (
+                <Input value={initialVrLesson.name} readOnly className='w-full bg-neutral-100' />
+              ) : (
+                <Select
+                  value={selectedVrLessonId}
+                  onValueChange={setSelectedVrLessonId}
+                  disabled={!!vrLearningSessionId}
+                >
+                  <SelectTrigger className='w-full'>
+                    <SelectValue placeholder='Chọn bài học VR' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem key={selectedVrLessonId} value={selectedVrLessonId}>
+                      {initialVrLesson ? (initialVrLesson as VrLessonRetrieve).name : ''}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
 
-          {/* Classroom Name - Split into 2 fields */}
-          <div className='mb-4'>
-            <Label className='text-sm font-medium mb-1.5 block'>Lớp học</Label>
-            <div className='flex gap-2'>
-              <div className='flex-1'>
-                <Input
-                  placeholder='10, 11, 12...'
-                  value={classroomNumber}
-                  onChange={handleClassroomNumberChange}
-                  className='w-full'
-                  type='text'
-                  inputMode='numeric'
-                />
-              </div>
-              <div className='flex-1'>
-                <Input
-                  placeholder='1, 2, A, B...'
-                  value={classroomLetter}
-                  onChange={handleClassroomLetterChange}
-                  className='w-full'
-                />
-              </div>
+            {/* Classroom Name - Split into 2 fields */}
+            <div className='mb-4 flex-1'>
+              <Label className='text-sm font-medium mb-1.5 block'>Lớp học</Label>
+              <Input value={className} readOnly className='w-full bg-neutral-100' />
             </div>
           </div>
-
           {/* Device Assignments */}
           <div className='mb-4'>
             <div className='flex items-center justify-between mb-2'>
@@ -373,7 +281,7 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
             variant={'secondary'}
             className='w-full gap-2'
             onClick={handleSubmit}
-            disabled={isActivating || !!createdSession || !vrLearningSessionId || isCreatingRoom}
+            disabled={isActivating || !!createdSession || !vrLearningSessionId}
           >
             <Play size={16} />
             {isActivating
@@ -390,21 +298,35 @@ export function SessionForm({ vrLesson: initialVrLesson, lessonId }: SessionForm
       {/* Right Sidebar - 1 column */}
       <div className='col-span-1'>
         <Card className='p-6 sticky top-0'>
+          <div className='mb-6'>
+            <Label className='text-sm font-medium mb-2 block'>Thời lượng bài học</Label>
+            <Input value={`${mapDuration} phút`} readOnly className='w-full bg-neutral-100' />
+          </div>
           {/* Duration */}
           <div>
-            <Label className='text-sm font-medium mb-2 block'>Thời lượng</Label>
+            <Label className='text-sm font-medium mb-2 block'>Thời lượng phòng học</Label>
             <Select value={durationMinutes.toString()} onValueChange={(value) => setDurationMinutes(parseInt(value))}>
               <SelectTrigger className='w-full'>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
+                {Array.from({ length: 4 }).map((_, index) => {
+                  const minuteOption = mapDuration + (index + 1) * 15;
+                  return (
+                    <SelectItem key={minuteOption} value={minuteOption.toString()}>
+                      {minuteOption} phút
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+              {/* <SelectContent>
                 <SelectItem value='15'>{selectedVrLesson?.maxDuration}</SelectItem>
                 <SelectItem value='30'>30 phút</SelectItem>
                 <SelectItem value='45'>45 phút</SelectItem>
                 <SelectItem value='60'>60 phút</SelectItem>
                 <SelectItem value='90'>90 phút</SelectItem>
                 <SelectItem value='120'>120 phút</SelectItem>
-              </SelectContent>
+              </SelectContent> */}
             </Select>
             <p className='text-xs text-neutral-500 mt-2'>Thời gian bắt đầu: Ngay bây giờ</p>
           </div>
