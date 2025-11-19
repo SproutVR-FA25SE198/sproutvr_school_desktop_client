@@ -7,7 +7,7 @@ import type { MasterSubject } from "../types/master-subject.types";
 import routes from "@/core/configs/routes";
 import { formatDateOnly } from "@/common/utils/date-time-vn-converter";
 
-interface MasterSubjectRowProps extends MasterSubject {}
+interface MasterSubjectRowProps extends MasterSubject { }
 
 export function MasterSubjectRow({
   id,

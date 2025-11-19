@@ -19,6 +19,9 @@ import SubjectDetail from '@/features/school-admin/resources/pages/SubjectDetail
 import MapDetail from '@/features/school-admin/resources/pages/MapDetail';
 import LessonDetail from '@/features/school-admin/resources/pages/LessonDetail';
 import VRLessonDetail from '@/features/school-admin/resources/pages/VRLessonDetail';
+import CreateSessionPage from '@/features/learning-sessions/pages/CreateSessionPage';
+import MonitoringPage from '@/features/learning-sessions/pages/MonitoringPage';
+import SessionListPage from '@/features/learning-sessions/pages/SessionListPage';
 import Dashboard from '@/features/school-admin/dashboard/pages/Dashboard';
 
 export const AppRouter = () => (
@@ -27,10 +30,13 @@ export const AppRouter = () => (
       <Route element={<TeacherSideLayout />}>
         <Route path={routes.home} element={<LessonsPage />} />
         <Route path={routes.lessonDetails} element={<LessonDetailsPage />} />
+        <Route path={routes.sessionList} element={<SessionListPage />} />
       </Route>
 
       <Route element={<TeacherDesignLayout />}>
+        <Route path={routes.vrSessionCreate} element={<CreateSessionPage />} />
         <Route path={routes.vrLessonDesign} element={<VrLessonDesignPage />} />
+        <Route path={routes.learningSessionMonitoring} element={<MonitoringPage />} />
         <Route path={routes.lessonCreation} element={<LessonCreationPage />} />
       </Route>
 

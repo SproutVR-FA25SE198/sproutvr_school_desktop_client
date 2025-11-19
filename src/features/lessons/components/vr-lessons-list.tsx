@@ -1,12 +1,15 @@
 'use client';
 
+import { useState } from 'react';
 import { usePagination } from '@/common/hooks/usePagination';
 import Pagination from '@/common/components/pagination';
 import { Button } from '@/common/components/ui/button';
 import { BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import routes from '@/core/configs/routes';
-import type { LessonRetrieve, VrLessonRetrieve } from '../services/lesson.service';
+import type { LessonRetrieve } from '../services/lesson.service';
+import type { VrLessonRetrieve } from '@/common/types/vr-lesson.type';
+import { CreateVrLessonDialog } from './create-vr-lesson-dialog';
 
 interface VRLessonsListProps {
   vrLessons?: VrLessonRetrieve[];
@@ -15,6 +18,22 @@ interface VRLessonsListProps {
 
 export function VRLessonsList({ vrLessons, lesson }: VRLessonsListProps) {
   const navigate = useNavigate();
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+
+  const handleOpenVrClassroom = () => {
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmCreate = (
+    vrLessonId: string,
+    vrLesson: VrLessonRetrieve,
+    classroomNumber: string,
+    classroomLetter: string,
+  ) => {
+    navigate(routes.vrSessionCreate, {
+      state: { lessonId: vrLessonId, vrLesson, classroomNumber, classroomLetter },
+    });
+  };
 
   const itemsPerView = 3;
   const { currentData, currentPage, setPage, totalPages } = usePagination(vrLessons || [], itemsPerView);
@@ -23,9 +42,16 @@ export function VRLessonsList({ vrLessons, lesson }: VRLessonsListProps) {
     <div className='bg-white rounded-lg p-6'>
       <div className='flex items-center justify-between mb-0'>
         <h2 className='text-xl font-semibold text-neutral-900 mb-4'>Bài học VR ({vrLessons?.length || 0})</h2>
-        <Button variant='secondary' size='sm' onClick={() => navigate(routes.vrLessonDesign, { state: { lesson } })}>
-          <BookOpen /> Tạo bài học VR
-        </Button>
+        <div className='flex gap-2'>
+          {vrLessons && vrLessons.length > 0 && (
+            <Button variant='secondary' size='sm' onClick={handleOpenVrClassroom}>
+              <BookOpen /> Mở phòng học VR
+            </Button>
+          )}
+          <Button variant='default' size='sm' onClick={() => navigate(routes.vrLessonDesign, { state: { lesson } })}>
+            <BookOpen /> Tạo bài học VR
+          </Button>
+        </div>
       </div>
       <div className='flex items-center mb-6'>
         <div className={`flex gap-8 transition-transform duration-300 ${currentData.length === 0 ? 'm-auto' : ''}`}>
@@ -53,6 +79,15 @@ export function VRLessonsList({ vrLessons, lesson }: VRLessonsListProps) {
         </div>
       </div>
       <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
+
+      <CreateVrLessonDialog
+        open={showConfirmDialog}
+        vrLessons={vrLessons || ({} as VrLessonRetrieve[])}
+        onOpenChange={setShowConfirmDialog}
+        onConfirm={handleConfirmCreate}
+        confirmText='Tiếp tục'
+        cancelText='Hủy'
+      />
     </div>
   );
 }

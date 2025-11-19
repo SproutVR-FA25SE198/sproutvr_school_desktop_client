@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import routes from '@/core/configs/routes';
 
 interface NavItem {
   label: string;
@@ -10,10 +11,10 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: 'Dashboard', href: '/dashboard', icon: '📊' },
-  { label: 'Lessons', href: '/', icon: '📚' },
-  { label: 'Sessions', href: '/sessions', icon: '▶️' },
-  { label: 'VR Devices', href: '/vr-devices', icon: '🖥️' },
-  { label: 'Accounts', href: '/accounts', icon: '👥' },
+  { label: 'Lessons', href: routes.home, icon: '📚' },
+  { label: 'Sessions', href: routes.sessionList, icon: '▶️' },
+  { label: 'VR Devices', href: routes.vrDevices, icon: '🖥️' },
+  { label: 'Accounts', href: routes.accounts, icon: '👥' },
   { label: 'Reports', href: '/reports', icon: '📈' },
 ];
 
@@ -22,9 +23,8 @@ export function Sidebar() {
 
   return (
     <aside
-      className={`${
-        isOpen ? 'w-64' : 'w-20'
-      } bg-primary text-white transition-all duration-300 flex flex-col h-screen shadow-lg`}
+      className={`${isOpen ? 'w-64' : 'w-20'
+        } bg-primary text-white transition-all duration-300 flex flex-col h-screen shadow-lg`}
     >
       {/* Logo */}
       <div className='p-6 border-b border-primary-light flex items-center justify-between'>

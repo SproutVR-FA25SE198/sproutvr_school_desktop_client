@@ -73,7 +73,7 @@ export interface VrLessonRetrieve {
   map: MapGeneralRetrieve;
   name: string;
   description: string;
-  duration: string; // format: "HH:mm:ss"
+  maxDuration: string; // format: "HH:mm:ss"
   presetJsonRelativeFilePath: string;
   status: Status;
   tasks: VrTaskRetrieve[];
