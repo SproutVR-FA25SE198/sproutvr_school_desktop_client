@@ -11,7 +11,6 @@ import TeacherDesignLayout from '../layouts/teacher-side/teacher-design-layout';
 import LessonDetailsPage from '@/features/lessons/pages/LessonDetails';
 import LessonsPage from '@/features/lessons/pages/LessonList';
 import AdminSideLayout from '../layouts/admin-side/admin-side-layout';
-import ActivationPage from '@/features/school-admin/bundles/pages/KeyValidation';
 import MyBundlesPage from '@/features/school-admin/bundles/pages/BundlesList';
 import BundleDetailsPage from '@/features/school-admin/bundles/pages/BundleDetails';
 import ResourcesPage from '@/features/school-admin/resources/pages/ResourcesPage';
@@ -23,6 +22,7 @@ import VRLessonDetail from '@/features/school-admin/resources/pages/VRLessonDeta
 import CreateSessionPage from '@/features/learning-sessions/pages/CreateSessionPage';
 import MonitoringPage from '@/features/learning-sessions/pages/MonitoringPage';
 import SessionListPage from '@/features/learning-sessions/pages/SessionListPage';
+import Dashboard from '@/features/school-admin/dashboard/pages/Dashboard';
 
 export const AppRouter = () => (
   <Router>
@@ -43,7 +43,6 @@ export const AppRouter = () => (
       <Route element={<AdminSideLayout />}>
         <Route path={routes.vrDevices} element={<VRDeviceList />} />
         <Route path={routes.vrDeviceDetail} element={<VRDeviceDetail />} />
-        <Route path={routes.activation} element={<ActivationPage />} />
         <Route path={routes.myBundles} element={<MyBundlesPage />} />
         <Route path={routes.bundleImport} element={<BundleDetailsPage />} />
         <Route path={routes.accounts} element={<AccountList />} />
@@ -54,6 +53,7 @@ export const AppRouter = () => (
         <Route path={routes.rsMapDetail} element={<MapDetail />} />
         <Route path={routes.rsLessonDetail} element={<LessonDetail />} />
         <Route path={routes.rsVrLessonDetail} element={<VRLessonDetail />} />
+        <Route path={routes.adminDashboard} element={<Dashboard />} />
       </Route>
     </Routes>
   </Router>

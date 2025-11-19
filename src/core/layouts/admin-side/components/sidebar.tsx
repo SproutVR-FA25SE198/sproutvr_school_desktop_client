@@ -11,11 +11,10 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { label: 'Dashboard', href: '/dashboard', icon: '📊' },
+  { label: 'Thống kê', href: routes.adminDashboard, icon: '📊' },
   { label: 'Quản lý tài nguyên', href: routes.resources, icon: '📚' },
   { label: 'Quản lý thiết bị', href: routes.vrDevices, icon: '🖥️' },
   { label: 'Quản lý tài khoản', href: routes.accounts, icon: '👥' },
-  { label: 'Kích Hoạt Gói', href: routes.activation, icon: '🔑' },
   { label: 'Gói Học Liệu', href: routes.myBundles, icon: '📦' },
 ];
 
