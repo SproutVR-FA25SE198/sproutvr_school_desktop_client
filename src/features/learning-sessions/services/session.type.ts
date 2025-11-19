@@ -3,6 +3,8 @@ export interface VRLearningSession {
   class_name: string;
   room_code: string;
   duration_in_seconds: number;
+  start_time_at_utc: string;
+  end_time_at_utc: string;
   status: string;
   teacher: TeacherInfo;
   vrlesson: VRLessonInfo;
