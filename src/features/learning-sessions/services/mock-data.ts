@@ -5,6 +5,8 @@ export const MOCK_VR_LEARNING_SESSION: VRLearningSession = {
   class_name: 'Lớp 12 Học Vui Banh Chành',
   room_code: 'IG9KDN',
   duration_in_seconds: 1800,
+  start_time_at_utc: '2025-11-13T02:00:00Z',
+  end_time_at_utc: '2025-11-13T02:30:00Z',
   status: 'Active',
   teacher: {
     teacher_id: '0199f4b1-8487-4352-8a2a-320a00e40e58',
