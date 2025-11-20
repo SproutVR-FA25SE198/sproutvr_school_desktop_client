@@ -12,6 +12,7 @@ import { useMutation } from '@tanstack/react-query';
 import { createLesson, type LessonCreationPayload } from '../services/lesson.service';
 import { useNavigate } from 'react-router-dom';
 import routes from '@/core/configs/routes';
+import useGetLessons from '../hooks/useGetLessons';
 
 export default function LessonCreationPage() {
   const {
@@ -23,6 +24,9 @@ export default function LessonCreationPage() {
   const navigate = useNavigate();
 
   const { data: subjects, isLoading: isSubjectsLoading, isError: isSubjectsError } = useGetSubjects();
+  const { refetch: refetchLessons } = useGetLessons({
+    params: { pageIndex: 1, pageSize: 50, sortBy: 'nameAsc', subjectId: '' },
+  });
 
   const { mutate: createLessonMutation, isPending } = useMutation({
     mutationFn: async (data: LessonCreationPayload) => await createLesson(data),
@@ -50,6 +54,7 @@ export default function LessonCreationPage() {
     };
 
     createLessonMutation(payload);
+    refetchLessons();
     // Here you would typically send the data to your backend
     // Then navigate to a success page or lessons list
   };
@@ -57,7 +62,7 @@ export default function LessonCreationPage() {
   if (isLoading) return <Loading isLoading />;
 
   return (
-    <div className='mx-auto container w-full space-y-6 p-8'>
+    <div className='mx-auto container w-full space-y-6 p-8 mt-16'>
       {/* Header */}
       <div className='flex items-center gap-4'>
         <Button variant='ghost' size='icon' onClick={handleBack} className='rounded-full bg-white shadow-sm'>

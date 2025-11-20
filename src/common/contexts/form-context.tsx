@@ -206,7 +206,7 @@ export function FormProvider({ children }: { children: ReactNode }) {
       {
         onSuccess: () => {
           alert('Hoàn tất tạo bài học VR!');
-          navigate(routes.home);
+          window.location.href = routes.home;
         },
       },
     );
