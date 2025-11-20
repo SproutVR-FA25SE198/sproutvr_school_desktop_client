@@ -46,7 +46,7 @@ export function CancelRoomButton({ vrLearningSessionId, vrLessionId }: CancelRoo
         disabled={loading}
         className='bg-transparent border-1 border-destructive text-destructive hover:cursor-pointer hover:text-white'
       >
-        {loading ? 'Cancelling...' : 'Cancel Room'}
+        {loading ? 'Đang kết thúc...' : 'Kết thúc phiên học'}
       </Button>
       <ConfirmDialog
         open={isConfirmOpen}

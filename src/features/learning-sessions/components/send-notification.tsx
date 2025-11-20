@@ -32,7 +32,9 @@ export function SendNotification({ vrLessonId }: SendNotificationProps) {
       await sendNotification(vrLessonId, { text: notification, severity });
       error && setError(null);
       // Response contains: { vr_learning_session_id }
-      alert('Gửi ' + (severity === 'WARNING' ? ' cảnh báo ' : ' thông báo ') + ' thành công!');
+      alert('Gửi' + (severity === 'WARNING' ? ' cảnh báo ' : ' thông báo ') + 'thành công!');
+      setNotification('');
+      setSeverity(NotificationSeverity[0].value);
     } catch (err: any) {
       console.error('CreateRoom error', err);
       alert('Error: ' + err.message);
