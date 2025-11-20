@@ -47,5 +47,5 @@ export const activateRoom = (req: {
 
 export const cancelRoom = (vr_learning_session_id: string) => unaryCall('CancelRoom', { vr_learning_session_id });
 
-export const sendNotification = (vr_learning_session_id: string, notification: { text: string; severity: number }) =>
+export const sendNotification = (vr_learning_session_id: string, notification: { text: string; severity: string }) =>
   unaryCall('SendNotification', { vr_learning_session_id, notification });
