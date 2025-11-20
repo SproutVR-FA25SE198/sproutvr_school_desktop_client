@@ -1,23 +1,28 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { VRLearningSession } from '../services/session.type';
+import type { VRDevice, VRLearningSession } from '../services/session.type';
 
-interface RoomStateEvent extends VRLearningSession {}
-
-interface VrMessage {
-  // Define your VR message structure
-  device_serial?: string;
-  data?: any;
-  // Add other fields from your proto
+// This is the shape of one streaming event (from gRPC)
+export interface RoomStateEvent {
+  type: string; // "device_joined", "task_updated", etc.
+  data: any; // payload varies
+  vr_learning_session_id: string;
 }
 
-interface GrpcState {
-  roomStateEvents: RoomStateEvent[];
-  vrMessages: VrMessage[];
+export interface VrMessage {
+  type: string;
+  data: any;
+}
+
+interface MonitoringState {
+  roomState: VRLearningSession | null; // <--- full room state
+  roomStateEvents: RoomStateEvent[]; // <--- raw event logs
+  vrMessages: VrMessage[]; // <--- VR device stream logs
   isConnected: boolean;
   error: string | null;
 }
 
-const initialState: GrpcState = {
+const initialState: MonitoringState = {
+  roomState: null,
   roomStateEvents: [],
   vrMessages: [],
   isConnected: false,
@@ -28,31 +33,107 @@ const monitoringSlice = createSlice({
   name: 'monitoring',
   initialState,
   reducers: {
+    // --------------------------------------------
+    // STORE FULL SNAPSHOT (GetRoomState)
+    // --------------------------------------------
+    setRoomState(state, action: PayloadAction<VRLearningSession>) {
+      state.roomState = action.payload;
+    },
+
+    // --------------------------------------------
+    // STORE RAW TEACHER STREAM EVENTS
+    // --------------------------------------------
     teacherRoomUpdated(state, action: PayloadAction<RoomStateEvent>) {
       state.roomStateEvents.push(action.payload);
-      state.isConnected = true;
-      state.error = null;
     },
+
+    // --------------------------------------------
+    // STORE RAW VR STREAM EVENTS
+    // --------------------------------------------
     vrStreamUpdated(state, action: PayloadAction<VrMessage>) {
       state.vrMessages.push(action.payload);
     },
-    grpcError(state, action: PayloadAction<string>) {
-      state.error = action.payload;
-      state.isConnected = false;
+
+    // --------------------------------------------
+    // APPLY STREAM EVENT TO roomState (MERGE)
+    // --------------------------------------------
+    applyRoomUpdate(state, action: PayloadAction<RoomStateEvent>) {
+      const event = action.payload;
+      const session = state.roomState;
+      if (!session) return; // No snapshot loaded yet
+
+      switch (event.type) {
+        // DEVICE_JOINED or DEVICE_CONNECTED
+        case 'device_joined': {
+          const device = event.data as VRDevice;
+
+          const exists = session.devices.some((d) => d.vr_device_serial_number === device.vr_device_serial_number);
+          if (!exists) {
+            session.devices.push(device);
+          }
+          break;
+        }
+
+        // DEVICE_DISCONNECTED
+        case 'device_disconnected': {
+          const { vr_device_serial_number } = event.data;
+
+          const device = session.devices.find((d) => d.vr_device_serial_number === vr_device_serial_number);
+          if (device) {
+            device.status = 'Disconnected';
+          }
+          break;
+        }
+
+        // TASK_UPDATED
+        case 'task_updated': {
+          const { vr_device_serial_number, vr_task_id, is_completed, is_correct } = event.data;
+
+          const device = session.devices.find((d) => d.vr_device_serial_number === vr_device_serial_number);
+          if (!device) break;
+
+          const task = device.tasks.find((t) => t.vr_task_id === vr_task_id);
+          if (task) {
+            task.is_completed = is_completed;
+            task.is_correct = is_correct;
+          }
+          break;
+        }
+
+        // ANY OTHER EVENT TYPES
+        default:
+          console.log('[monitoringSlice] Unhandled event:', event);
+      }
     },
+
     grpcDisconnected(state) {
       state.isConnected = false;
     },
+
+    grpcError(state, action: PayloadAction<string>) {
+      state.error = action.payload;
+    },
+
+    // CLEAR LOGS IF NEEDED
     clearRoomEvents(state) {
       state.roomStateEvents = [];
     },
+
     clearVrMessages(state) {
       state.vrMessages = [];
     },
   },
 });
 
-export const { teacherRoomUpdated, vrStreamUpdated, grpcError, grpcDisconnected, clearRoomEvents, clearVrMessages } =
-  monitoringSlice.actions;
+export const {
+  setRoomState,
+  teacherRoomUpdated,
+  vrStreamUpdated,
+  applyRoomUpdate,
+  grpcDisconnected,
+  grpcError,
+  clearRoomEvents,
+  clearVrMessages,
+} = monitoringSlice.actions;
 
 export default monitoringSlice.reducer;

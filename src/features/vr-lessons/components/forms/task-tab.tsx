@@ -22,10 +22,11 @@ export function TaskTab({ taskNumber, setIsValid }: TaskTabProps) {
       activityType: vrLessonData?.tasks[taskNumber - 1].activityType.activityCode,
     });
   }, []);
-
-  const taskSetup = vrLessonData?.tasks[taskNumber - 1];
+  const taskInOrder = vrLessonData?.tasks.sort((a, b) => a.taskNumber - b.taskNumber);
+  const taskSetup = taskInOrder?.[taskNumber - 1];
   const activityType = taskSetup?.activityType?.activityCode.toLowerCase();
   const ActivityComponent = activityInputMap[activityType as keyof typeof activityInputMap];
+  if (!ActivityComponent) setIsValid?.(true);
 
   return (
     <div className='space-y-6'>

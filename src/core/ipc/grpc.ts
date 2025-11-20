@@ -4,6 +4,8 @@ import {
   vrStreamUpdated,
   grpcError,
   grpcDisconnected,
+  setRoomState,
+  applyRoomUpdate,
 } from '@/features/learning-sessions/store/monitoringSlice';
 
 export function initGrpcListeners() {
@@ -11,8 +13,8 @@ export function initGrpcListeners() {
 
   // Teacher room state updates
   window.electron.onTeacherUpdate((data) => {
-    console.log('📥 Teacher room update received:', data);
     store.dispatch(teacherRoomUpdated(data));
+    store.dispatch(applyRoomUpdate(data));
   });
 
   window.electron.onTeacherError((error) => {
@@ -68,11 +70,29 @@ export async function cancelRoom(vr_learning_session_id: string) {
 
 export async function sendNotification(
   vr_learning_session_id: string,
-  notification: { text: string; severity: number },
+  notification: { text: string; severity: string },
 ) {
   return window.electron.sendNotification(vr_learning_session_id, notification);
 }
 
 export function sendVRData(payload: any) {
   window.electron.sendVRData(payload);
+}
+
+export async function getRoomState(sessionId: string) {
+  const state = await window.electron.getRoomState(sessionId);
+  store.dispatch(setRoomState(state));
+}
+
+export async function loadRoomState(sessionId: string) {
+  try {
+    const state = await window.electron.getRoomState(sessionId);
+
+    // Store full room snapshot into Redux
+    store.dispatch(setRoomState(state));
+
+    console.log('[grpc] Loaded initial room state:', state);
+  } catch (error) {
+    console.error('[grpc] Failed to load room state:', error);
+  }
 }
