@@ -10,7 +10,7 @@ interface PaginationProps {
 }
 
 export default function Pagination({ currentPage, totalPages, onPageChange, className = '' }: PaginationProps) {
-  if (totalPages <= 1) return null;
+  // if (totalPages <= 1) return null;
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
