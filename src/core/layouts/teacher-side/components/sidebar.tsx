@@ -2,6 +2,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import routes from '@/core/configs/routes';
+import { Button } from '@/common/components/ui/button';
+import { LogOut } from 'lucide-react';
+import { logoutThunk } from '@/common/store/auth/authThunks';
+import { useAppDispatch } from '@/common/store/hooks';
 
 interface NavItem {
   label: string;
@@ -20,11 +24,16 @@ const navItems: NavItem[] = [
 
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
+  const dispatch = useAppDispatch();
+  const handleLogout = () => {
+    dispatch(logoutThunk());
+  };
 
   return (
     <aside
-      className={`${isOpen ? 'w-64' : 'w-20'
-        } bg-primary text-white transition-all duration-300 flex flex-col h-screen shadow-lg`}
+      className={`${
+        isOpen ? 'w-64' : 'w-20'
+      } bg-primary text-white transition-all duration-300 flex flex-col h-screen shadow-lg`}
     >
       {/* Logo */}
       <div className='p-6 border-b border-primary-light flex items-center justify-between'>
@@ -49,7 +58,14 @@ export function Sidebar() {
       </nav>
 
       {/* User profile */}
-      <div className='p-4 border-t border-primary-light'>
+      <div className='p-4 mb-8 border-t border-neutral-800'>
+        <Button
+          onClick={handleLogout}
+          variant='ghost'
+          className='justify-start mb-5 hover:bg-neutral-100 rounded-lg transition-colors'
+        >
+          <LogOut className='h-4 w-4' /> {isOpen && <span className='ml-3'>Đăng xuất</span>}
+        </Button>
         <div className='flex items-center gap-3'>
           <div className='w-10 h-10 bg-secondary rounded-full flex items-center justify-center font-bold'>JD</div>
           {isOpen && (

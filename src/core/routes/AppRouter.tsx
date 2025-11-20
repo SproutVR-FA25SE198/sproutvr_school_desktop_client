@@ -23,37 +23,44 @@ import CreateSessionPage from '@/features/learning-sessions/pages/CreateSessionP
 import MonitoringPage from '@/features/learning-sessions/pages/MonitoringPage';
 import SessionListPage from '@/features/learning-sessions/pages/SessionListPage';
 import Dashboard from '@/features/school-admin/dashboard/pages/Dashboard';
+import LoginPage from '@/features/auth/pages/Login';
+import AuthGuard from '../guards/AuthGuard';
+import AdminGuard from '../guards/AdminGuard';
 
 export const AppRouter = () => (
   <Router>
     <Routes>
-      <Route element={<TeacherSideLayout />}>
-        <Route path={routes.home} element={<LessonsPage />} />
-        <Route path={routes.lessonDetails} element={<LessonDetailsPage />} />
-        <Route path={routes.sessionList} element={<SessionListPage />} />
-      </Route>
+      <Route path={routes.login} element={<LoginPage />} />
+      <Route element={<AuthGuard />}>
+        <Route element={<TeacherSideLayout />}>
+          <Route path={routes.home} element={<LessonsPage />} />
+          <Route path={routes.lessonDetails} element={<LessonDetailsPage />} />
+          <Route path={routes.sessionList} element={<SessionListPage />} />
+        </Route>
 
-      <Route element={<TeacherDesignLayout />}>
-        <Route path={routes.vrSessionCreate} element={<CreateSessionPage />} />
-        <Route path={routes.vrLessonDesign} element={<VrLessonDesignPage />} />
-        <Route path={routes.learningSessionMonitoring} element={<MonitoringPage />} />
-        <Route path={routes.lessonCreation} element={<LessonCreationPage />} />
+        <Route element={<TeacherDesignLayout />}>
+          <Route path={routes.vrSessionCreate} element={<CreateSessionPage />} />
+          <Route path={routes.vrLessonDesign} element={<VrLessonDesignPage />} />
+          <Route path={routes.learningSessionMonitoring} element={<MonitoringPage />} />
+          <Route path={routes.lessonCreation} element={<LessonCreationPage />} />
+        </Route>
       </Route>
-
-      <Route element={<AdminSideLayout />}>
-        <Route path={routes.vrDevices} element={<VRDeviceList />} />
-        <Route path={routes.vrDeviceDetail} element={<VRDeviceDetail />} />
-        <Route path={routes.myBundles} element={<MyBundlesPage />} />
-        <Route path={routes.bundleImport} element={<BundleDetailsPage />} />
-        <Route path={routes.accounts} element={<AccountList />} />
-        <Route path={routes.accountDetail} element={<AccountDetail />} />
-        <Route path={routes.resources} element={<ResourcesPage />} />
-        <Route path={routes.rsMasterSubjectDetail} element={<MasterSubjectDetail />} />
-        <Route path={routes.rsSubjectDetail} element={<SubjectDetail />} />
-        <Route path={routes.rsMapDetail} element={<MapDetail />} />
-        <Route path={routes.rsLessonDetail} element={<LessonDetail />} />
-        <Route path={routes.rsVrLessonDetail} element={<VRLessonDetail />} />
-        <Route path={routes.adminDashboard} element={<Dashboard />} />
+      <Route element={<AdminGuard />}>
+        <Route element={<AdminSideLayout />}>
+          <Route path={routes.vrDevices} element={<VRDeviceList />} />
+          <Route path={routes.vrDeviceDetail} element={<VRDeviceDetail />} />
+          <Route path={routes.myBundles} element={<MyBundlesPage />} />
+          <Route path={routes.bundleImport} element={<BundleDetailsPage />} />
+          <Route path={routes.accounts} element={<AccountList />} />
+          <Route path={routes.accountDetail} element={<AccountDetail />} />
+          <Route path={routes.resources} element={<ResourcesPage />} />
+          <Route path={routes.rsMasterSubjectDetail} element={<MasterSubjectDetail />} />
+          <Route path={routes.rsSubjectDetail} element={<SubjectDetail />} />
+          <Route path={routes.rsMapDetail} element={<MapDetail />} />
+          <Route path={routes.rsLessonDetail} element={<LessonDetail />} />
+          <Route path={routes.rsVrLessonDetail} element={<VRLessonDetail />} />
+          <Route path={routes.adminDashboard} element={<Dashboard />} />
+        </Route>
       </Route>
     </Routes>
   </Router>
