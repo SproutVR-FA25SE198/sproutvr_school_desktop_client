@@ -28,6 +28,10 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormData) => {
     const result = await dispatch(loginThunk(data));
     console.log(result);
+    if (result.meta.requestStatus === 'rejected') {
+      alert(result.payload as string);
+      return;
+    }
     if (loginThunk.fulfilled.match(result)) {
       // Redirect based on user role
       const user = result.payload;
