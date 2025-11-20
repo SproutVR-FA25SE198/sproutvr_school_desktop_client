@@ -1,87 +1,57 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
+
+import { loadRoomState } from '@/core/ipc/grpc';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from '@/common/store';
-// import { subscribeToSessionStream } from '../services/monitoring-grpc.service';
+
 import { SessionMonitoringDashboard } from '../components/monitoring-dashboard';
 import useGetVrLessonById from '@/common/hooks/useGetVrLessonById';
 import type { VrLessonRetrieve } from '@/common/types/vr-lesson.type';
-import Loading from '@/common/components/loading';
-import { MOCK_VR_LEARNING_SESSION } from '../services/mock-data';
 
-export const metadata = {
-  title: 'Learning Session Monitoring - V2',
-  description: 'Monitor VR learning sessions in real-time',
-};
+import Loading from '@/common/components/loading';
+import { applyRoomUpdate, teacherRoomUpdated } from '../store/monitoringSlice';
+import type { VRLearningSession } from '../services/session.type';
 
 export default function MonitoringPage() {
   const dispatch = useDispatch<AppDispatch>();
-  const location = useLocation();
   const params = useParams();
-  const sessionId = params.id;
+  const location = useLocation();
+  console.log('Route params:', params);
 
-  // Get room code and other data from location state or sessionStorage (fallback)
-  const locationState = location.state as {
-    roomCode?: string;
-    sessionId?: string;
-    className?: string;
-    vrLessonId?: string;
-  } | null;
+  // Redux roomState
+  const roomState = useSelector((state: RootState) => state.monitoring.roomState);
+  const activeSessionId = roomState?.vrlesson.vr_lesson_id || location.state?.vrLessonId || '';
 
-  // const session = useSelector((state: RootState) => state.monitoring.session);
-  // const isLoading = useSelector((state: RootState) => state.monitoring.isLoading);
+  // Fetch VR lesson details
+  const { data: vrLesson, isLoading: lessonLoading } = useGetVrLessonById(activeSessionId);
+  console.log('Fetched VR Lesson:', vrLesson);
 
-  // Use sessionId from params or state
-  const stateSessionId = locationState?.sessionId;
-  const activeSessionId = sessionId || stateSessionId || 'a1b2c3d4-e5f6-7890-1234-567890abcdef';
+  // Load initial room state (GetRoomState)
+  useEffect(() => {
+    if (!params.id) return;
+    loadRoomState(params.id); // <-- Loads + dispatch(setRoomState)
+  }, [activeSessionId]);
 
-  // Try to get from location state first, then from sessionStorage
-  const getSessionData = () => {
-    if (locationState?.roomCode) {
-      return locationState;
-    }
-    // Fallback to sessionStorage
-    try {
-      const stored = sessionStorage.getItem(`session_${activeSessionId}`);
-      if (stored) {
-        return JSON.parse(stored);
-      }
-    } catch (e) {
-      console.error('Error reading sessionStorage:', e);
-    }
-    return null;
-  };
+  // Subscribe to real-time streaming updates
+  useEffect(() => {
+    window.electron.onTeacherUpdate((event) => {
+      dispatch(teacherRoomUpdated(event)); // raw log
+      dispatch(applyRoomUpdate(event)); // merge into roomState
+    });
+  }, [dispatch]);
 
-  const sessionData = getSessionData();
-  const roomCode = locationState?.roomCode || sessionData?.roomCode;
-  const className = locationState?.className || sessionData?.className;
-  const { data: vrLessons, isLoading: tasksLoading } = useGetVrLessonById(activeSessionId);
+  // Wait for GetRoomState to finish
+  if (lessonLoading) {
+    return <Loading isLoading />;
+  }
 
-  // useEffect(() => {
-  //   // Start the stream on page mount
-  //   const stopStream = subscribeToSessionStream(dispatch, activeSessionId);
-  //   return () => stopStream(); // Gracefully close connection
-  // }, [dispatch, activeSessionId]);
-
-  // Update mock session with data from state if available
-  // Priority: location state > mock data
-  const session = {
-    ...MOCK_VR_LEARNING_SESSION,
-    vr_learning_session_id: activeSessionId,
-    ...(roomCode && { room_code: roomCode }),
-    ...(className && { class_name: className }),
-  };
-
-  // Debug log
-  console.log('MonitoringPage - location.state:', locationState);
-  console.log('MonitoringPage - sessionData:', sessionData);
-  console.log('MonitoringPage - roomCode:', roomCode);
-  console.log('MonitoringPage - session.room_code:', session.room_code);
-
-  // if (isLoading) {
-  //   return <Loading isLoading />;
-  // }
-
-  return <SessionMonitoringDashboard session={session} vrLessonDetails={vrLessons || ({} as VrLessonRetrieve)} />;
+  return (
+    <SessionMonitoringDashboard
+      session={roomState || ({} as VRLearningSession)}
+      vrLessonDetails={vrLesson || ({} as VrLessonRetrieve)}
+    />
+  );
 }

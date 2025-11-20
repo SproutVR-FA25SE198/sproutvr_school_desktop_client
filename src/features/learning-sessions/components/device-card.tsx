@@ -17,24 +17,24 @@ export function DeviceCard({ device }: DeviceCardProps) {
       {/* Header */}
       <div className='border-b border-neutral-200 bg-white px-4 py-3 flex justify-between'>
         <div>
-          <p className='text-xs text-neutral-600 uppercase tracking-wide'>Device</p>
+          <p className='text-xs text-neutral-600 uppercase tracking-wide'>Thiết bị</p>
           <p className='text-sm font-mono font-semibold text-neutral-900 break-all'>{device.vr_device_serial_number}</p>
           <p className='text-sm font-medium text-neutral-900 mt-1'>{device.student_name}</p>
         </div>
-        <div className='flex flex-col items-end'>
+        <div className='flex flex-row items-center gap-2'>
+          <span className='text-xs font-medium uppercase' style={{ color: statusColor }}>
+            {device.status === 'Connected' ? 'Đang kết nối' : 'Mất kết nối'}
+          </span>
           <div
             className='h-4 w-4 rounded-full border-2'
             style={{ backgroundColor: statusColor, borderColor: statusColor }}
           />
-          <span className='text-xs font-medium uppercase' style={{ color: statusColor }}>
-            {device.status}
-          </span>
         </div>
       </div>
 
       {/* Task List */}
       <div className='flex-1 overflow-y-auto px-4 py-3 space-y-2'>
-        {device.tasks.map((task) => (
+        {device.tasks.map((task, index) => (
           <div
             key={task.vr_task_id}
             className={`rounded border bg-white p-2 ${
@@ -43,7 +43,7 @@ export function DeviceCard({ device }: DeviceCardProps) {
           >
             <div className='flex justify-between'>
               <span className='text-xs font-semibold text-neutral-700'>
-                {task.question_name ?? `Task ${task.vr_task_id.slice(0, 4)}`}
+                {task.question_name ?? `Task ${index + 1}`}
               </span>
               <span
                 className={`text-xs font-semibold ${

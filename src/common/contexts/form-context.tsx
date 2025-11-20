@@ -193,11 +193,13 @@ export function FormProvider({ children }: { children: ReactNode }) {
         return {
           vrTaskId,
           question: quiz?.question || '',
-          answers: quiz?.options || [],
+          answers: quiz?.options.map((o) => ({ text: o.text, isCorrect: o.isCorrect })) || [],
           information: info,
         } as VrTaskDetails;
       }),
     };
+
+    console.log('vrLessonData:', vrLessonData);
 
     createVrLessonPhaseTwoMutate(
       { vrLessonId: vrLessonData?.id || '', payload: completeFormData },

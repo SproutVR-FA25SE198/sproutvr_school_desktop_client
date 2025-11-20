@@ -42,6 +42,7 @@ export interface VrTaskCreatePayload {
 
 export interface VrTaskRetrieve extends Pick<VrTask, 'id' | 'taskNumber' | 'description'> {
   taskLocation: TaskLocation;
+  question?: string;
   mapObject: MapObject;
   activityType: ActivityType;
 }

@@ -51,3 +51,8 @@ export const CREATE_SESSION_CONFIRMATION = {
     'Bạn đang tiến hành tạo một phiên học VR. Vui lòng đảm bảo rằng bạn đã chuẩn bị đầy đủ thiết bị và thông tin cần thiết trước khi tiếp tục.',
   question: 'Bạn có chắc chắn muốn tạo phiên học VR?',
 };
+
+export const CANCEL_SESSION_CONFIRMATION = {
+  title: 'Bạn đang kết thúc một phiên học VR',
+  question: 'Bạn có chắc chắn muốn kết thúc phiên học VR?',
+};
