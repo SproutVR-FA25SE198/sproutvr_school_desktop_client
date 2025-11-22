@@ -30,6 +30,8 @@ const routes = {
   rsLessonDetail: '/resources/lessons/:id',
   rsVrLessonDetail: '/resources/vrlessons/:id',
   adminDashboard: '/admin-dashboard',
+  adminSessions: '/admin-sessions',
+  adminSessionDetail: '/admin-sessions/:id',
   logout: '/logout',
   notFound: '*',
 };

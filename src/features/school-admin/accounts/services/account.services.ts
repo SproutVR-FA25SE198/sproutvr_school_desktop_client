@@ -27,8 +27,8 @@ const DEFAULT_PARAMS: Required<Pick<FetchAccountsParams, 'role' | 'pageIndex' | 
   sortBy: 'createdAtUtcDesc',
 };
 
-const ACCOUNTS_ADMIN_ENDPOINT = '/v1/school-admin/accounts';
-const ACCOUNT_AUTHORIZED_ENDPOINT = '/v1/authorized/accounts';
+const ACCOUNTS_ADMIN_ENDPOINT = '/api/v1/school-admin/accounts';
+const ACCOUNT_AUTHORIZED_ENDPOINT = '/api/v1/authorized/accounts';
 
 export interface AccountListResult {
   items: Account[];

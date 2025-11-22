@@ -18,8 +18,8 @@ const DEFAULT_PARAMS: Required<Pick<FetchMasterSubjectsParams, 'pageIndex' | 'pa
   sortBy: 'createdAtUtcDesc',
 };
 
-const MS_ADMIN_ENDPOINT = '/v1/school-admin/master-subjects';
-const MS_AUTHORIZED_ENDPOINT = '/v1/authorized/master-subjects';
+const MS_ADMIN_ENDPOINT = '/api/v1/school-admin/master-subjects';
+const MS_AUTHORIZED_ENDPOINT = '/api/v1/authorized/master-subjects';
 
 export interface MasterSubjectListResult {
   items: MasterSubject[];

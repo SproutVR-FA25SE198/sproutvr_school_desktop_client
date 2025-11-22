@@ -19,8 +19,8 @@ const DEFAULT_PARAMS: Required<Pick<FetchSubjectsParams, 'pageIndex' | 'pageSize
   sortBy: 'createdAtUtcDesc',
 };
 
-const SUBJECTS_ADMIN_ENDPOINT = '/v1/school-admin/subjects';
-const SUBJECTS_AUTHORIZED_ENDPOINT = '/v1/authorized/subjects';
+const SUBJECTS_ADMIN_ENDPOINT = '/api/v1/school-admin/subjects';
+const SUBJECTS_AUTHORIZED_ENDPOINT = '/api/v1/authorized/subjects';
 
 export interface SubjectListResult {
   items: Subject[];
