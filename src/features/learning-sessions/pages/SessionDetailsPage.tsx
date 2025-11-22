@@ -11,7 +11,6 @@ export default function SessionDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const { data: session, isLoading } = useGetSessionDetail(id || '');
 
-  // Replaced Skeleton with a simple centering spinner
   if (isLoading) {
     return (
       <div className="flex h-full flex-1 items-center justify-center bg-slate-50/50">
@@ -26,15 +25,15 @@ export default function SessionDetailsPage() {
     <div className='flex-1 overflow-y-auto bg-slate-50/50 p-8'>
       <div className='max-w-7xl mx-auto space-y-8'>
         
-        {/* 1. Header Section */}
+        {/* Header Section */}
         <SessionHeader session={session} />
 
-        {/* 2. Stats Overview */}
+        {/* Stats Overview */}
         <SessionStatsGrid session={session} />
 
-        {/* 3. Student List Section */}
+        {/* Student List Section */}
         <div className="space-y-5">
-            <h2 className="text-xl font-bold text-neutral-900 tracking-tight border-l-4 border-primary pl-3">
+            <h2 className="text-xl font-bold text-neutral-900 pl-3">
               Kết quả chi tiết học sinh
             </h2>
             

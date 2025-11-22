@@ -13,7 +13,7 @@ export const SessionItemCard = ({ session }: SessionItemCardProps) => {
   const navigate = useNavigate();
 
   const handleViewDetails = () => {
-     navigate(routes.learningSessionMonitoring.replace(':id', session.id));
+     navigate(`${routes.sessionList}/${session.id}`);
   };
 
   const isCompleted = session.status.name === 'Completed';
@@ -34,7 +34,7 @@ export const SessionItemCard = ({ session }: SessionItemCardProps) => {
             <span className='inline-block px-2.5 py-0.5 bg-neutral-100 text-neutral-600 text-xs font-bold rounded mb-2'>
               {session.className}
             </span>
-            <h3 className='font-bold text-lg text-neutral-900 leading-tight line-clamp-2 min-h-[3.5rem]'>
+            <h3 className='font-bold text-lg text-neutral-900 leading-tight line-clamp-2 min-h-14'>
               {session.vrLesson.name}
             </h3>
           </div>
@@ -50,7 +50,11 @@ export const SessionItemCard = ({ session }: SessionItemCardProps) => {
           <span className={`text-xs font-medium px-2.5 py-1 rounded-full border ${statusBg}`}>
             {session.status.name}
           </span>
-          <Button variant='ghost' size='sm' className='text-primary hover:bg-primary/5 font-medium p-0 h-auto hover:text-primary'>
+          <Button 
+            variant='ghost' 
+            size='sm' 
+            className='text-primary hover:bg-primary/10 hover:text-primary font-medium cursor-pointer'
+          >
             Chi tiết <Play size={14} className='ml-1.5' />
           </Button>
         </div>

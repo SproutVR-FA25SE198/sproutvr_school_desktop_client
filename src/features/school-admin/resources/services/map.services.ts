@@ -19,8 +19,8 @@ const DEFAULT_PARAMS: Required<Pick<FetchMapsParams, 'pageIndex' | 'pageSize' | 
   sortBy: 'createdAtUtcDesc',
 };
 
-const MAPS_ADMIN_ENDPOINT = '/v1/school-admin/maps';
-const MAPS_AUTHORIZED_ENDPOINT = '/v1/authorized/maps';
+const MAPS_ADMIN_ENDPOINT = '/api/v1/school-admin/maps';
+const MAPS_AUTHORIZED_ENDPOINT = '/api/v1/authorized/maps';
 
 export interface MapListResult {
   items: MapListItem[];

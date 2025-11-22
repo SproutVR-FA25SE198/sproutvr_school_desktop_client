@@ -20,8 +20,8 @@ const DEFAULT_PARAMS: Required<Pick<FetchVRLessonsParams, 'pageIndex' | 'pageSiz
   sortBy: 'createdAtUtcDesc',
 };
 
-const VRLS_ADMIN_ENDPOINT = '/v1/school-admin/vrlessons';
-const VRLS_AUTHORIZED_ENDPOINT = '/v1/authorized/vrlessons';
+const VRLS_ADMIN_ENDPOINT = '/api/v1/school-admin/vrlessons';
+const VRLS_AUTHORIZED_ENDPOINT = '/api/v1/authorized/vrlessons';
 
 export interface VRLessonListResult {
   items: VRLesson[];

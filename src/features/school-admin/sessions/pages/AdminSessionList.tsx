@@ -7,10 +7,9 @@ import { Card } from '@/common/components/ui/card';
 import { Input } from '@/common/components/ui/input';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/common/components/ui/select';
 import { toast } from 'sonner';
-import ImportAccountsDialog from '../components/dialogs/import-accounts-dialog';
-import { AccountRow } from '../components/account-row';
-import { AccountStatus, type Account } from '../types/account.types';
-import { fetchAccounts, type FetchAccountsParams } from '../services/account.services';
+import type { SessionListItem } from '../types/session.types';
+import { fetchSessions, type FetchSessionsParams } from '../services/session.services';
+import { SessionRow } from '../components/session-row';
 
 // Debounce helper
 function useDebounce<T>(value: T, delay: number): T {
@@ -24,76 +23,71 @@ function useDebounce<T>(value: T, delay: number): T {
 
 const PAGE_SIZE = 10;
 
-export default function AccountsPage() {
+export default function SessionsPage() {
   // Data
-  const [allAccounts, setAllAccounts] = useState<Account[]>([]); // Store ALL data here
+  const [allSessions, setAllSessions] = useState<SessionListItem[]>([]); // Store ALL data here
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   // UI & Filters
-  const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
-  const [filterStatus, setFilterStatus] = useState<AccountStatus | 'all'>('all');
+  const [filterStatus, setFilterStatus] = useState<number | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState('');
   const [pageIndex, setPageIndex] = useState(1);
   const [sortBy, setSortBy] = useState<
-    'firstNameAsc' | 'firstNameDesc' | 'createdAtUtcAsc' | 'createdAtUtcDesc'
+    'classNameAsc' | 'classNameDesc' | 'createdAtUtcAsc' | 'createdAtUtcDesc'
   >('createdAtUtcDesc');
 
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  // Fetch accounts from API 
-  const loadAccounts = useCallback(async () => {
+  // Fetch sessions from API 
+  const loadSessions = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const params: FetchAccountsParams = {
-        status: filterStatus === 'all' ? undefined : filterStatus,
+      const params: FetchSessionsParams = {
+        vrLearningSessionStatus: filterStatus === undefined ? undefined : filterStatus,
         sortBy,
         isPaginated: false, 
       };
       
-      const { items } = await fetchAccounts(params);
+      const { items } = await fetchSessions(params);
       
-      setAllAccounts(items);
+      setAllSessions(items);
     } catch (e) {
       setError(e as Error);
-      toast.error('Không thể tải danh sách tài khoản.');
+      toast.error('Không thể tải danh sách phiên học.');
       console.error(e);
     } finally {
       setIsLoading(false);
     }
-  }, [filterStatus, sortBy]);
+  }, [filterStatus, sortBy]); 
 
   useEffect(() => {
-    loadAccounts();
-  }, [loadAccounts]);
+    loadSessions();
+  }, [loadSessions]);
 
   // Reset page when filters or search change
   useEffect(() => {
     setPageIndex(1);
   }, [filterStatus, debouncedSearchQuery, sortBy]);
 
-  const filteredAccounts = useMemo(() => {
-    const query = debouncedSearchQuery.toLocaleLowerCase();
-    if (!query) return allAccounts;
+  const filteredSessions = useMemo(() => {
+    const query = debouncedSearchQuery.toLowerCase();
+    if (!query) return allSessions;
     
-    return allAccounts.filter(
-      (acc) =>
-        acc.fullName?.toLocaleLowerCase().includes(query) ||
-        acc.email?.toLocaleLowerCase().includes(query)
+    return allSessions.filter(
+      (s) =>
+        s.className?.toLowerCase().includes(query) ||
+        s.teacher?.name.toLowerCase().includes(query) ||
+        s.vrLesson?.name.toLowerCase().includes(query)
     );
-  }, [allAccounts, debouncedSearchQuery]);
+  }, [allSessions, debouncedSearchQuery]);
 
-  const pageCount = Math.ceil(filteredAccounts.length / PAGE_SIZE);
-  const paginatedAccounts = filteredAccounts.slice(
+  const pageCount = Math.ceil(filteredSessions.length / PAGE_SIZE);
+  const paginatedSessions = filteredSessions.slice(
     (pageIndex - 1) * PAGE_SIZE,
     pageIndex * PAGE_SIZE
   );
-
-  const handleImportSuccess = () => {
-    toast.success('Tải lên thành công!');
-    loadAccounts();
-  };
 
   const renderContent = () => {
     if (isLoading)
@@ -110,10 +104,10 @@ export default function AccountsPage() {
         </Card>
       );
 
-    if (paginatedAccounts.length === 0)
+    if (paginatedSessions.length === 0)
       return (
         <Card className="text-center py-12">
-          <p className="text-neutral-500">Không tìm thấy tài khoản nào theo bộ lọc.</p>
+          <p className="text-neutral-500">Không tìm thấy phiên học nào theo bộ lọc.</p>
         </Card>
       );
 
@@ -122,16 +116,17 @@ export default function AccountsPage() {
         <table className="min-w-full divide-y divide-neutral-200">
           <thead className="bg-neutral-100 text-neutral-600 text-sm font-semibold">
             <tr>
-              <th className="px-4 py-3 text-left">Họ và tên</th>
-              <th className="px-4 py-3 text-left">Email</th>
+              <th className="px-4 py-3 text-left">Tên lớp</th>
+              <th className="px-4 py-3 text-left">Tạo bởi</th>
+              <th className="px-4 py-3 text-left">Học liệu VR</th>
               <th className="px-4 py-3 text-left">Ngày tạo</th>
               <th className="px-4 py-3 text-left">Trạng thái</th>
               <th className="px-4 py-3 text-right">Thao tác</th>
             </tr>
           </thead>
           <tbody className="text-sm text-neutral-800">
-            {paginatedAccounts.map((account) => (
-              <AccountRow key={account.userId} {...account} />
+            {paginatedSessions.map((session) => (
+              <SessionRow key={session.id} {...session} />
             ))}
           </tbody>
         </table>
@@ -148,19 +143,12 @@ export default function AccountsPage() {
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h2 className="text-3xl font-bold text-neutral-900 mb-2">
-                  Quản lý tài khoản giáo viên
+                  Quản lý phiên học VR
                 </h2>
                 <p className="text-neutral-500">
-                  Tìm kiếm, sắp xếp và cập nhật tài khoản giáo viên trong hệ thống.
+                  Danh sách các phiên học VR được lưu trong hệ thống.
                 </p>
               </div>
-              <Button
-                variant="default"
-                size="lg"
-                onClick={() => setIsImportDialogOpen(true)}
-              >
-                + Thêm tài khoản mới
-              </Button>
             </div>
 
             {/* Filters */}
@@ -170,7 +158,7 @@ export default function AccountsPage() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
                 <Input
                   type="text"
-                  placeholder="Tìm kiếm theo tên hoặc email..."
+                  placeholder="Tìm kiếm theo tên lớp, tên giáo viên..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
@@ -180,37 +168,37 @@ export default function AccountsPage() {
               {/* Filter buttons */}
               <div className="flex gap-2">
                 <Button
-                  variant={filterStatus === 'all' ? 'default' : 'outline'}
+                  variant={filterStatus === undefined ? 'default' : 'outline'}
                   size="sm"
-                  onClick={() => setFilterStatus('all')}
+                  onClick={() => setFilterStatus(undefined)}
                 >
                   Tất cả
                 </Button>
                 <Button
-                  variant={filterStatus === AccountStatus.Active ? 'default' : 'outline'}
+                  variant={filterStatus === 0 ? 'default' : 'outline'}
                   size="sm"
-                  onClick={() => setFilterStatus(AccountStatus.Active)}
+                  onClick={() => setFilterStatus(0)}
                 >
-                  Hoạt động
+                  Hoàn thành
                 </Button>
                 <Button
-                  variant={filterStatus === AccountStatus.Disabled ? 'default' : 'outline'}
+                  variant={filterStatus === 1 ? 'default' : 'outline'}
                   size="sm"
-                  onClick={() => setFilterStatus(AccountStatus.Disabled)}
+                  onClick={() => setFilterStatus(1)}
                 >
-                  Đã khóa
+                  Đã hủy
                 </Button>
               </div>
 
-              {/* Sort Dropdown (rightmost) */}
+              {/* Sort Dropdown */}
               <div className="flex items-center gap-2 ml-auto">
                 <Select
                   value={sortBy}
                   onValueChange={(v) =>
                     setSortBy(
                       v as
-                        | 'firstNameAsc'
-                        | 'firstNameDesc'
+                        | 'classNameAsc'
+                        | 'classNameDesc'
                         | 'createdAtUtcAsc'
                         | 'createdAtUtcDesc'
                     )
@@ -220,8 +208,8 @@ export default function AccountsPage() {
                     <SelectValue placeholder="Sắp xếp theo" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="firstNameAsc">Tên (A → Z)</SelectItem>
-                    <SelectItem value="firstNameDesc">Tên (Z → A)</SelectItem>
+                    <SelectItem value="classNameAsc">Tên lớp (A → Z)</SelectItem>
+                    <SelectItem value="classNameDesc">Tên lớp (Z → A)</SelectItem>
                     <SelectItem value="createdAtUtcAsc">Ngày tạo (cũ nhất)</SelectItem>
                     <SelectItem value="createdAtUtcDesc">Ngày tạo (mới nhất)</SelectItem>
                   </SelectContent>
@@ -236,8 +224,8 @@ export default function AccountsPage() {
             {!isLoading && !error && pageCount > 1 && (
               <div className="flex items-center justify-between">
                 <p className="text-sm text-neutral-600">
-                  Hiển thị <strong>{paginatedAccounts.length}</strong> trên tổng{' '}
-                  <strong>{filteredAccounts.length}</strong> tài khoản
+                  Hiển thị <strong>{paginatedSessions.length}</strong> trên tổng{' '}
+                  <strong>{filteredSessions.length}</strong> phiên học
                 </p>
                 <div className="flex items-center gap-2">
                   <Button
@@ -281,13 +269,6 @@ export default function AccountsPage() {
           </div>
         </div>
       </div>
-
-      {/* Import dialog */}
-      <ImportAccountsDialog
-        isOpen={isImportDialogOpen}
-        onClose={() => setIsImportDialogOpen(false)}
-        onImport={handleImportSuccess}
-      />
     </div>
   );
 }
