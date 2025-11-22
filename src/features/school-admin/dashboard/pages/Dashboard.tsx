@@ -198,7 +198,7 @@ export default function Dashboard() {
   const recentLessons = useMemo(() => {
     return [...lessons]
       .sort((a, b) => (b.createdAtVietNam > a.createdAtVietNam ? 1 : -1))
-      .slice(0, 10);
+      .slice(0, 8);
   }, [lessons]);
 
   // Recent VR Lessons created
