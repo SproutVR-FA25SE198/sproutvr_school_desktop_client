@@ -4,13 +4,20 @@ import type { VRLearningSessionDetail } from '../types/session-manage.type';
 
 export const SessionStatsGrid = ({ session }: { session: VRLearningSessionDetail }) => {
   const totalStudents = session.vrDeviceSessionSummaries.length;
+  
+  // Total Completed (Volume) - Just for info
   const totalCompletedTasks = session.vrDeviceTaskProgresses.filter(t => t.isCompleted).length;
   
-  const completedTasks = session.vrDeviceTaskProgresses.filter(t => t.isCompleted);
-  const correctTasks = completedTasks.filter(t => t.isCorrect);
-  const accuracy = completedTasks.length > 0 
-    ? ((correctTasks.length / completedTasks.length) * 100).toFixed(0) 
-    : '0';
+  // Calculate Class Score (Correct / Total Assigned)
+  const totalCorrectTasks = session.vrDeviceTaskProgresses.filter(t => t.isCorrect).length;
+  
+  // The array length = Total Assigned Tasks
+  const totalAssignedTasks = session.vrDeviceTaskProgresses.length;
+
+  // Convert to grade scale 10
+  const classAverageScore = totalAssignedTasks > 0 
+    ? ((totalCorrectTasks / totalAssignedTasks) * 10).toFixed(1) 
+    : '0.0';
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -27,8 +34,8 @@ export const SessionStatsGrid = ({ session }: { session: VRLearningSessionDetail
         bgClass="bg-green-50"
       />
       <StatCard 
-        title="Tỉ lệ chính xác TB" 
-        value={`${accuracy}%`} 
+        title="Điểm trung bình lớp" 
+        value={`${classAverageScore}/10`} 
         icon={<HelpCircle className="text-orange-600" size={20} />} 
         bgClass="bg-orange-50"
       />

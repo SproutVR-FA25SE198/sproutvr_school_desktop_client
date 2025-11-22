@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/common/components/ui/card';
 import { Button } from '@/common/components/ui/button';
-import { Calendar, Clock, Users, Play } from 'lucide-react';
+import { Calendar, Clock, Users, Play, Timer } from 'lucide-react';
 import routes from '@/core/configs/routes';
 import type { VRLearningSession } from '../types/session-manage.type';
 
@@ -19,6 +19,12 @@ export const SessionItemCard = ({ session }: SessionItemCardProps) => {
   const isCompleted = session.status.name === 'Completed';
   const statusColor = isCompleted ? 'bg-green-500' : 'bg-blue-500';
   const statusBg = isCompleted ? 'bg-green-50 text-green-700 border-green-100' : 'bg-blue-50 text-blue-700 border-blue-100';
+
+  // Helper for short date format
+  const formatDate = (dateStr: string) => 
+    new Date(dateStr).toLocaleDateString('vi-VN', { 
+      day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' 
+    });
 
   return (
     <Card 
@@ -41,9 +47,27 @@ export const SessionItemCard = ({ session }: SessionItemCardProps) => {
         </div>
 
         <div className='space-y-2.5 mb-6'>
-          <InfoRow icon={<Calendar size={15}/>} text={new Date(session.startTimeAtUtc).toLocaleDateString('vi-VN')} />
-          <InfoRow icon={<Clock size={15}/>} text={`${session.durationInMinutes} phút`} />
-          <InfoRow icon={<Users size={15}/>} text={session.teacher.name} />
+          {/* Start Time */}
+          <InfoRow 
+            icon={<Calendar size={15}/>} 
+            text={`Bắt đầu: ${formatDate(session.startTimeAtUtc)}`} 
+          />
+          
+          {/* End Time / Deadline */}
+          <InfoRow 
+            icon={<Timer size={15} className="text-orange-500"/>} 
+            text={`Kết thúc: ${formatDate(session.endTimeAtUtc)}`} 
+            className="text-orange-700/80 font-medium"
+          />
+
+          <InfoRow 
+            icon={<Clock size={15}/>} 
+            text={`Thời lượng: ${session.durationInMinutes} phút`} 
+          />
+          <InfoRow 
+            icon={<Users size={15}/>} 
+            text={session.teacher.name} 
+          />
         </div>
 
         <div className='flex items-center justify-between mt-auto pt-4 border-t border-neutral-100'>
@@ -63,9 +87,9 @@ export const SessionItemCard = ({ session }: SessionItemCardProps) => {
   );
 };
 
-const InfoRow = ({ icon, text }: { icon: React.ReactNode; text: string }) => (
-  <div className='flex items-center text-sm text-neutral-500'>
-    <span className='text-neutral-400 mr-2.5'>{icon}</span>
-    {text}
+const InfoRow = ({ icon, text, className = '' }: { icon: React.ReactNode; text: string; className?: string }) => (
+  <div className={`flex items-center text-sm text-neutral-500 ${className}`}>
+    <span className='text-neutral-400 mr-2.5 shrink-0'>{icon}</span>
+    <span className="truncate">{text}</span>
   </div>
 );

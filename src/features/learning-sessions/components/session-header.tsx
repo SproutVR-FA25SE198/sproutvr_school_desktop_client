@@ -1,6 +1,6 @@
 import { Badge } from '@/common/components/ui/badge';
 import { Button } from '@/common/components/ui/button';
-import { ArrowLeft, Calendar, Clock, User } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Timer, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { VRLearningSession } from '../types/session-manage.type';
 
@@ -39,7 +39,10 @@ export const SessionHeader = ({ session }: SessionHeaderProps) => {
           </p>
         </div>
 
-        <div className="flex gap-8 text-sm text-neutral-600 bg-neutral-50/80 p-4 rounded-xl border border-neutral-100">
+        {/* Info Bar */}
+        <div className="flex flex-wrap gap-6 lg:gap-8 text-sm text-neutral-600 bg-neutral-50/80 p-4 rounded-xl border border-neutral-100">
+          
+          {/* Start Time */}
           <div className="flex flex-col gap-1.5">
             <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-bold">Bắt đầu</span>
             <span className="flex items-center font-semibold text-neutral-800">
@@ -47,7 +50,21 @@ export const SessionHeader = ({ session }: SessionHeaderProps) => {
                 {formatDate(session.startTimeAtUtc)}
             </span>
           </div>
-          <div className="w-px bg-neutral-200 my-1"></div>
+
+          <div className="w-px bg-neutral-200 my-1 hidden md:block"></div>
+
+          {/* End Time / Deadline */}
+          <div className="flex flex-col gap-1.5">
+            <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-bold">Kết Thúc</span>
+            <span className="flex items-center font-semibold text-neutral-800">
+                <Timer size={14} className="mr-2 text-orange-500"/> 
+                {formatDate(session.endTimeAtUtc)}
+            </span>
+          </div>
+
+          <div className="w-px bg-neutral-200 my-1 hidden md:block"></div>
+
+          {/* Duration */}
           <div className="flex flex-col gap-1.5">
             <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-bold">Thời lượng</span>
             <span className="flex items-center font-semibold text-neutral-800">

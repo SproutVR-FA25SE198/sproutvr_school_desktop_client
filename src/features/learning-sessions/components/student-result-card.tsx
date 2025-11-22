@@ -1,6 +1,7 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/common/components/ui/card';
-import { User, CheckCircle2, XCircle } from 'lucide-react';
+import { User, CheckCircle2, XCircle, ChevronRight } from 'lucide-react';
 import type { VRDeviceSessionSummary, VRDeviceTaskProgress } from '../types/session-manage.type';
+import { useNavigate } from 'react-router-dom';
 
 interface StudentResultCardProps {
   summary: VRDeviceSessionSummary;
@@ -8,8 +9,29 @@ interface StudentResultCardProps {
 }
 
 export const StudentResultCard = ({ summary, tasks }: StudentResultCardProps) => {
+  const navigate = useNavigate();
+
+  // Get current session ID from URL
+  // const { id: sessionId } = useParams<{ id: string }>();
+
+  // TODO: Get device ID from each of summary object
+  const DEVICE_ID = "a1b2c3d4-e5f6-7890-1234-567890abcdef";
+
+  // TODO: Get session ID from URL param
+  const SESSION_ID = "aa49d5c7-be29-475e-8600-bbb383dab940";
+
+  const handleCardClick = () => {
+    // Check if we have the session ID
+    // if (sessionId) {
+      navigate(`/sessions/${SESSION_ID}/devices/${DEVICE_ID}`);
+    // }
+  };
+
   return (
-    <Card className="group overflow-hidden border-neutral-200 hover:border-primary/40 hover:shadow-md transition-all duration-300">
+    <Card 
+        className="group overflow-hidden border-neutral-200 hover:border-primary/40 hover:shadow-md transition-all duration-300 cursor-pointer relative"
+        onClick={handleCardClick}
+    >
       <CardHeader className="bg-neutral-50/80 border-b border-neutral-100 pb-4 pt-5">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
@@ -21,6 +43,7 @@ export const StudentResultCard = ({ summary, tasks }: StudentResultCardProps) =>
               <p className="text-xs text-neutral-500 mt-0.5">Hoàn thành: <b className="text-neutral-800">{summary.noTasksCompleted}</b> task</p>
             </div>
           </div>
+          <ChevronRight className="text-neutral-300 group-hover:text-primary transition-colors" size={18} />
         </div>
       </CardHeader>
       
