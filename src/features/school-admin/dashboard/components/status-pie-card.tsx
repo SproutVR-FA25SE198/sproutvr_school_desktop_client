@@ -13,6 +13,7 @@ export default function StatusPieCard({
     maps: any[];
     lessons: any[];
     vrLessons: any[];
+    sessions: any[];
   };
 }) {
   const [chartType, setChartType] = useState<keyof typeof datasets>("masterSubjects");
@@ -23,6 +24,7 @@ export default function StatusPieCard({
     { label: "Học liệu VR", value: "maps" },
     { label: "Bài giảng", value: "lessons" },
     { label: "Bài học VR", value: "vrLessons" },
+    { label: "Phiên học VR", value: "sessions"}
   ];
 
   const data = datasets[chartType];
@@ -53,7 +55,7 @@ export default function StatusPieCard({
               nameKey="name"
               outerRadius={90}
               innerRadius={0}
-              paddingAngle={1}
+              paddingAngle={0}
               label={({ percent = 0 }) => `${percent.toFixed(0)}%`}
             >
               {data.map((entry) => (
