@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card } from '@/common/components/ui/card';
 import { Loader2, Search } from 'lucide-react';
 import { useGetMyBundles } from '../hooks/useGetMyBundles';
-import type { BundlePayload } from '@/common/types/bundle.type';
+import type { BundlePayload } from '@/features/school-admin/bundles/types/bundle.type';
 import { BundleCard } from '../components/bundle-card';
 import routes from '@/core/configs/routes';
 import { useState } from 'react';

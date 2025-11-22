@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import type { BundlePayload } from '@/common/types/bundle.type';
+import type { BundlePayload } from '@/features/school-admin/bundles/types/bundle.type';
 import type { AxiosError } from 'axios';
 import type { ApiErrorResponse } from '@/common/types/error.type';
 import { GET_BUNDLE_DETAILS_QUERY__KEY, getBundleDetails } from '../services/bundle.service';

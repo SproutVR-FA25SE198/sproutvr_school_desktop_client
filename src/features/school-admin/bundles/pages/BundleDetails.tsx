@@ -9,7 +9,7 @@ import routes from '@/core/configs/routes';
 import { MapCard } from '../components/map-card';
 import { useGetBundleDetails } from '../hooks/useGetBundleDetails';
 import { useMarkMapAsDownloaded } from '../hooks/useMapMarkAsDownloaded';
-import type { MapPayload } from '@/common/types/bundle.type';
+import type { MapPayload } from '@/features/school-admin/bundles/types/bundle.type';
 import { useSeedMapBundle } from '../hooks/useSeedMapBundle';
 import { toast } from 'sonner';
 import { Input } from '@/common/components/ui/input';

@@ -1,4 +1,4 @@
-import type { BundlePayload, SeedMapBundlePayload } from '@/common/types/bundle.type';
+import type { BundlePayload, SeedMapBundlePayload } from '@/features/school-admin/bundles/types/bundle.type';
 import { http_provider, http_school } from '@/common/utils/http';
 
 export const GET_BUNDLES_LIST_QUERY_KEY = 'GET_BUNDLES_LIST_QUERY_KEY';
@@ -33,7 +33,7 @@ export const markMapAsDownloaded = async (orderItemId: string, organizationId: s
  */
 export const seedMapBundle = async (payload: SeedMapBundlePayload) => {
   const response = await http_school.post(
-    '/v1/school-admin/maps/seed-bundle',
+    '/api/v1/school-admin/maps/seed-bundle',
     payload,
   );
   return response.data;

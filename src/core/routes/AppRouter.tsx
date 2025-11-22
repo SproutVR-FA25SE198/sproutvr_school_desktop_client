@@ -26,6 +26,7 @@ import Dashboard from '@/features/school-admin/dashboard/pages/Dashboard';
 import LoginPage from '@/features/auth/pages/Login';
 import AuthGuard from '../guards/AuthGuard';
 import AdminGuard from '../guards/AdminGuard';
+import SessionDetailsPage from '@/features/learning-sessions/pages/SessionDetailsPage';
 
 export const AppRouter = () => (
   <Router>
@@ -36,6 +37,7 @@ export const AppRouter = () => (
           <Route path={routes.home} element={<LessonsPage />} />
           <Route path={routes.lessonDetails} element={<LessonDetailsPage />} />
           <Route path={routes.sessionList} element={<SessionListPage />} />
+          <Route path={routes.sessionDetails} element={<SessionDetailsPage />} />
         </Route>
 
         <Route element={<TeacherDesignLayout />}>

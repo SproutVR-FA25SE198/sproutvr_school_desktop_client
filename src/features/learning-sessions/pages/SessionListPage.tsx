@@ -4,108 +4,105 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/common/components/ui/button';
 import { Card } from '@/common/components/ui/card';
-import { Plus, Play } from 'lucide-react';
-import routes from '@/core/configs/routes';
-import Loading from '@/common/components/loading';
+import { Plus, Calendar, Loader2 } from 'lucide-react';
 import { ConfirmDialog } from '../components/confirm-dialog';
+import routes from '@/core/configs/routes';
 import { CREATE_SESSION_CONFIRMATION } from '../constants';
+import { useGetSessions } from '../hooks/useSession';
+import { SessionItemCard } from '../components/session-item-card';
+import Pagination from '@/common/components/pagination';
 
 export default function SessionListPage() {
   const navigate = useNavigate();
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  
+  const [params, setParams] = useState({ 
+    pageIndex: 1, 
+    pageSize: 9, 
+    isPaginated: true, 
+    sortBy: 'createdAtUtcDesc',
+    // TODO: get teacher ID from current logged in user
+    teacherId: '0199f4b1-8487-4352-8a2a-320a00e40e58'
+  });
 
-  const handleCreateSessionClick = () => {
-    setShowConfirmDialog(true);
+  const { data, isLoading } = useGetSessions(params);
+  
+  // If data or items is undefined, fallback to an empty array []
+  const sessions = data?.items || []; 
+
+  const handlePageChange = (page: number) => {
+    setParams(prev => ({ ...prev, pageIndex: page }));
   };
 
-  const handleConfirmCreate = () => {
-    navigate(routes.vrSessionCreate);
-  };
-
-  // TODO: Fetch sessions from API
-  const sessions: Array<{
-    id: string;
-    roomCode: string;
-    className: string;
-    vrLessonName: string;
-    createdAt: string;
-    status: string;
-  }> = [];
-
-  const isLoading = false;
-
-  if (isLoading) return <Loading isLoading />;
+  const totalItems = data?.totalItems || 0;
+  const totalPages = Math.ceil(totalItems / params.pageSize) || 1;
 
   return (
-    <div className='flex-1 overflow-y-auto border-r border-neutral-200 p-8'>
-      <div className='mb-6'>
-        <div className='flex items-center justify-between mb-4'>
+    <div className='flex-1 h-full overflow-y-auto bg-neutral-50/50 p-8'>
+      <div className='max-w-7xl mx-auto flex flex-col min-h-[calc(100vh-4rem)]'>
+        
+        {/* Header */}
+        <div className='flex items-center justify-between mb-8'>
           <div>
-            <h2 className='text-2xl font-bold text-neutral-900 mb-1'>Danh sách phiên học</h2>
-            <p className='text-neutral-500 text-sm'>Xem lại các phiên học VR đã tạo</p>
+            <h2 className='text-3xl font-bold text-neutral-900 mb-2 tracking-tight'>Danh sách phiên học</h2>
+            <p className='text-neutral-500'>Quản lý và theo dõi các lớp học thực tế ảo của bạn</p>
           </div>
-          <Button variant='default' size='sm' onClick={handleCreateSessionClick}>
-            <Plus size={16} className='mr-2' />
-            Tạo phiên học mới
+          <Button className='bg-primary hover:bg-primary/90 shadow-md' onClick={() => setShowConfirmDialog(true)}>
+            <Plus size={18} className='mr-2' /> Tạo phiên học mới
           </Button>
         </div>
-      </div>
 
-      {sessions.length === 0 ? (
-        <Card className='p-12 text-center'>
-          <p className='text-neutral-500 mb-4'>Chưa có phiên học nào được tạo.</p>
-          <Button variant='outline' onClick={handleCreateSessionClick}>
-            <Plus size={16} className='mr-2' />
-            Tạo phiên học đầu tiên
-          </Button>
-        </Card>
-      ) : (
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-          {sessions.map((session) => (
-            <Card key={session.id} className='p-4 hover:shadow-lg transition-shadow cursor-pointer'>
-              <div className='flex items-start justify-between mb-3'>
-                <div>
-                  <h3 className='font-semibold text-neutral-900 mb-1'>{session.className}</h3>
-                  <p className='text-sm text-neutral-600'>{session.vrLessonName}</p>
+        {/* Loading State */}
+        {isLoading && (
+          <div className='flex flex-col items-center justify-center h-64 w-full text-neutral-500 gap-3'>
+            <Loader2 className='h-8 w-8 animate-spin text-primary' />
+            <p>Đang tải dữ liệu...</p>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {/* Now we use 'sessions.length' which is safe */}
+        {!isLoading && sessions.length === 0 && (
+           <Card className='p-16 text-center border-dashed bg-transparent shadow-none'>
+              <div className='flex flex-col items-center'>
+                <div className='w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mb-4 text-neutral-400'>
+                  <Calendar size={32} />
                 </div>
-                <div className='px-2 py-1 bg-primary/10 rounded text-xs font-mono font-bold text-primary'>
-                  {session.roomCode}
-                </div>
+                <h3 className='text-xl font-medium text-neutral-900 mb-2'>Chưa có phiên học nào</h3>
+                <Button variant='outline' onClick={() => setShowConfirmDialog(true)}>
+                  <Plus size={16} className='mr-2' /> Tạo phiên học đầu tiên
+                </Button>
               </div>
-              <div className='flex items-center justify-between text-xs text-neutral-500 mb-3'>
-                <span>{new Date(session.createdAt).toLocaleDateString('vi-VN')}</span>
-                <span
-                  className={`px-2 py-1 rounded ${
-                    session.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-neutral-100 text-neutral-600'
-                  }`}
-                >
-                  {session.status}
-                </span>
-              </div>
-              <Button
-                variant='outline'
-                size='sm'
-                className='w-full'
-                onClick={() =>
-                  navigate(routes.learningSessionMonitoring.replace(':id', session.id), {
-                    state: { roomCode: session.roomCode, sessionId: session.id },
-                  })
-                }
-              >
-                <Play size={14} className='mr-2' />
-                Xem chi tiết
-              </Button>
-            </Card>
-          ))}
-        </div>
-      )}
+           </Card>
+        )}
+
+        {/* Data Grid */}
+        {!isLoading && sessions.length > 0 && (
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8'>
+            {sessions.map((session) => (
+              <SessionItemCard key={session.id} session={session} />
+            ))}
+          </div>
+        )}
+
+        {/* Pagination */}
+        {!isLoading && sessions.length > 0 && (
+          <div className="mt-auto pt-6 border-t border-neutral-200 flex justify-center">
+            <Pagination 
+              currentPage={params.pageIndex}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </div>
+        )}
+      </div>
 
       <ConfirmDialog
         open={showConfirmDialog}
         onOpenChange={setShowConfirmDialog}
         title={CREATE_SESSION_CONFIRMATION.title}
         question={CREATE_SESSION_CONFIRMATION.question}
-        onConfirm={handleConfirmCreate}
+        onConfirm={() => navigate(routes.vrSessionCreate)}
         confirmText='Tiếp tục'
         cancelText='Hủy'
       />

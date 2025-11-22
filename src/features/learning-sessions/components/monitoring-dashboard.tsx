@@ -4,7 +4,7 @@ import { ChevronLeft } from 'lucide-react';
 import { TaskMenu } from './task-menu';
 import { DeviceCarousel } from './device-carousel';
 
-import type { VRLearningSession } from '../services/session.type';
+
 import type { VrLessonRetrieve } from '@/common/types/vr-lesson.type';
 
 import { CancelRoomButton } from './cancel-room-button';
@@ -12,9 +12,10 @@ import { SendNotification } from './send-notification';
 import CountdownTimer from './countdown-timer';
 import type { RootState } from '@/common/store';
 import { useSelector } from 'react-redux';
+import type { VRLearningSessionMonitor } from '../types/session-monitoring.type';
 
 interface SessionMonitoringDashboardProps {
-  session: VRLearningSession;
+  session: VRLearningSessionMonitor;
   vrLessonDetails: VrLessonRetrieve;
 }
 

@@ -13,7 +13,7 @@ import type { VrLessonRetrieve } from '@/common/types/vr-lesson.type';
 
 import Loading from '@/common/components/loading';
 import { applyRoomUpdate, teacherRoomUpdated } from '../store/monitoringSlice';
-import type { VRLearningSession } from '../services/session.type';
+import type { VRLearningSessionMonitor } from '../types/session-monitoring.type';
 
 export default function MonitoringPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -50,7 +50,7 @@ export default function MonitoringPage() {
 
   return (
     <SessionMonitoringDashboard
-      session={roomState || ({} as VRLearningSession)}
+      session={roomState || ({} as VRLearningSessionMonitor)}
       vrLessonDetails={vrLesson || ({} as VrLessonRetrieve)}
     />
   );

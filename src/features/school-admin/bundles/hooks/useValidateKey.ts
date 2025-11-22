@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { KeyValidatePayload, KeyValidateResponse } from '@/common/types/bundle.type';
+import type { KeyValidatePayload, KeyValidateResponse } from '@/features/school-admin/bundles/types/bundle.type';
 import type { AxiosError } from 'axios';
 import { validateActivationKey } from '../services/key-validation.service';
 import type { ApiErrorResponse } from '@/common/types/error.type';

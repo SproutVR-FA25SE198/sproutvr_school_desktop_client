@@ -2,7 +2,7 @@
 
 import { Button } from '@/common/components/ui/button';
 import { Card } from '@/common/components/ui/card';
-import type { MapPayload } from '@/common/types/bundle.type';
+import type { MapPayload } from '@/features/school-admin/bundles/types/bundle.type';
 import { CheckCircle, Download, Loader2 } from 'lucide-react';
 
 interface MapCardProps {

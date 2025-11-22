@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { DeviceCard } from './device-card';
-import type { VRDevice } from '../services/session.type';
+import type { VRDevice } from '../types/session-monitoring.type';
 
 interface DeviceCarouselProps {
   isTaskMenuCollapsed: boolean;
