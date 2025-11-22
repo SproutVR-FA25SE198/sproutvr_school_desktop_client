@@ -123,9 +123,9 @@ export default function ResourcesPage() {
   // Search filtering
   const filterBySearch = (items: any[]) => {
     if (!searchQuery.trim()) return items;
-    const q = searchQuery.toLowerCase();
+    const q = searchQuery.toLocaleLowerCase();
     return items.filter((item) =>
-      Object.values(item).join(' ').toLowerCase().includes(q)
+      Object.values(item).join(' ').toLocaleLowerCase().includes(q)
     );
   };
 

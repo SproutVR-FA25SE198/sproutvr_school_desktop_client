@@ -19,8 +19,8 @@ const DEFAULT_PARAMS: Required<Pick<FetchLessonsParams, 'pageIndex' | 'pageSize'
   sortBy: 'createdAtUtcDesc',
 };
 
-const LESSONS_ADMIN_ENDPOINT = '/v1/school-admin/lessons';
-const LESSONS_AUTHORIZED_ENDPOINT = '/v1/authorized/lessons';
+const LESSONS_ADMIN_ENDPOINT = '/api/v1/school-admin/lessons';
+const LESSONS_AUTHORIZED_ENDPOINT = '/api/v1/authorized/lessons';
 
 export interface LessonListResult {
   items: LessonListItem[];
