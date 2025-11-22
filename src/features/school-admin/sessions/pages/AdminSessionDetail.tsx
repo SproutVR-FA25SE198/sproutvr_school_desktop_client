@@ -75,7 +75,7 @@ export default function SessionDetailPage() {
           <div>
             <Button variant="ghost" size="sm" onClick={handleBack} className="mb-4 -ml-2 text-neutral-500 hover:text-neutral-900">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Quản lý phiên học
+              Quản lý phiên học VR
             </Button>
             
             <div className="flex items-start justify-between">
@@ -107,7 +107,7 @@ export default function SessionDetailPage() {
           <Card className="overflow-hidden">
             <div className="flex items-center justify-between bg-neutral-50 px-8 py-5 border-b border-neutral-200">
                 <h3 className="text-lg font-bold text-neutral-900">
-                    Thông tin phiên học
+                    Thông tin phiên học VR
                 </h3>
             </div>
             <div className="p-8 space-y-6">

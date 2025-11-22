@@ -1,6 +1,6 @@
 'use client';
 
-import http from '@/common/utils/http';
+import { http_school } from '@/common/utils/http';
 import type { VRDeviceDisplay, VRDeviceStatus } from '../types/device.types';
 
 export interface VRDeviceStatusResponse {
@@ -60,7 +60,7 @@ export async function fetchVRDevices(params: FetchVRDevicesParams = {}): Promise
     ...params,
   } as FetchVRDevicesParams;
 
-  const response = await http.get<VRDeviceApiResponse>(VR_DEVICES_ENDPOINT, {
+  const response = await http_school.get<VRDeviceApiResponse>(VR_DEVICES_ENDPOINT, {
     params: query,
   });
 
@@ -86,7 +86,7 @@ export async function fetchVRDevices(params: FetchVRDevicesParams = {}): Promise
 export async function fetchVRDeviceById(id: string): Promise<VRDeviceDisplay | null> {
   if (!id) return null;
 
-  const response = await http.get<VRDeviceDetailResponse>(`${VR_DEVICES_ENDPOINT}/${id}`);
+  const response = await http_school.get<VRDeviceDetailResponse>(`${VR_DEVICES_ENDPOINT}/${id}`);
   const item = response.data;
 
   if (!item) {
@@ -107,7 +107,7 @@ export async function importVRDevices(file: File): Promise<void> {
   const formData = new FormData();
   formData.append('excelFile', file);
 
-  await http.post(VR_DEVICES_IMPORT_ENDPOINT, formData, {
+  await http_school.post(VR_DEVICES_IMPORT_ENDPOINT, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -117,7 +117,7 @@ export async function importVRDevices(file: File): Promise<void> {
 export async function updateVRDeviceStatus(id: string, status: VRDeviceStatus): Promise<void> {
   if (!id) throw new Error('Missing VR device id');
 
-  await http.patch(`${VR_DEVICE_ASSIGN_STATUS_ENDPOINT}/${id}/assign-status`, {
+  await http_school.patch(`${VR_DEVICE_ASSIGN_STATUS_ENDPOINT}/${id}/assign-status`, {
     status,
   });
 }
