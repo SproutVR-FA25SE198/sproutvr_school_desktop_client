@@ -16,6 +16,8 @@ import type { VRLesson } from "../../resources/types/vr-lesson.types";
 import { HHMMSSToDuration } from "@/common/utils/duration-converter";
 import { KpiCard } from "../components/kpi-card";
 import StatusPieCard from "../components/status-pie-card";
+import type { SessionListItem } from "../../sessions/types/session.types";
+import { fetchSessions } from "../../sessions/services/session.services";
 
 export default function Dashboard() {
   const [masterSubjects, setMasterSubjects] = useState<MasterSubject[]>([]);
@@ -23,6 +25,7 @@ export default function Dashboard() {
   const [maps, setMaps] = useState<MapListItem[]>([]);
   const [lessons, setLessons] = useState<LessonListItem[]>([]);
   const [vrLessons, setVrLessons] = useState<VRLesson[]>([]);
+  const [sessions, setSessions] = useState<SessionListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -35,6 +38,7 @@ export default function Dashboard() {
         const m = await fetchMaps({ isPaginated: false });
         const l = await fetchLessons({ isPaginated: false });
         const v = await fetchVRLessons({ isPaginated: false });
+        const ss = await fetchSessions({isPaginated: false});
 
         if (!mounted) return;
         setMasterSubjects(ms.items || []);
@@ -42,6 +46,7 @@ export default function Dashboard() {
         setMaps(m.items || []);
         setLessons(l.items || []);
         setVrLessons(v.items || []);
+        setSessions(ss.items || []);
       } catch (err) {
         console.error("Dashboard load error:", err);
       } finally {
@@ -62,8 +67,9 @@ export default function Dashboard() {
       maps: maps.length,
       lessons: lessons.length,
       vrLessons: vrLessons.length,
+      sessions: sessions.length
     };
-  }, [masterSubjects, subjects, maps, lessons, vrLessons]);
+  }, [masterSubjects, subjects, maps, lessons, vrLessons, sessions]);
 
   // Count of MasterSubjects by Status
   const msStatusData = useMemo(() => {
@@ -155,6 +161,24 @@ export default function Dashboard() {
     ];
   }, [vrLessons]);
 
+  // Count of Sessions by Status
+  const sessionsStatusData = useMemo(() => {
+    const counts: Record<string, number> = { Completed: 0, Cancelled: 0 };
+    sessions.forEach((ss) => {
+      if (ss.status.key === 0) counts.Completed++;
+      else counts.Cancelled++;
+    });
+
+    const total = counts.Completed + counts.Cancelled;
+    const completedPercentage = (counts.Completed/total)*100;
+    const cancelledPercentage = (counts.Cancelled/total)*100;
+
+    return [
+      { key: 1, name: "Hoàn thành", value: counts.Completed, percent: completedPercentage},
+      { key: 0, name: "Đã hủy", value: counts.Cancelled, percent: cancelledPercentage }
+    ];
+  }, [sessions])
+
   // Count of Lessons per MasterSubject
   const lessonsByMasterSubject = useMemo(() => {
     const mapCounts = new Map<string, { name: string; count: number }>();
@@ -194,17 +218,17 @@ export default function Dashboard() {
     return arr.slice(0, 5);
   }, [vrLessons, lessons, masterSubjects])
 
-  // Recent Lessons created
-  const recentLessons = useMemo(() => {
-    return [...lessons]
-      .sort((a, b) => (b.createdAtVietNam > a.createdAtVietNam ? 1 : -1))
-      .slice(0, 10);
-  }, [lessons]);
+  // Recent Sessions created
+  const recentSessions = useMemo(() => {
+    return [...sessions]
+      .sort((a, b) => (b.createdAtUtc > a.createdAtUtc ? 1 : -1))
+      .slice(0, 8);
+  }, [sessions]);
 
   // Recent VR Lessons created
   const recentVrLessons = useMemo (() => {
     return[...vrLessons]
-    .sort((a, b) => (b.createdAtVietNam > a.createdAtVietNam ? 1 : -1))
+    .sort((a, b) => (b.createdAtUtc > a.createdAtUtc ? 1 : -1))
     .slice(0, 5); 
   }, [vrLessons]);
 
@@ -219,12 +243,13 @@ export default function Dashboard() {
   return (
     <div className="p-6 space-y-6">
       {/* KPI Cards: Total count by resources */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-4">
         <KpiCard title="Bộ môn" value={totals.masterSubjects} icon="📚"  />
         <KpiCard title="Môn học" value={totals.subjects} icon="📘"  />
         <KpiCard title="Học liệu VR" value={totals.maps} icon="🗺️" />
         <KpiCard title="Bài giảng" value={totals.lessons} icon="🎓"  />
         <KpiCard title="Bài học VR" value={totals.vrLessons} icon="🥽" />
+        <KpiCard title="Phiên học VR" value={totals.sessions} icon="🖥️" />
       </div>
 
       {/* Pie charts */}
@@ -237,6 +262,7 @@ export default function Dashboard() {
             maps: mapsStatusData,
             lessons: lessonsStatusData,
             vrLessons: vrStatusData,
+            sessions: sessionsStatusData
           }}
         />
       </div>
@@ -280,36 +306,36 @@ export default function Dashboard() {
       
       {/* Recent resources tables */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Recent Lessons table */}
+        {/* Recent Sessions table */}
         <Card className="p-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">Bài giảng mới nhất</h3>
-            <div className="text-sm text-neutral-600">({recentLessons.length})</div>
+            <h3 className="text-lg font-semibold">Phiên học VR mới nhất</h3>
+            <div className="text-sm text-neutral-600">({recentSessions.length})</div>
           </div>
 
           <div className="mt-3 overflow-hidden">
             <table className="min-w-full text-xs">
               <thead className="bg-neutral-100 text-neutral-600">
                 <tr>
-                  <th className="px-3 py-2 text-left">Tên</th>
-                  <th className="px-3 py-2 text-left">Môn học</th>
+                  <th className="px-3 py-2 text-left">Tên lớp</th>
                   <th className="px-3 py-2 text-left">Tạo bởi</th>
+                  <th className="px-3 py-2 text-left">Bài học VR</th>
                   <th className="px-3 py-2 text-left">Trạng thái</th>
                 </tr>
               </thead>
               <tbody className="text-neutral-800">
-                {recentLessons.map((r) => (
+                {recentSessions.map((r) => (
                   <tr key={r.id} className="border-b">
-                    <td className="px-3 py-2 max-w-[220px] truncate">{r.name}</td>
-                    <td className="px-3 py-2">{r.subject.name}</td>
-                    <td className="px-3 py-2">{`${r.teacher.firstName ?? ""} ${r.teacher?.lastName ?? ""}`}</td>
-                    <td className="px-3 py-2">{r.status.key === 1 ? "🟢 Hoạt động" : "🔵 Không hoạt động"}</td>
+                    <td className="px-3 py-2 max-w-[220px] truncate">{r.className}</td>
+                    <td className="px-3 py-2">{r.teacher.name}</td>
+                    <td className="px-3 py-2">{r.vrLesson.name}</td>
+                    <td className="px-3 py-2">{r.status.key === 0 ? "🟢 Hoàn thành" : "🔵 Đã hủy"}</td>
                   </tr>
                 ))}
-                {recentLessons.length === 0 && (
+                {recentSessions.length === 0 && (
                   <tr>
                     <td colSpan={4} className="px-3 py-6 text-center text-neutral-500">
-                      Không có bài giảng được tạo gần đây.
+                      Không có phiên học VR được tạo gần đây.
                     </td>
                   </tr>
                 )}

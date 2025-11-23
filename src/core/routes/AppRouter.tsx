@@ -27,6 +27,7 @@ import LoginPage from '@/features/auth/pages/Login';
 import AuthGuard from '../guards/AuthGuard';
 import AdminGuard from '../guards/AdminGuard';
 import AdminSessionList from '@/features/school-admin/sessions/pages/AdminSessionList';
+import SessionDetailPage from '@/features/school-admin/sessions/pages/AdminSessionDetail';
 import SessionDetailsPage from '@/features/learning-sessions/pages/SessionDetailsPage';
 import DeviceSummaryDetailsPage from '@/features/vr-device-session-summaries/pages/DeviceSummaryDetailsPage';
 
@@ -66,6 +67,7 @@ export const AppRouter = () => (
           <Route path={routes.rsVrLessonDetail} element={<VRLessonDetail />} />
           <Route path={routes.adminDashboard} element={<Dashboard />} />
           <Route path={routes.adminSessions} element={<AdminSessionList />} />
+          <Route path={routes.adminSessionDetail} element={<SessionDetailPage />} />
         </Route>
       </Route>
     </Routes>
