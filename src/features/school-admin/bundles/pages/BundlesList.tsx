@@ -2,7 +2,7 @@
 
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/common/components/ui/card';
-import { Loader2, Search } from 'lucide-react';
+import { Loader2, Search, WifiOff } from 'lucide-react';
 import { useGetMyBundles } from '../hooks/useGetMyBundles';
 import type { BundlePayload } from '@/features/school-admin/bundles/types/bundle.type';
 import { BundleCard } from '../components/bundle-card';
@@ -13,6 +13,7 @@ import { ApkDownloadAlert } from '../components/apk-download-alert';
 import { ActivationDialog } from '../components/dialogs/activation-dialog';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/common/store';
+import { Button } from '@/common/components/ui/button';
 
 export default function MyBundlesPage() {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -23,21 +24,12 @@ export default function MyBundlesPage() {
   const organizationId = user?.organizationId!;
 
   // Fetch all bundles using the new hook
-  const { data: bundles, isLoading, isError, error } = useGetMyBundles(organizationId);
+  const { data: bundles, isLoading, isError, refetch } = useGetMyBundles(organizationId);
 
   // Navigate to the detail page
   const handleViewDetails = (bundle: BundlePayload) => {
     navigate(`${routes.myBundles}/${bundle.orderId}`);
   };
-
-  // Handle loading state
-  if (isLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-neutral-50">
-        <Loader2 className="h-8 w-8 animate-spin text-neutral-500" />
-      </div>
-    );
-  }
 
   // Create the filtered list based on search query
   const filteredBundles = bundles?.filter((bundle) => {
@@ -45,18 +37,6 @@ export default function MyBundlesPage() {
     const idMatch = bundle.orderId.toLowerCase().includes(query);
     return idMatch;
   });
-  
-  // Handle error state
-  if (isError) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-neutral-50">
-        <Card className="p-8 text-center text-red-600">
-          <p>Lỗi khi tải danh sách học liệu:</p>
-          <p className="font-mono">{error?.response?.data?.Message || error.message}</p>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="flex-1 overflow-y-auto px-8 pt-8 pb-24 bg-neutral-50 min-h-screen">
@@ -91,34 +71,60 @@ export default function MyBundlesPage() {
         {/* APK Download Alert UI */}
         <ApkDownloadAlert />
 
-        {/* Bundles Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Map over the NEW filtered list */}
-          {filteredBundles?.map((bundle) => (
-            <BundleCard
-              key={bundle.orderId}
-              bundle={bundle}
-              onView={handleViewDetails}
-            />
-          ))}
-        </div>
-
-        {/* Handle no bundles found */}
-        {bundles?.length === 0 && (
-          <Card className="text-center py-12">
-            <p className="text-neutral-500">
-              Không tìm thấy gói học liệu nào đã được kích hoạt.
+        {/* Content Section */}
+        {isLoading ? (
+          /* --- LOADING STATE --- */
+          <div className="flex flex-col items-center justify-center py-24">
+            <Loader2 className="h-10 w-10 animate-spin text-primary" />
+            <p className="text-neutral-500 mt-4">Đang tải dữ liệu...</p>
+          </div>
+        ) : isError ? (
+          /* --- ERROR STATE --- */
+          <Card className="flex flex-col items-center justify-center py-16 text-center border-dashed">
+            <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-4">
+              <WifiOff className="h-8 w-8 text-red-500" />
+            </div>
+            <h3 className="text-lg font-semibold text-neutral-900 mb-2">
+              Không thể tải danh sách
+            </h3>
+            <p className="text-neutral-500 max-w-md mb-6">
+              Vui lòng kiểm tra lại mạng trường học và thử lại sau.
             </p>
+            <Button variant="outline" onClick={() => refetch()}>
+              Thử lại
+            </Button>
           </Card>
-        )}
+        ) : (
+          /* --- SUCCESS STATE --- */
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredBundles?.map((bundle) => (
+                <BundleCard
+                  key={bundle.orderId}
+                  bundle={bundle}
+                  onView={handleViewDetails}
+                />
+              ))}
+            </div>
 
-        {/* Handle no search results */}
-        {bundles && bundles.length > 0 && filteredBundles?.length === 0 && (
-          <Card className="text-center py-12">
-            <p className="text-neutral-500">
-              Không tìm thấy gói học liệu nào khớp với "{searchQuery}".
-            </p>
-          </Card>
+            {/* Empty Data State */}
+            {!isError && bundles?.length === 0 && (
+              <Card className="text-center py-12">
+                <p className="text-neutral-500">
+                  Không tìm thấy gói học liệu nào đã được kích hoạt.
+                </p>
+              </Card>
+            )}
+
+            {/* Empty Search State */}
+            {!isError && bundles && bundles.length > 0 && filteredBundles?.length === 0 && (
+              <Card className="text-center py-12">
+                <p className="text-neutral-500">
+                  Không tìm thấy gói học liệu nào khớp với "{searchQuery}".
+                </p>
+              </Card>
+            )}
+          </>
         )}
       </div>
     </div>
