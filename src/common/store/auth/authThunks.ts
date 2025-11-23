@@ -1,6 +1,6 @@
-import { login } from '@/common/services/auth.services';
+import { getCurrentUser, login } from '@/common/services/auth.services';
 import { removeAccessToken, setAccessToken } from '@/common/utils';
-import JwtDecode from '@/common/utils/jwt-decode';
+import http, { http_provider, http_school } from '@/common/utils/http';
 
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
@@ -13,7 +13,11 @@ export const loginThunk = createAsyncThunk(
       // Save tokens securely
       setAccessToken(data.accessToken);
 
-      return JwtDecode(data.accessToken);
+      // The http interceptor should auto-attach the token we just saved
+      const userProfile = await getCurrentUser(); 
+
+      // Return the Full Profile (Not just the decoded JWT)
+      return userProfile;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.response?.data?.message || 'Đăng nhập thất bại');
     }

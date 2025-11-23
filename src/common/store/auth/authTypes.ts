@@ -1,9 +1,16 @@
 export interface User {
-  sub: string;
+  userId: string;
   email: string;
-  family_name: string;
-  given_name: string;
+  fullName: string;
+  status: {
+    key: number;
+    name: string;
+  };
   roles: string[];
+  dateOfBirth: string | null;
+  joinedAtUtc: string;
+  joinedAtVietNam: string;
+  organizationId?: string;
 }
 
 export interface AuthState {

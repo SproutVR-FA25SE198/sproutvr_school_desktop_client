@@ -16,14 +16,17 @@ import { Input } from '@/common/components/ui/input';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_BUNDLE_DETAILS_QUERY__KEY, GET_BUNDLES_LIST_QUERY_KEY } from '../services/bundle.service';
 import { ApkDownloadAlert } from '../components/apk-download-alert';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/common/store';
 
 export default function BundleDetailsPage() {
+  const { user } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
   const {orderId} = useParams<{orderId: string}>();
   const queryClient = useQueryClient();
 
-  // TODO: Get organization id from auth context
-  const organizationId = 'c0000001-0000-0000-0000-000000000002';
+  // Get organization id from currently loggin admin
+  const organizationId = user?.organizationId!;
 
   // Fetch bundle details
   const { 

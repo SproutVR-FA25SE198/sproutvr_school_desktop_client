@@ -11,13 +11,16 @@ import { useState } from 'react';
 import { Input } from '@/common/components/ui/input';
 import { ApkDownloadAlert } from '../components/apk-download-alert';
 import { ActivationDialog } from '../components/dialogs/activation-dialog';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/common/store';
 
 export default function MyBundlesPage() {
+  const { user } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   
-  // TODO: Get organization id from user context/auth state
-  const organizationId = 'c0000001-0000-0000-0000-000000000002';
+  // Get organization id from currently logged in admin
+  const organizationId = user?.organizationId!;
 
   // Fetch all bundles using the new hook
   const { data: bundles, isLoading, isError, error } = useGetMyBundles(organizationId);
