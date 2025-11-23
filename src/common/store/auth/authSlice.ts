@@ -1,5 +1,5 @@
 import { getAccessToken } from '@/common/utils';
-import http from '@/common/utils/http';
+import http, { http_provider, http_school } from '@/common/utils/http';
 
 import { loginThunk, logoutThunk } from './authThunks';
 import { type User } from './authTypes';
@@ -36,12 +36,17 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.user = action.payload as User;
         http.defaults.headers['Authorization'] = `Bearer ${getAccessToken()}`;
+        http_school.defaults.headers['Authorization'] = `Bearer ${getAccessToken()}`;
+        http_provider.defaults.headers['Authorization'] = `Bearer ${getAccessToken()}`;
+        state.error = null;
         // dispatch(fetchBasketThunk());
       })
       .addCase(loginThunk.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
         http.defaults.headers['Authorization'] = '';
+        http_school.defaults.headers['Authorization'] = '';
+        http_provider.defaults.headers['Authorization'] = '';
       })
       //   // CHECK AUTH
       //   .addCase(checkAuthThunk.pending, (state) => {
@@ -62,6 +67,8 @@ const authSlice = createSlice({
         state.user = null;
         state.isAuthenticated = false;
         http.defaults.headers['Authorization'] = '';
+        http_school.defaults.headers['Authorization'] = '';
+        http_provider.defaults.headers['Authorization'] = '';
       });
   },
 });

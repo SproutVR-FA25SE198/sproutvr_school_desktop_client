@@ -16,8 +16,11 @@ import Pagination from '@/common/components/pagination';
 import type { SessionRetrieveParams } from '../types/session-manage.type';
 import { SessionListFilters } from '../components/session-list-filters';
 import { SessionListEmptyState } from '../components/session-list-empty';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/common/store';
 
 export default function SessionListPage() {
+  const { user } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   
@@ -27,8 +30,7 @@ export default function SessionListPage() {
     pageSize: 9,
     isPaginated: true,
     sortBy: 'createdAtUtcDesc',
-    // TODO: get teacher ID from current logged in user
-    teacherId: '0199f4b1-8487-4352-8a2a-320a00e40e58'
+    teacherId: user?.userId || ''
   };
 
   const [params, setParams] = useState<SessionRetrieveParams>(initialParams);

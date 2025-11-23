@@ -16,14 +16,17 @@ import { activationSchema, type ActivationFormData } from '../forms/schema';
 import useValidateKey from '../../hooks/useValidateKey';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/common/components/ui/dialog';
 import { ActivationForm } from '../forms/key-validation-form';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/common/store';
 
 export function ActivationDialog() {
+  const { user } = useSelector((state: RootState) => state.auth);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  // TODO: Get organization id from currently logged-in school admin
-  const organizationId = 'c0000001-0000-0000-0000-000000000002';
+  // Get organization id from currently logged-in school admin
+  const organizationId = user?.organizationId!;
 
   // Initialize useForm hook
   const {

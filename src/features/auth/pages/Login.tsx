@@ -57,7 +57,7 @@ export default function LoginPage() {
   if (isSubmitting || isLoading) return <Loading isLoading={isLoading || isSubmitting} />;
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-primary to-primary-light p-4'>
+    <div className='min-h-screen flex items-center justify-center bg-linear-to-br from-primary to-primary-light p-4'>
       {/* Background pattern */}
       <div className='absolute inset-0 opacity-10'>
         <div className='absolute top-0 right-0 w-96 h-96 bg-secondary rounded-full blur-3xl'></div>

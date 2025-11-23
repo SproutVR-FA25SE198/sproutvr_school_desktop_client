@@ -1,12 +1,9 @@
-import configs from '@/core/configs/routes';
-
 import axios, { AxiosError, type AxiosInstance } from 'axios';
 
 import { HTTP_STATUS } from './constants';
+import { getAccessToken, removeAccessToken, setAccessToken } from './cookies';
 
 class Http {
-  //   private accessToken: string;
-  //   private refreshToken: string;
   instance: AxiosInstance;
 
   // Accept optional base url string
@@ -16,15 +13,16 @@ class Http {
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json',
-        // Authorization: getAccessToken() || '',
       },
     });
     this.instance.interceptors.request.use(
       (config) => {
-        // if (this.accessToken && config.headers) {
-        //   config.headers.Authorization = `Bearer ${this.accessToken}`;
-        //   return config;
-        // }
+        // Always try to get the latest token from LocalStorage
+        const token = getAccessToken();
+        
+        if (token && config.headers) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
         return config;
       },
       (error) => {
@@ -34,32 +32,28 @@ class Http {
     this.instance.interceptors.response.use(
       (response) => {
         const { url, method } = response.config;
-        if (method === 'post' && url?.includes('token/refresh')) {
-          if (response.data.access_token) {
-            // this.accessToken = response.data.access_token;
-            // this.refreshToken = response.data.refresh_token;
-            // setAccessToken(this.accessToken);
-            // setRefreshToken(this.refreshToken);
-          }
-        } else if (method === 'post' && url?.includes('sign-in')) {
-          if (response.data.data.access_token) {
-            // this.accessToken = response.data.data.access_token;
-            // this.refreshToken = response.data.data.refresh_token;
-            // setAccessToken(this.accessToken);
-            // setRefreshToken(this.refreshToken);
-          }
-        } else if (url === configs.logout) {
-          //   this.accessToken = '';
-          //   this.refreshToken = '';
-          //   removeAccessToken();
-          //   removeRefreshToken();
+        if (method === 'post' && (url?.includes('token/refresh') || url?.includes('sign-in'))) {
+            const data = response.data.data || response.data; 
+            if (data?.accessToken) {
+                setAccessToken(data.accessToken);
+                // setRefreshToken(data.refreshToken);
+            }
+        } else if (url?.endsWith('/logout')) {
+          removeAccessToken();
+           // removeRefreshToken();
         }
         return response;
       },
       (error: AxiosError) => {
         if (error.response?.status === HTTP_STATUS.UNAUTHORIZED) {
-          //   removeAccessToken();
-          //   removeRefreshToken();
+          // Safety Check: Do not clear token if the 401 came from the Login endpoint itself
+          const isLoginRequest = error.config?.url?.includes('sign-in') || error.config?.url?.includes('login');
+
+          if (!isLoginRequest) {
+            removeAccessToken();
+            // Optional: Force hard redirect if AuthGuard doesn't catch it
+            // window.location.href = '/login'; 
+          }
         }
 
         return Promise.reject(error);
