@@ -10,6 +10,8 @@ const routes = {
   vrLessonDesign: '/vr-lessons-design',
   vrSessionCreate: '/vr-sessions-create',
   sessionList: '/sessions',
+  sessionDetails: '/sessions/:id',
+  deviceSummaryDetails: '/sessions/:sessionId/devices/:deviceId',
   vrDevices: '/vr-devices',
   vrDeviceDetail: '/vr-devices/:id',
   learningSessionMonitoring: '/learning-sessions/monitoring/:id',

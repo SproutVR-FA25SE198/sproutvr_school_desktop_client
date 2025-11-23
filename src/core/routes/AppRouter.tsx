@@ -28,6 +28,8 @@ import AuthGuard from '../guards/AuthGuard';
 import AdminGuard from '../guards/AdminGuard';
 import AdminSessionList from '@/features/school-admin/sessions/pages/AdminSessionList';
 import SessionDetailPage from '@/features/school-admin/sessions/pages/AdminSessionDetail';
+import SessionDetailsPage from '@/features/learning-sessions/pages/SessionDetailsPage';
+import DeviceSummaryDetailsPage from '@/features/vr-device-session-summaries/pages/DeviceSummaryDetailsPage';
 
 export const AppRouter = () => (
   <Router>
@@ -38,6 +40,8 @@ export const AppRouter = () => (
           <Route path={routes.home} element={<LessonsPage />} />
           <Route path={routes.lessonDetails} element={<LessonDetailsPage />} />
           <Route path={routes.sessionList} element={<SessionListPage />} />
+          <Route path={routes.sessionDetails} element={<SessionDetailsPage />} />
+          <Route path={routes.deviceSummaryDetails} element={<DeviceSummaryDetailsPage />} />
         </Route>
 
         <Route element={<TeacherDesignLayout />}>

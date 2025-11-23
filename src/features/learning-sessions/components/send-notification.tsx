@@ -2,7 +2,7 @@ import { Button } from '@/common/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/common/components/ui/select';
 import { sendNotification } from '@/core/ipc/grpc';
 import { useState } from 'react';
-import { NotificationSeverity } from '../services/session-data.type';
+import { NotificationSeverity } from '../types/session-data.type';
 import { Input } from '@/common/components/ui/input';
 import { Spinner } from '@/common/components/ui/spinner';
 import { Send } from 'lucide-react';

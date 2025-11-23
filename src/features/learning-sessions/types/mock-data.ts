@@ -1,6 +1,6 @@
-import { type VRLearningSession } from './session.type';
+import type { VRLearningSessionMonitor } from "./session-monitoring.type";
 
-export const MOCK_VR_LEARNING_SESSION: VRLearningSession = {
+export const MOCK_VR_LEARNING_SESSION: VRLearningSessionMonitor = {
   vr_learning_session_id: '43cd43ae-ddd6-45b8-9042-c7c7ca8516bf',
   class_name: 'Lớp 12 Học Vui Banh Chành',
   room_code: 'IG9KDN',

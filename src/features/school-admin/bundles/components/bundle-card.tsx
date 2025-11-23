@@ -2,7 +2,7 @@
 
 import { Card } from '@/common/components/ui/card';
 import { Button } from '@/common/components/ui/button';
-import type { BundlePayload } from '@/common/types/bundle.type';
+import type { BundlePayload } from '@/features/school-admin/bundles/types/bundle.type';
 import { Eye, Map, Package } from 'lucide-react';
 
 interface BundleCardProps {

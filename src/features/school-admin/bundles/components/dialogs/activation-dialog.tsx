@@ -10,7 +10,7 @@ import type { AxiosError } from 'axios';
 import { Button } from '@/common/components/ui/button';
 import { KeyIcon } from 'lucide-react';
 import routes from '@/core/configs/routes';
-import type { KeyValidatePayload } from '@/common/types/bundle.type';
+import type { KeyValidatePayload } from '@/features/school-admin/bundles/types/bundle.type';
 import type { ApiErrorResponse } from '@/common/types/error.type';
 import { activationSchema, type ActivationFormData } from '../forms/schema';
 import useValidateKey from '../../hooks/useValidateKey';

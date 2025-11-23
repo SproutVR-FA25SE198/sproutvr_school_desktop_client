@@ -1,4 +1,4 @@
-import type { SeedMapBundlePayload } from '@/common/types/bundle.type';
+import type { SeedMapBundlePayload } from '@/features/school-admin/bundles/types/bundle.type';
 import { useMutation } from '@tanstack/react-query';
 import { seedMapBundle } from '../services/bundle.service';
 

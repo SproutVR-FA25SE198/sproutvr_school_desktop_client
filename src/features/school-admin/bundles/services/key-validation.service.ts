@@ -1,4 +1,4 @@
-import type { KeyValidatePayload } from '@/common/types/bundle.type';
+import type { KeyValidatePayload } from '@/features/school-admin/bundles/types/bundle.type';
 import { http_provider } from '@/common/utils/http';
 
 /**

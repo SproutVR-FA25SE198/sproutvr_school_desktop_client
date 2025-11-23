@@ -1,5 +1,5 @@
 'use client';
-import type { VRDevice } from '../services/session.type';
+import type { VRDevice } from '../types/session-monitoring.type';
 
 interface DeviceCardProps {
   device: VRDevice;

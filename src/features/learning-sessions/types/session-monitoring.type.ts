@@ -1,4 +1,4 @@
-export interface VRLearningSession {
+export interface VRLearningSessionMonitor {
   vr_learning_session_id: string;
   class_name: string;
   room_code: string;
