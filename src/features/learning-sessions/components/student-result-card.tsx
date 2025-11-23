@@ -1,7 +1,8 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/common/components/ui/card';
 import { User, CheckCircle2, XCircle, ChevronRight } from 'lucide-react';
 import type { VRDeviceSessionSummary, VRDeviceTaskProgress } from '../types/session-manage.type';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Badge } from '@/common/components/ui/badge';
 
 interface StudentResultCardProps {
   summary: VRDeviceSessionSummary;
@@ -11,21 +12,40 @@ interface StudentResultCardProps {
 export const StudentResultCard = ({ summary, tasks }: StudentResultCardProps) => {
   const navigate = useNavigate();
 
-  // Get current session ID from URL
-  // const { id: sessionId } = useParams<{ id: string }>();
+  // Get Session ID from the URL
+  const { id: sessionId } = useParams<{ id: string }>();
 
-  // TODO: Get device ID from each of summary object
-  const DEVICE_ID = "a1b2c3d4-e5f6-7890-1234-567890abcdef";
+  // Get Device ID from the summary object
+  const deviceId = summary.vrDevice.vrDeviceId;
 
-  // TODO: Get session ID from URL param
-  const SESSION_ID = "aa49d5c7-be29-475e-8600-bbb383dab940";
+  // --- Calculate Score (Scale 10) ---
+  const totalTasks = tasks.length;
+  const correctTasks = tasks.filter(t => t.isCorrect).length;
+  
+  // If totalTasks is 0, score is 0. Otherwise calculate score / 10.
+  const scoreRaw = totalTasks > 0 ? (correctTasks / totalTasks) * 10 : 0;
+  
+  // Format to 1 decimal place (e.g., "6.7", "10.0")
+  const scoreDisplay = scoreRaw === 10 ? "10" : scoreRaw.toFixed(1);
+
+  // --- Determine Color ---
+  const getScoreColor = (score: number) => {
+    if (score >= 8.0) return 'bg-green-100 text-green-700 border-green-200'; // Good
+    if (score >= 5.0) return 'bg-orange-100 text-orange-700 border-orange-200'; // Average
+    return 'bg-red-100 text-red-700 border-red-200'; // Bad
+  };
 
   const handleCardClick = () => {
     // Check if we have the session ID
-    // if (sessionId) {
-      navigate(`/sessions/${SESSION_ID}/devices/${DEVICE_ID}`);
-    // }
+    if (sessionId && deviceId) {
+      navigate(`/sessions/${sessionId}/devices/${deviceId}`, {
+        state: { tasks: tasks }
+      });
+    }
   };
+
+  // Sort tasks by Task Number (Ascending)
+  const sortedTasks = [...tasks].sort((a, b) => a.vrTask.taskNumber - b.vrTask.taskNumber);
 
   return (
     <Card 
@@ -40,33 +60,57 @@ export const StudentResultCard = ({ summary, tasks }: StudentResultCardProps) =>
             </div>
             <div>
               <CardTitle className="text-sm font-bold text-neutral-800">{summary.studentName}</CardTitle>
-              <p className="text-xs text-neutral-500 mt-0.5">Hoàn thành: <b className="text-neutral-800">{summary.noTasksCompleted}</b> task</p>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="text-[10px] px-1.5 py-0.5 bg-neutral-100 text-neutral-500 rounded border border-neutral-200">
+                  {summary.vrDevice.deviceName}
+                </span>
+                <p className="text-xs text-neutral-500">Hoàn thành: <b className="text-neutral-800">{summary.noTasksCompleted}</b> task</p>
+              </div>
             </div>
           </div>
-          <ChevronRight className="text-neutral-300 group-hover:text-primary transition-colors" size={18} />
+
+          {/* --- Score Badge & Chevron --- */}
+          <div className="flex items-center gap-2"> {/* Changed flex-col to items-center gap-2 */}
+            <Badge variant="outline" className={`font-bold border ${getScoreColor(scoreRaw)}`}>
+              {scoreDisplay}
+            </Badge>
+            <ChevronRight className="text-neutral-300 group-hover:text-primary transition-colors" size={18} />
+          </div>
         </div>
       </CardHeader>
       
       <CardContent className="p-5 bg-white">
-        <div className="space-y-3">
-          {tasks.length === 0 ? (
+        <div className="space-y-4">
+          {sortedTasks.length === 0 ? (
             <p className="text-xs text-neutral-400 italic text-center py-2">Chưa có dữ liệu</p>
           ) : (
-            tasks.map((task, index) => (
-              <div key={task.id} className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
+            sortedTasks.map((task) => (
+              <div key={task.id} className="flex items-start justify-between gap-3">
+                <div className="flex items-start gap-3 overflow-hidden">
                   {/* Task Number Badge */}
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold border 
+                  <div className={`w-6 h-6 shrink-0 rounded-full flex items-center justify-center text-[10px] font-bold border mt-0.5
                     ${task.isCompleted 
                       ? (task.isCorrect ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200') 
                       : 'bg-neutral-50 text-neutral-400 border-neutral-200'}`}>
-                    {index + 1}
+                    {task.vrTask.taskNumber}
                   </div>
-                  <span className={`text-xs font-medium ${task.isCompleted ? 'text-neutral-700' : 'text-neutral-400'}`}>
-                    {task.isCompleted ? (task.isCorrect ? 'Chính xác' : 'Sai kết quả') : 'Chưa làm'}
-                  </span>
+                  
+                  {/* Task Description & Status Text */}
+                  <div className="flex flex-col min-w-0">
+                    <p 
+                        className="text-xs text-neutral-600 font-medium line-clamp-1 w-full mb-0.5 group-hover/item:text-neutral-900 transition-colors" 
+                        title={task.vrTask.taskDescription}
+                    >
+                      {task.vrTask.taskDescription || "Nhiệm vụ không có mô tả"}
+                    </p>
+                    <span className={`text-[10px] font-medium ${task.isCompleted ? 'text-neutral-500' : 'text-neutral-400'}`}>
+                      {task.isCompleted ? (task.isCorrect ? 'Chính xác' : 'Sai kết quả') : 'Chưa làm'}
+                    </span>
+                  </div>
                 </div>
-                <div>
+
+                {/* Icon Status */}
+                <div className="shrink-0 mt-1">
                   {task.isCompleted && (
                     task.isCorrect 
                       ? <CheckCircle2 size={16} className="text-green-500" /> 

@@ -30,19 +30,32 @@ export interface VRLearningSession {
   createdAtVietNam: string;
 }
 
+// Task info
+export interface VRTaskInfo {
+  vrTaskId: string;
+  taskNumber: number;
+  taskDescription: string;
+}
+
 // Detailed Student/Task Data
 export interface VRDeviceTaskProgress {
   id: string;
-  vrDeviceId: string;
-  vrTaskId: string;
+  vrTask: VRTaskInfo;
   studentName: string;
   isCompleted: boolean;
   isCorrect: boolean;
   completionTimeAtUtc: string | null;
 }
 
+export interface VRDeviceInfo {
+  vrDeviceId: string;
+  deviceName: string;
+}
+
 export interface VRDeviceSessionSummary {
   id: string;
+  vrDevice: VRDeviceInfo;
+  vrLearningSessionId: string;
   studentName: string;
   noTasksCompleted: number;
 }
