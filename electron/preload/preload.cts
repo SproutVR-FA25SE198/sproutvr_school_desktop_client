@@ -1,7 +1,5 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
-console.log('🔧 Preload script loaded');
-
 contextBridge.exposeInMainWorld('electron', {
   // Teacher room state stream
   onTeacherUpdate: (cb: (data: any) => void) => {

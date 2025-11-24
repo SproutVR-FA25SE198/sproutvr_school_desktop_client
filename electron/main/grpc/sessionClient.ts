@@ -1,7 +1,8 @@
 import { credentials, Metadata } from '@grpc/grpc-js';
 import { LearningSession } from './loader.js';
+import dotenv from 'dotenv';
 
-const GRPC_SERVER_URL = process.env.GRPC_SERVER_URL || 'localhost:7701';
+const GRPC_SERVER_URL = dotenv.config().parsed?.VITE_GRPC_SERVER_URL;
 
 console.log('🔧 Initializing SessionRealTimeClient on:', GRPC_SERVER_URL);
 
@@ -61,7 +62,7 @@ export function streamTeacherRoomState(vr_learning_session_id: string) {
   const timeout = setTimeout(() => {
     console.warn('⚠️ Stream connection timeout (30s)');
     stream.cancel();
-  }, 30000); // 30 seconds timeout
+  }, 120 * 30000); // 30 seconds timeout
 
   // Clear timeout when first data arrives
   stream.on('data', (chunk: any) => {
