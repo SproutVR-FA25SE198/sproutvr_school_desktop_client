@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { VRDevice, VRLearningSession } from '../services/session.type';
+import type { VRDevice, VRLearningSessionMonitor } from '../types/session-monitoring.type';
 
 // This is the shape of one streaming event (from gRPC)
 export interface RoomStateEvent {
@@ -14,7 +14,7 @@ export interface VrMessage {
 }
 
 interface MonitoringState {
-  roomState: VRLearningSession | null; // <--- full room state
+  roomState: VRLearningSessionMonitor | null; // <--- full room state
   roomStateEvents: RoomStateEvent[]; // <--- raw event logs
   vrMessages: VrMessage[]; // <--- VR device stream logs
   isConnected: boolean;
@@ -36,7 +36,7 @@ const monitoringSlice = createSlice({
     // --------------------------------------------
     // STORE FULL SNAPSHOT (GetRoomState)
     // --------------------------------------------
-    setRoomState(state, action: PayloadAction<VRLearningSession>) {
+    setRoomState(state, action: PayloadAction<VRLearningSessionMonitor>) {
       state.roomState = action.payload;
     },
 
