@@ -1,7 +1,8 @@
 import { credentials, Metadata } from '@grpc/grpc-js';
 import { LearningSession } from './loader.js';
+import dotenv from 'dotenv';
 
-const GRPC_SERVER_URL = process.env.GRPC_SERVER_URL || 'localhost:7701';
+const GRPC_SERVER_URL = dotenv.config().parsed?.VITE_GRPC_SERVER_URL;
 
 console.log('🔧 Initializing TeacherSessionActionClient on:', GRPC_SERVER_URL);
 
