@@ -19,15 +19,14 @@ export const useMarkMapAsDownloaded = () => {
     AxiosError<ApiErrorResponse>, // Error type
     MarkAsDownloadedParams // Variables type
   >({
-    mutationFn: (params: MarkAsDownloadedParams) =>
-      markMapAsDownloaded(params.orderItemId, params.organizationId),
-    
-    onSuccess: (data, variables) => {
+    mutationFn: (params: MarkAsDownloadedParams) => markMapAsDownloaded(params.orderItemId, params.organizationId),
+
+    onSuccess: (_, variables) => {
       console.log('Successfully marked as downloaded.');
       // IMPORTANT: Invalidate the 'myBundles' query.
       // This tells React Query to re-fetch the bundle list,
       // which will now have the updated 'isDownloaded: true' flag.
-      queryClient.invalidateQueries({ queryKey: [GET_BUNDLES_LIST_QUERY_KEY, variables.organizationId]});
+      queryClient.invalidateQueries({ queryKey: [GET_BUNDLES_LIST_QUERY_KEY, variables.organizationId] });
     },
     onError: (error) => {
       console.error('Failed to mark as downloaded:', error.response?.data?.Message);

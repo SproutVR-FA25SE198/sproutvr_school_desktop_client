@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import routes from '@/core/configs/routes';
 import type { LessonRetrieve } from '../services/lesson.service';
 import type { VrLessonRetrieve } from '@/common/types/vr-lesson.type';
-import { CreateLearningSessionDialog } from './create-learning-session-dialog';
+import { CreateLearningSessionDialog } from '@/common/components/create-learning-session-dialog';
 
 interface VRLessonsListProps {
   vrLessons?: VrLessonRetrieve[];

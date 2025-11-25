@@ -66,7 +66,7 @@ export const createLesson = async (data: LessonCreationPayload) => {
   return result.data;
 };
 
-export const getVrLessonList = async (lessonId: string) => {
+export const getVrLessonList = async (lessonId?: string) => {
   const result = await http.get<VrLessonRetrieveResponse>(`/api/v1/authorized/vrlessons?lessonId=${lessonId}`);
   return result.data;
 };
