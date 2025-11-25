@@ -13,7 +13,7 @@ export function TaskMenu({ taskArr }: { taskArr: VrTaskRetrieve[] }) {
           >
             <div className='flex flex-col justify-between'>
               <div className='flex items-center justify-between'>
-                <p className='text-xs font-bold text-[#0f2c5b] uppercase'>{task.taskNumber}</p>
+                <p className='text-xs font-bold text-[#0f2c5b] uppercase'>Nhiệm vụ {task.taskNumber}</p>
                 <p className={`rounded px-2 py-1 text-xs font-medium `}>{task.activityType.name}</p>
               </div>
               <p className='text-xs text-neutral-600 mt-1'>{task.question || task.description}</p>

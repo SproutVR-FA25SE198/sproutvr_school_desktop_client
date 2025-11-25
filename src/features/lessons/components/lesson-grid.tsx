@@ -44,7 +44,7 @@ export function LessonsGrid({ lessons, subjects }: LessonsGridProps) {
       return sorted;
     }
     return filtered;
-  }, [selectedSubject, sort]);
+  }, [selectedSubject, sort, lessons]);
 
   const { currentData, currentPage, setPage, totalPages } = usePagination(filteredLessons, itemsPerPage);
 
