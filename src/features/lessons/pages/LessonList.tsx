@@ -4,15 +4,33 @@ import Loading from '@/common/components/loading';
 import { LessonsGrid } from '../components/lesson-grid';
 import useGetLessons from '../hooks/useGetLessons';
 import useGetMasterSubjects from '@/common/hooks/useGetMasterSubjects';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function LessonsPage() {
+  const locations = useLocation();
+  const navigate = useNavigate();
+
+  const lessonQueryParams = {
+    pageIndex: 1,
+    pageSize: 50,
+    sortBy: 'nameAsc',
+    subjectId: '',
+  };
+
   const {
     data,
     isLoading: isLessonsLoading,
     isError: isLessonsError,
+    refetch,
   } = useGetLessons({
-    params: { pageIndex: 1, pageSize: 50, sortBy: 'nameAsc', subjectId: '' },
+    params: lessonQueryParams,
   });
+
+  if (locations.state && (locations.state as any).refresh) {
+    refetch().then(() => {
+      navigate('.', { replace: true, state: {} });
+    });
+  }
 
   const { data: subjects, isLoading: isSubjectsLoading, isError: isSubjectsError } = useGetMasterSubjects();
 
