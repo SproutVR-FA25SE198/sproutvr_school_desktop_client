@@ -1,6 +1,6 @@
 'use client';
 
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { LessonDetailsHeader } from '../components/lesson-details-header';
 import { VRLessonsList } from '../components/vr-lessons-list';
 import { Button } from '@/common/components/ui/button';

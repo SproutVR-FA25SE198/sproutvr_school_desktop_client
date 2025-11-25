@@ -15,13 +15,10 @@ import { Checkbox } from '@/common/components/ui/checkbox';
 import type { CheckedState } from '@radix-ui/react-checkbox';
 import { Input } from '@/common/components/ui/input';
 import { Label } from '@/common/components/ui/label';
-import { useMutation } from '@tanstack/react-query';
-import { createRoom } from '@/core/ipc/grpc';
 import Loading from '@/common/components/loading';
-import { useDispatch } from 'react-redux';
-import { setSessionId } from '@/features/learning-sessions/store/sessionSlice';
+import { useCreateLearningSession } from '../hooks/useCreateLearningSession';
 
-interface CreateVrLessonDialogProps {
+interface CreateLearningSessionDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: (lessonId: string, vrLesson: VrLessonRetrieve, classroomNumber: string, classroomLetter: string) => void;
@@ -32,7 +29,7 @@ interface CreateVrLessonDialogProps {
   cancelText?: string;
 }
 
-export function CreateVrLessonDialog({
+export function CreateLearningSessionDialog({
   open,
   onOpenChange,
   onConfirm,
@@ -41,35 +38,21 @@ export function CreateVrLessonDialog({
   onCancel,
   confirmText = 'Xác nhận',
   cancelText = 'Hủy',
-}: CreateVrLessonDialogProps) {
+}: CreateLearningSessionDialogProps) {
   const [selectedVrLessonId, setSelectedVrLessonId] = useState<string>(vrLessonId || '');
   const [confirm, setConfirm] = useState<CheckedState>(false);
   const [classroomNumber, setClassroomNumber] = useState('');
   const [classroomLetter, setClassroomLetter] = useState('');
-  const [isCreatingRoom, setIsCreatingRoom] = useState(false);
   const inValidData = !confirm || !selectedVrLessonId || classroomNumber.trim() === '' || classroomLetter.trim() === '';
 
-  const dispatch = useDispatch();
+  const { createSession, isCreating, error } = useCreateLearningSession();
 
-  // Hardcoded teacher ID - should be from auth context in production
-  const teacherId = '0199f4b1-8487-4352-8a2a-320a00e40e58';
+  if (error) {
+    console.error('Error creating learning session:', error);
+    alert(`Error creating learning session: ${error}`);
+    return null;
+  }
 
-  const { mutate: createRoomMutation } = useMutation({
-    mutationFn: async ({ vrLessonId, className }: { vrLessonId: string; className: string }) => {
-      setIsCreatingRoom(true);
-      return await createRoom(teacherId, vrLessonId, className);
-    },
-    onSuccess: (response) => {
-      setIsCreatingRoom(false);
-
-      dispatch(setSessionId(response.vr_learning_session_id));
-    },
-    onError: (error: any) => {
-      console.error('Create room error:', error);
-      alert(`Lỗi khi tạo phòng: ${error?.message || 'Unknown error'}`);
-      setIsCreatingRoom(false);
-    },
-  });
   // Handle classroom number input - only numbers
   const handleClassroomNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
@@ -88,18 +71,19 @@ export function CreateVrLessonDialog({
     setClassroomLetter(value);
   };
 
-  const handleSelectVrLesson = () => {
-    if (inValidData) {
-      return;
-    }
+  const handleConfirm = async () => {
+    if (inValidData) return;
+
     const selectedVrLesson = vrLessons.find((lesson) => lesson.id === selectedVrLessonId);
-    const className = `${classroomNumber}${classroomLetter ? ' ' + classroomLetter : ''}`.trim();
-    // Only create room if class name is provided
-    if (className) {
-      setIsCreatingRoom(true);
-      createRoomMutation({ vrLessonId: selectedVrLessonId, className });
-    }
+
+    await createSession({
+      vrLessonId: selectedVrLessonId,
+      classroomNumber,
+      classroomLetter,
+    });
+
     onConfirm(selectedVrLessonId, selectedVrLesson || ({} as VrLessonRetrieve), classroomNumber, classroomLetter);
+
     onOpenChange(false);
   };
 
@@ -107,7 +91,7 @@ export function CreateVrLessonDialog({
     onCancel?.();
     onOpenChange(false);
   };
-  if (isCreatingRoom) return <Loading isLoading={isCreatingRoom} />;
+  if (isCreating) return <Loading isLoading={isCreating} />;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -128,7 +112,7 @@ export function CreateVrLessonDialog({
               <SelectTrigger className='w-full'>
                 <SelectValue placeholder='Chọn bài học VR' />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className='h-70'>
                 {vrLessons.length > 0 ? (
                   vrLessons.map((vrLesson) => (
                     <SelectItem key={vrLesson.id} value={vrLesson.id}>
@@ -146,7 +130,7 @@ export function CreateVrLessonDialog({
                 <div className='flex-1'>
                   <Input
                     placeholder='10, 11, 12...'
-                    value={classroomNumber}
+                    value={classroomNumber || ''}
                     onChange={handleClassroomNumberChange}
                     className='w-full'
                     type='text'
@@ -156,7 +140,7 @@ export function CreateVrLessonDialog({
                 <div className='flex-1'>
                   <Input
                     placeholder='1, 2, A, B...'
-                    value={classroomLetter}
+                    value={classroomLetter || ''}
                     onChange={handleClassroomLetterChange}
                     className='w-full'
                   />
@@ -177,7 +161,7 @@ export function CreateVrLessonDialog({
             variant={'default'}
             disabled={inValidData}
             type='button'
-            onClick={handleSelectVrLesson}
+            onClick={handleConfirm}
             className='flex-1 hover:cursor-pointer'
           >
             {confirmText}

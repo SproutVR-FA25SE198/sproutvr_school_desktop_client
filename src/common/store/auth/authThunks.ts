@@ -1,6 +1,5 @@
 import { getCurrentUser, login } from '@/common/services/auth.services';
 import { removeAccessToken, setAccessToken } from '@/common/utils';
-import http, { http_provider, http_school } from '@/common/utils/http';
 
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
@@ -14,7 +13,7 @@ export const loginThunk = createAsyncThunk(
       setAccessToken(data.accessToken);
 
       // The http interceptor should auto-attach the token we just saved
-      const userProfile = await getCurrentUser(); 
+      const userProfile = await getCurrentUser();
 
       // Return the Full Profile (Not just the decoded JWT)
       return userProfile;

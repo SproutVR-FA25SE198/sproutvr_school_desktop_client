@@ -3,13 +3,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/common/components/ui/button';
-import { 
-  Plus, 
-  Loader2, 
-} from 'lucide-react';
-import { ConfirmDialog } from '../components/confirm-dialog';
+import { Plus, Loader2 } from 'lucide-react';
 import routes from '@/core/configs/routes';
-import { CREATE_SESSION_CONFIRMATION } from '../constants';
 import { useGetSessions } from '../hooks/useSession';
 import { SessionItemCard } from '../components/session-item-card';
 import Pagination from '@/common/components/pagination';
@@ -18,23 +13,40 @@ import { SessionListFilters } from '../components/session-list-filters';
 import { SessionListEmptyState } from '../components/session-list-empty';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/common/store';
+import type { VrLessonRetrieve } from '@/common/types/vr-lesson.type';
+import { CreateLearningSessionDialog } from '@/common/components/create-learning-session-dialog';
+import useGetVrLessons from '@/features/lessons/hooks/useGetVrLessons';
+import Loading from '@/common/components/loading';
 
 export default function SessionListPage() {
   const { user } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  
+
+  const { data: vrLessonsData, isLoading: vrLessonsLoading } = useGetVrLessons({});
+
+  const handleConfirmCreate = (
+    vrLessonId: string,
+    vrLesson: VrLessonRetrieve,
+    classroomNumber: string,
+    classroomLetter: string,
+  ) => {
+    navigate(routes.vrSessionCreate, {
+      state: { lessonId: vrLessonId, vrLesson, classroomNumber, classroomLetter },
+    });
+  };
+
   // Initial State
   const initialParams: SessionRetrieveParams = {
     pageIndex: 1,
     pageSize: 9,
     isPaginated: true,
     sortBy: 'createdAtUtcDesc',
-    teacherId: user?.userId || ''
+    teacherId: user?.userId || '',
   };
 
   const [params, setParams] = useState<SessionRetrieveParams>(initialParams);
-  
+
   // Fetch Data
   const { data, isLoading } = useGetSessions(params);
   const sessions = data?.items || [];
@@ -43,25 +55,25 @@ export default function SessionListPage() {
 
   // Handlers
   const handlePageChange = (page: number) => {
-    setParams(prev => ({ ...prev, pageIndex: page }));
+    setParams((prev) => ({ ...prev, pageIndex: page }));
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setParams(prev => ({ ...prev, className: e.target.value, pageIndex: 1 }));
+    setParams((prev) => ({ ...prev, className: e.target.value, pageIndex: 1 }));
   };
 
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
-    setParams(prev => ({ 
-      ...prev, 
+    setParams((prev) => ({
+      ...prev,
       // Convert string "1"/"0" to number, or undefined if empty
       vrLearningSessionStatus: value === '' ? undefined : Number(value),
-      pageIndex: 1 
+      pageIndex: 1,
     }));
   };
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setParams(prev => ({ ...prev, sortBy: e.target.value, pageIndex: 1 }));
+    setParams((prev) => ({ ...prev, sortBy: e.target.value, pageIndex: 1 }));
   };
 
   const clearFilters = () => {
@@ -71,31 +83,28 @@ export default function SessionListPage() {
   // Check if any filter is active to show the "Clear" button
   const isFiltering = !!params.className || params.vrLearningSessionStatus !== undefined;
 
+  if (isLoading || vrLessonsLoading) return <Loading isLoading={isLoading || vrLessonsLoading} />;
+
   return (
     <div className='flex-1 h-full overflow-y-auto bg-slate-50/50 p-8'>
       <div className='max-w-7xl mx-auto flex flex-col min-h-[calc(100vh-4rem)] space-y-8'>
-        
         {/* --- HEADER SECTION --- */}
         <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
           <div>
-            <h2 className='text-3xl font-bold text-slate-900 tracking-tight'>
-              Danh sách phiên học
-            </h2>
-            <p className='text-slate-500 mt-1'>
-              Quản lý lớp học VR và theo dõi tiến độ học sinh
-            </p>
+            <h2 className='text-3xl font-bold text-slate-900 tracking-tight'>Danh sách phiên học</h2>
+            <p className='text-slate-500 mt-1'>Quản lý lớp học VR và theo dõi tiến độ học sinh</p>
           </div>
-          <Button 
-            className='bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all' 
+          <Button
+            className='bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all'
             onClick={() => setShowConfirmDialog(true)}
           >
-            <Plus size={18} className='mr-2' /> 
+            <Plus size={18} className='mr-2' />
             Tạo phiên học mới
           </Button>
         </div>
 
         {/* --- FILTER BAR --- */}
-        <SessionListFilters 
+        <SessionListFilters
           params={params}
           onSearchChange={handleSearchChange}
           onStatusChange={handleStatusChange}
@@ -108,10 +117,10 @@ export default function SessionListPage() {
           {isLoading ? (
             <div className='flex flex-col items-center justify-center h-64 w-full text-slate-400 gap-3'>
               <Loader2 className='h-10 w-10 animate-spin text-primary' />
-              <p className="text-sm font-medium">Đang tải dữ liệu...</p>
+              <p className='text-sm font-medium'>Đang tải dữ liệu...</p>
             </div>
           ) : sessions.length === 0 ? (
-            <SessionListEmptyState 
+            <SessionListEmptyState
               isFiltering={isFiltering}
               onClearFilters={clearFilters}
               onCreateNew={() => setShowConfirmDialog(true)}
@@ -127,22 +136,17 @@ export default function SessionListPage() {
 
         {/* --- PAGINATION --- */}
         {!isLoading && sessions.length > 0 && (
-          <div className="py-4 border-t border-slate-200 flex justify-center">
-            <Pagination 
-              currentPage={params.pageIndex}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
+          <div className='py-4 border-t border-slate-200 flex justify-center'>
+            <Pagination currentPage={params.pageIndex} totalPages={totalPages} onPageChange={handlePageChange} />
           </div>
         )}
       </div>
 
-      <ConfirmDialog
+      <CreateLearningSessionDialog
         open={showConfirmDialog}
         onOpenChange={setShowConfirmDialog}
-        title={CREATE_SESSION_CONFIRMATION.title}
-        question={CREATE_SESSION_CONFIRMATION.question}
-        onConfirm={() => navigate(routes.vrSessionCreate)}
+        vrLessons={vrLessonsData?.items || ([] as VrLessonRetrieve[])}
+        onConfirm={handleConfirmCreate}
         confirmText='Tiếp tục'
         cancelText='Hủy'
       />
