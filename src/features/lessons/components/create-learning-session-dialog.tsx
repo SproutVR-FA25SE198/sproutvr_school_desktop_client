@@ -21,7 +21,7 @@ import Loading from '@/common/components/loading';
 import { useDispatch } from 'react-redux';
 import { setSessionId } from '@/features/learning-sessions/store/sessionSlice';
 
-interface CreateVrLessonDialogProps {
+interface CreateLearningSessionDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: (lessonId: string, vrLesson: VrLessonRetrieve, classroomNumber: string, classroomLetter: string) => void;
@@ -32,7 +32,7 @@ interface CreateVrLessonDialogProps {
   cancelText?: string;
 }
 
-export function CreateVrLessonDialog({
+export function CreateLearningSessionDialog({
   open,
   onOpenChange,
   onConfirm,
@@ -41,7 +41,7 @@ export function CreateVrLessonDialog({
   onCancel,
   confirmText = 'Xác nhận',
   cancelText = 'Hủy',
-}: CreateVrLessonDialogProps) {
+}: CreateLearningSessionDialogProps) {
   const [selectedVrLessonId, setSelectedVrLessonId] = useState<string>(vrLessonId || '');
   const [confirm, setConfirm] = useState<CheckedState>(false);
   const [classroomNumber, setClassroomNumber] = useState('');
