@@ -5,7 +5,9 @@ import { useGetSessionDetail } from '../hooks/useSession';
 import { SessionHeader } from '../components/session-header';
 import { SessionStatsGrid } from '../components/session-stats-grid';
 import { StudentResultCard } from '../components/student-result-card';
-import { Loader2 } from 'lucide-react';
+import { Download, Loader2 } from 'lucide-react';
+import { Button } from '@/common/components/ui/button';
+import { exportSessionToExcel } from '@/common/utils/export-to-excel';
 
 export default function SessionDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -27,6 +29,16 @@ export default function SessionDetailsPage() {
         
         {/* Header Section */}
         <SessionHeader session={session} />
+
+        {/* Actions Bar - Add this new section between Header and Stats */}
+        <div className="flex justify-end">
+            <Button 
+                onClick={() => exportSessionToExcel(session)}
+                className="bg-green-600 hover:bg-green-700 text-white shadow-sm"
+            >
+                <Download size={18} className="mr-2" /> Xuất báo cáo Excel
+            </Button>
+        </div>
 
         {/* Stats Overview */}
         <SessionStatsGrid session={session} />
