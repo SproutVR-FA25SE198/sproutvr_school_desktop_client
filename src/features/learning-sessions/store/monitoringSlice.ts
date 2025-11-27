@@ -65,11 +65,26 @@ const monitoringSlice = createSlice({
       switch (event.type) {
         // DEVICE_JOINED or DEVICE_CONNECTED
         case 'device_joined': {
-          const device = event.data as VRDevice;
+          const incomingDevice = event.data as VRDevice;
 
-          const exists = session.devices.some((d) => d.vr_device_serial_number === device.vr_device_serial_number);
-          if (!exists) {
-            session.devices.push(device);
+          // Find the specific device object in the array
+          const existingDevice = session.devices.find(
+            (d) => d.vr_device_serial_number === incomingDevice.vr_device_serial_number
+          );
+
+          if (existingDevice) {
+            // IF FOUND: Update the status to Connected
+            existingDevice.status = 'Connected'; 
+            
+            // Optional: Update the student name in case it changed/was mapped recently
+            if (incomingDevice.student_name) {
+              existingDevice.student_name = incomingDevice.student_name;
+            }
+          } else {
+            // IF NOT FOUND: Push the new device into the array
+            // Ensure the incoming payload status is set, or force it here
+            if (!incomingDevice.status) incomingDevice.status = 'Connected';
+            session.devices.push(incomingDevice);
           }
           break;
         }
