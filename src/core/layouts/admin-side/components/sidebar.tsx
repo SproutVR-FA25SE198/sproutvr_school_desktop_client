@@ -32,6 +32,7 @@ export function AdminSidebar() {
 
   const { user } = useSelector((state: RootState) => state.auth);
   const displayName = user?.fullName || 'User';
+  const initial = displayName.charAt(0);
 
   const isActive = (href: string) => location.pathname.startsWith(href.replace(/:\w+/, ''));
 
@@ -81,7 +82,7 @@ export function AdminSidebar() {
           <LogOut className='h-4 w-4' /> {isOpen && <span className='ml-3'>Đăng xuất</span>}
         </Button>
         <div className='flex items-center gap-3'>
-          <div className='w-10 h-10 bg-neutral-700 rounded-full flex items-center justify-center font-bold'>AM</div>
+          <div className='w-10 h-10 bg-neutral-700 rounded-full flex items-center justify-center font-bold'>{initial}</div>
           {isOpen && (
             <div className='flex-1 min-w-0'>
               <p className='text-sm font-medium truncate'>{displayName}</p>
