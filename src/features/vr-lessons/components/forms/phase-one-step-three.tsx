@@ -24,7 +24,6 @@ export function PhaseOneStepThree() {
         name: formData.name,
         description: formData.description,
       });
-      submitForm();
       const payload: VrLessonCreatePayload = {
         name: formData.name,
         description: formData.description,
