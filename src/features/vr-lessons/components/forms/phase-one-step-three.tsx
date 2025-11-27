@@ -8,7 +8,7 @@ import { VrLessonNameInput } from '../vr-lesson-name-input';
 import type { VrLessonCreatePayload, VrTaskCreatePayload } from '@/common/types/vr-lesson.type';
 
 export function PhaseOneStepThree() {
-  const { lessonData, updateLessonData, goToStep, submitForm, tasks } = useFormContext();
+  const { lessonData, updateLessonData, goToStep, tasks } = useFormContext();
   const { formData, updateField, errors, isValid, createVrLessonPhaseOneMutate } = useStepThreeForm(
     { name: lessonData.name, description: lessonData.description },
     updateLessonData,
