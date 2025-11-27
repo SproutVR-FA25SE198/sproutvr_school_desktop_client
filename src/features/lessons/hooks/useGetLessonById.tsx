@@ -7,6 +7,7 @@ const useGetLessonById = ({ lessonId }: { lessonId: string }) => {
     queryFn: async () => await getLessonById(lessonId),
     staleTime: LESSONS_STALE_TIME,
     refetchOnWindowFocus: false,
+    refetchOnMount: true,
   });
 
   return { data, isLoading, isError };
