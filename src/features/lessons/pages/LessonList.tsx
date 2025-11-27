@@ -7,50 +7,45 @@ import useGetMasterSubjects from '@/common/hooks/useGetMasterSubjects';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function LessonsPage() {
-  const locations = useLocation();
+  const location = useLocation();
   const navigate = useNavigate();
 
-  const lessonQueryParams = {
-    pageIndex: 1,
-    pageSize: 50,
-    sortBy: 'nameAsc',
-    subjectId: '',
-  };
-
   const {
-    data,
+    data: lessonData,
     isLoading: isLessonsLoading,
     isError: isLessonsError,
     refetch,
   } = useGetLessons({
-    params: lessonQueryParams,
+    params: {
+      pageIndex: 1,
+      pageSize: 100,
+      sortBy: 'nameAsc',
+      subjectId: '',
+    },
   });
 
-  if (locations.state && (locations.state as any).refresh) {
+  if (location.state?.refresh) {
     refetch().then(() => {
       navigate('.', { replace: true, state: {} });
     });
   }
 
-  const { data: subjects, isLoading: isSubjectsLoading, isError: isSubjectsError } = useGetMasterSubjects();
+  const {
+    data: subjectsData,
+    isLoading: isSubjectsLoading,
+    isError: isSubjectsError,
+  } = useGetMasterSubjects();
 
-  const isLoading = isLessonsLoading || isSubjectsLoading;
-  const isError = isLessonsError || isSubjectsError;
+  if (isLessonsLoading || isSubjectsLoading) return <Loading isLoading />;
 
-  console.log('error', isError);
-
-  if (isLoading) return <Loading isLoading />;
   return (
-    <div className='overflow-y-auto border-r border-neutral-200 p-8'>
-      <div className=''>
-        <div className='flex items-center justify-between mb-6'>
-          <div>
-            <h2 className='text-2xl font-bold text-neutral-900 mb-1'>Danh sách bài giảng</h2>
-          </div>
-        </div>
+    <div className="p-8 h-full overflow-y-auto">
+      <h2 className="text-2xl font-bold mb-6">Danh sách bài giảng</h2>
 
-        <LessonsGrid lessons={data?.items} subjects={subjects?.items} />
-      </div>
+      <LessonsGrid
+        lessons={lessonData?.items || []}
+        subjects={subjectsData?.items || []}
+      />
     </div>
   );
 }

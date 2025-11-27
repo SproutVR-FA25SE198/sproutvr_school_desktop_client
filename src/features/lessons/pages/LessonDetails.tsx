@@ -37,11 +37,12 @@ export default function LessonDetailsPage() {
   }
 
   return (
-    <div className='flex-1 overflow-y-auto'>
+    <div className='p-8 h-full overflow-y-auto'>
       <div className='max-w-4xl mx-auto py-4'>
         {/* Back Button */}
         <Link
           to='/'
+          state={{ refresh: true }}
           className='inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 mb-4 transition-colors'
         >
           <ChevronLeft />

@@ -44,7 +44,7 @@ export default function DeviceSummaryDetailsPage() {
   const theme = getScoreTheme(scoreRaw);
 
   return (
-    <div className='flex-1 overflow-y-auto bg-slate-50/50 p-8'>
+    <div className='p-8 h-full overflow-y-auto'>
       <div className='max-w-5xl mx-auto space-y-8'>
         
         {/* Header Section */}

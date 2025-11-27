@@ -24,7 +24,7 @@ export default function SessionDetailsPage() {
   if (!session) return <div className="p-8 text-center">Không tìm thấy phiên học</div>;
 
   return (
-    <div className='flex-1 overflow-y-auto bg-slate-50/50 p-8'>
+    <div className='p-8 h-full overflow-y-auto'>
       <div className='max-w-7xl mx-auto space-y-8'>
         
         {/* Header Section */}

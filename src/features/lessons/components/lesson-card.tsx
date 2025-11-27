@@ -12,7 +12,7 @@ export function LessonCard({ lesson, onSelect }: LessonCardProps) {
       onClick={() => onSelect(lesson.id)}
       className={`text-left  grid grid-cols-2 gap-3 p-3 rounded-lg overflow-hidden transition-all hover:ring-1 hover:ring-secondary/50`}
     >
-      <div className='bg-neutral-200 h-32 rounded-lg overflow-hidden'>
+      <div className='bg-neutral-200 h-60 rounded-lg overflow-hidden'>
         <img
           src={lesson.subject.imageUrl || '/placeholder.svg'}
           alt={lesson.subject.name}

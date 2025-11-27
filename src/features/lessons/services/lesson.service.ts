@@ -17,7 +17,7 @@ export type LessonRetrieveParams = {
   pageIndex: number;
   pageSize: number;
   sortBy: string;
-  subjectId: string;
+  subjectId?: string;
 };
 
 export interface LessonRetrieve
@@ -47,7 +47,7 @@ export interface LessonCreationPayload {
 
 export const getLessonList = async (data: LessonRetrieveParams) => {
   const result = await http.get<LessonRetrieveResponse>(
-    `/api/v1/authorized/lessons?pageIndex=${data.pageIndex}&pageSize=${data.pageSize}&isPaginated=false`,
+    `/api/v1/authorized/lessons?sortBy=${data.sortBy}&isPaginated=false`,
   );
   return result.data;
 };
