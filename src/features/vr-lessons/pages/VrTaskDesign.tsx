@@ -12,12 +12,21 @@ import type { VrLessonRetrieve } from '@/common/types/vr-lesson.type';
 
 export function PhaseTwo() {
   const { currentTab, submitForm, lessonData, setVrLessonData } = useFormContext();
-  const [isValid, setIsValid] = useState(false);
-
+  const [taskValidity, setTaskValidity] = useState<Record<number, boolean>>({});
   const { data: vrLesson, isLoading } = useGetVrLessonById(lessonData.id);
 
+  const updateTaskValidity = (taskNumber: number, valid: boolean) => {
+    setTaskValidity((prev) => ({
+      ...prev,
+      [taskNumber]: valid,
+    }));
+  };
+
+  const allTasksValid =
+    Object.keys(taskValidity).length === vrLesson?.tasks.length && Object.values(taskValidity).every(Boolean);
+
   const handleFinish = () => {
-    if (isValid) {
+    if (Object.values(taskValidity).every(Boolean)) {
       submitForm();
     }
   };
@@ -39,8 +48,8 @@ export function PhaseTwo() {
       const taskNumber = Number.parseInt(taskMatch[1]);
       return (
         <TaskTab
-          valid={isValid}
-          setIsValid={setIsValid}
+          valid={taskValidity[taskNumber] ?? false}
+          setIsValid={(valid) => updateTaskValidity(taskNumber, valid)}
           taskNumber={taskNumber}
           vrLessonData={vrLesson || ({} as VrLessonRetrieve)}
         />
@@ -59,7 +68,7 @@ export function PhaseTwo() {
           {/* <div className='flex items-center gap-4'>
             <h2 className='text-xl font-semibold text-primary'>Vr Lesson</h2>
           </div> */}
-          <Button variant='secondary' onClick={handleFinish} disabled={!isValid}>
+          <Button variant='secondary' onClick={handleFinish} disabled={!allTasksValid}>
             Hoàn tất bài học VR
           </Button>
         </div>

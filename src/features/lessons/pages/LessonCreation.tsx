@@ -36,6 +36,12 @@ export default function LessonCreationPage() {
   });
 
   const isLoading = isMasterSubjectsLoading || isSubjectsLoading || isPending;
+  const isError = isMasterSubjectsError || isSubjectsError;
+
+  if (isError) {
+    alert('Đã có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại sau.');
+    navigate(routes.home);
+  }
 
   const handleBack = () => {
     window.history.back();
@@ -56,18 +62,18 @@ export default function LessonCreationPage() {
   if (isLoading) return <Loading isLoading />;
 
   return (
-    <div className="h-screen overflow-y-auto">
-      <div className="mx-auto container w-full space-y-6 p-8 mt-4 pb-16">
+    <div className='h-screen overflow-y-auto'>
+      <div className='mx-auto container w-full space-y-6 p-8 mt-4 pb-16'>
         {/* Header */}
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={handleBack} className="rounded-full bg-white shadow-sm">
-            <ChevronLeft className="size-5" />
+        <div className='flex items-center gap-4'>
+          <Button variant='ghost' size='icon' onClick={handleBack} className='rounded-full bg-white shadow-sm'>
+            <ChevronLeft className='size-5' />
           </Button>
-          <h1 className="text-3xl self-center font-bold text-neutral-900">Tạo bài giảng mới</h1>
+          <h1 className='text-3xl self-center font-bold text-neutral-900'>Tạo bài giảng mới</h1>
         </div>
 
         {/* Form Card */}
-        <Card className="p-8 w-full">
+        <Card className='p-8 w-full'>
           <LessonForm masterSubjects={masterSubjects?.items} subjects={subjects?.items} onSubmit={handleSubmit} />
         </Card>
       </div>

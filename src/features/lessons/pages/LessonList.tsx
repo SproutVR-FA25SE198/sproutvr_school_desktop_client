@@ -5,51 +5,52 @@ import { LessonsGrid } from '../components/lesson-grid';
 import useGetLessons from '../hooks/useGetLessons';
 import useGetMasterSubjects from '@/common/hooks/useGetMasterSubjects';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import type { RootState } from '@/common/store';
 
 export default function LessonsPage() {
-  const { user } = useSelector((state: RootState) => state.auth);
-  const location = useLocation();
+  const locations = useLocation();
   const navigate = useNavigate();
 
+  const lessonQueryParams = {
+    pageIndex: 1,
+    pageSize: 50,
+    sortBy: 'nameAsc',
+    subjectId: '',
+  };
+
   const {
-    data: lessonData,
+    data,
     isLoading: isLessonsLoading,
     isError: isLessonsError,
     refetch,
   } = useGetLessons({
-    params: {
-      pageIndex: 1,
-      pageSize: 100,
-      sortBy: 'nameAsc',
-      subjectId: '',
-      teacherId: user?.userId
-    },
+    params: lessonQueryParams,
   });
 
-  if (location.state?.refresh) {
+  if (locations.state && (locations.state as any).refresh) {
     refetch().then(() => {
       navigate('.', { replace: true, state: {} });
     });
   }
 
-  const {
-    data: subjectsData,
-    isLoading: isSubjectsLoading,
-    isError: isSubjectsError,
-  } = useGetMasterSubjects();
+  const { data: subjects, isLoading: isSubjectsLoading, isError: isSubjectsError } = useGetMasterSubjects();
 
-  if (isLessonsLoading || isSubjectsLoading) return <Loading isLoading />;
+  const isLoading = isLessonsLoading || isSubjectsLoading;
+  const isError = isLessonsError || isSubjectsError;
 
+  console.log('error', isError);
+
+  if (isLoading) return <Loading isLoading />;
   return (
-    <div className="p-8 h-full overflow-y-auto">
-      <h2 className="text-2xl font-bold mb-6">Danh sách bài giảng</h2>
+    <div className='overflow-y-auto border-r border-neutral-200 p-8'>
+      <div className=''>
+        <div className='flex items-center justify-between mb-6'>
+          <div>
+            <h2 className='text-2xl font-bold text-neutral-900 mb-1'>Danh sách bài học</h2>
+          </div>
+        </div>
 
-      <LessonsGrid
-        lessons={lessonData?.items || []}
-        subjects={subjectsData?.items || []}
-      />
+        <LessonsGrid lessons={data?.items} subjects={subjects?.items} />
+      </div>
     </div>
   );
 }
