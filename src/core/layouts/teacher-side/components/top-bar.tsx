@@ -12,7 +12,7 @@ export function TopBar({ schoolName, userName, notificationCount = 3 }: TopBarPr
       {/* Left side - School name */}
       <div>
         <h1 className='text-2xl font-bold text-neutral-900'>{schoolName}</h1>
-        <p className='text-sm text-neutral-500'>Welcome back, {userName}</p>
+        <p className='text-sm text-neutral-500'>Xin chào, {userName}</p>
       </div>
 
       {/* Right side - Notifications and user */}
@@ -31,7 +31,7 @@ export function TopBar({ schoolName, userName, notificationCount = 3 }: TopBarPr
         <div className='flex items-center gap-3 pl-6 border-l border-neutral-200'>
           <div className='text-right'>
             <p className='text-sm font-medium text-neutral-900'>{userName}</p>
-            <p className='text-xs text-neutral-500'>Administrator</p>
+            <p className='text-xs text-neutral-500'>Giáo viên</p>
           </div>
           <div className='w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold'>
             {userName

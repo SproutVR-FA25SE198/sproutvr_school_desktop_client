@@ -28,7 +28,7 @@ export default function CreateSessionPage() {
           <Button variant='ghost' size='icon' onClick={handleBack} className='rounded-full bg-white shadow-sm'>
             <ChevronLeft className='size-5' />
           </Button>
-          <h1 className='text-3xl self-center font-bold text-neutral-900'>Mở lớp học VR</h1>
+          <h1 className='text-3xl self-center font-bold text-neutral-900'>Mở phiên học VR</h1>
         </div>
         <SessionForm
           vrLesson={vrLesson}

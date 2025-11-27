@@ -62,7 +62,7 @@ export function LessonForm({ onSubmit, masterSubjects, subjects }: LessonFormPro
         </Label>
         <Input
           id='name'
-          placeholder='Nhập tên lớp học'
+          placeholder='Nhập tên bài giảng'
           {...register('name')}
           className={errors.name ? 'border-red-500' : ''}
         />
@@ -80,7 +80,7 @@ export function LessonForm({ onSubmit, masterSubjects, subjects }: LessonFormPro
       {/* Description */}
       <div className='space-y-2'>
         <Label htmlFor='description' className='text-base font-semibold'>
-          Mô tả lớp học
+          Mô tả bài giảng
         </Label>
         <Textarea
           id='description'
@@ -103,7 +103,7 @@ export function LessonForm({ onSubmit, masterSubjects, subjects }: LessonFormPro
           Xóa thông tin
         </Button>
         <Button type='submit' variant='secondary' disabled={!isValid || isSubmitting} className='min-w-32'>
-          {isSubmitting ? 'Đang lưu bài học...' : 'Lưu bài học'}
+          {isSubmitting ? 'Đang lưu bài giảng...' : 'Lưu bài giảng'}
         </Button>
       </div>
     </form>

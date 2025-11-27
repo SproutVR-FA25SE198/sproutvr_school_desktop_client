@@ -26,8 +26,8 @@ export default function LessonDetailsPage() {
     return (
       <div className='flex-1 flex items-center justify-center'>
         <div className='text-center'>
-          <h2 className='text-2xl font-bold text-neutral-900 mb-2'>Không tìm thấy bài học này</h2>
-          <p className='text-neutral-600 mb-4'>Bài học bạn đang tìm không tồn tại.</p>
+          <h2 className='text-2xl font-bold text-neutral-900 mb-2'>Không tìm thấy bài giảng này</h2>
+          <p className='text-neutral-600 mb-4'>Bài giảng bạn đang tìm không tồn tại.</p>
           <Link to='/'>
             <Button className='bg-primary text-white hover:bg-primary/90'>Quay lại</Button>
           </Link>

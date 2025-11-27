@@ -68,7 +68,7 @@ export default function LessonCreationPage() {
         <Button variant='ghost' size='icon' onClick={handleBack} className='rounded-full bg-white shadow-sm'>
           <ChevronLeft className='size-5' />
         </Button>
-        <h1 className='text-3xl self-center font-bold text-neutral-900'>Tạo lớp học mới</h1>
+        <h1 className='text-3xl self-center font-bold text-neutral-900'>Tạo bài giảng mới</h1>
       </div>
 
       {/* Form Card */}

@@ -18,7 +18,7 @@ interface LessonsGridProps {
 
 export function LessonsGrid({ lessons, subjects }: LessonsGridProps) {
   if (!lessons || lessons.length === 0) {
-    return <div className='text-center text-neutral-600'>Không có bài học nào.</div>;
+    return <div className='text-center text-neutral-600'>Không có bài giảng nào.</div>;
   }
 
   const [selectedSubject, setSelectedSubject] = useState('all');
@@ -82,7 +82,7 @@ export function LessonsGrid({ lessons, subjects }: LessonsGridProps) {
             {sort === 'asc' ? <SortDesc /> : <SortAsc />} Sắp xếp theo tên
           </Button>
           <Button className='bg-primary text-white hover:bg-primary/90' onClick={() => navigate(routes.lessonCreation)}>
-            <BookOpen /> Tạo bài học mới
+            <BookOpen /> Tạo bài giảng mới
           </Button>
         </div>
       </div>

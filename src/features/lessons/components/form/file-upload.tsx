@@ -19,7 +19,7 @@ export function FileUpload<T extends FieldValues>({ control, error }: { control:
 
         return (
           <div className='space-y-3'>
-            <Label className='text-base font-semibold'>Tài liệu bài học (PDF)</Label>
+            <Label className='text-base font-semibold'>Tài liệu (PDF)</Label>
 
             <div
               onDragEnter={(e) => {
