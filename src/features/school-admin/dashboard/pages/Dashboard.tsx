@@ -18,6 +18,7 @@ import { KpiCard } from "../components/kpi-card";
 import StatusPieCard from "../components/status-pie-card";
 import type { SessionListItem } from "../../sessions/types/session.types";
 import { fetchSessions } from "../../sessions/services/session.services";
+import { DialogflowWidget } from "@/features/chatbot/components/chat-bot";
 
 export default function Dashboard() {
   const [masterSubjects, setMasterSubjects] = useState<MasterSubject[]>([]);
@@ -385,6 +386,7 @@ export default function Dashboard() {
         </Card>
 
       </div>
+      <DialogflowWidget></DialogflowWidget>
     </div>
   );
 }
