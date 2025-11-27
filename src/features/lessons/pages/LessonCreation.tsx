@@ -12,7 +12,8 @@ import { useMutation } from '@tanstack/react-query';
 import { createLesson, type LessonCreationPayload } from '../services/lesson.service';
 import { useNavigate } from 'react-router-dom';
 import routes from '@/core/configs/routes';
-import useGetLessons from '../hooks/useGetLessons';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/common/store';
 
 export default function LessonCreationPage() {
   const {
@@ -23,10 +24,9 @@ export default function LessonCreationPage() {
 
   const navigate = useNavigate();
 
+  const { user } = useSelector((state: RootState) => state.auth);
+
   const { data: subjects, isLoading: isSubjectsLoading, isError: isSubjectsError } = useGetSubjects();
-  const { refetch: refetchLessons } = useGetLessons({
-    params: { pageIndex: 1, pageSize: 50, sortBy: 'nameAsc', subjectId: '' },
-  });
 
   const { mutate: createLessonMutation, isPending } = useMutation({
     mutationFn: async (data: LessonCreationPayload) => await createLesson(data),
@@ -36,9 +36,6 @@ export default function LessonCreationPage() {
   });
 
   const isLoading = isMasterSubjectsLoading || isSubjectsLoading || isPending;
-
-  const isError = isMasterSubjectsError || isSubjectsError;
-  console.error(isError);
 
   const handleBack = () => {
     window.history.back();
@@ -50,31 +47,30 @@ export default function LessonCreationPage() {
       name: data.name,
       description: data.description,
       resourceFile: data.resourceFile,
-      teacherId: '0199f4b1-8487-4352-8a2a-320a00e40e58',
+      teacherId: user?.userId,
     };
 
     createLessonMutation(payload);
-    refetchLessons();
-    // Here you would typically send the data to your backend
-    // Then navigate to a success page or lessons list
   };
 
   if (isLoading) return <Loading isLoading />;
 
   return (
-    <div className='mx-auto container w-full space-y-6 p-8 mt-16'>
-      {/* Header */}
-      <div className='flex items-center gap-4'>
-        <Button variant='ghost' size='icon' onClick={handleBack} className='rounded-full bg-white shadow-sm'>
-          <ChevronLeft className='size-5' />
-        </Button>
-        <h1 className='text-3xl self-center font-bold text-neutral-900'>Tạo bài giảng mới</h1>
-      </div>
+    <div className="h-screen overflow-y-auto">
+      <div className="mx-auto container w-full space-y-6 p-8 mt-4 pb-16">
+        {/* Header */}
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={handleBack} className="rounded-full bg-white shadow-sm">
+            <ChevronLeft className="size-5" />
+          </Button>
+          <h1 className="text-3xl self-center font-bold text-neutral-900">Tạo bài giảng mới</h1>
+        </div>
 
-      {/* Form Card */}
-      <Card className='p-8 w-full'>
-        <LessonForm masterSubjects={masterSubjects?.items} subjects={subjects?.items} onSubmit={handleSubmit} />
-      </Card>
+        {/* Form Card */}
+        <Card className="p-8 w-full">
+          <LessonForm masterSubjects={masterSubjects?.items} subjects={subjects?.items} onSubmit={handleSubmit} />
+        </Card>
+      </div>
     </div>
   );
 }
