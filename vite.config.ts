@@ -11,7 +11,6 @@ export default defineConfig({
     outDir: 'dist-react',
   },
   server: {
-    host: '192.168.137.115',
     port: 7272,
     strictPort: true,
   },
