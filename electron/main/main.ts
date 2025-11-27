@@ -16,7 +16,7 @@ app.on('ready', () => {
   registerGrpcEvents(mainWindow);
 
   if (isDev()) {
-    mainWindow.loadURL('http://localhost:7272');
+    mainWindow.loadURL('http://192.168.137.115:7272');
   } else {
     mainWindow.loadFile(path.join(app.getAppPath(), 'dist-react', 'index.html'));
   }

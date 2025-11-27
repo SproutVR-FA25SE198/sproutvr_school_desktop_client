@@ -49,14 +49,22 @@ export function DeviceCard({ device }: DeviceCardProps) {
               </span>
               <span
                 className={`text-xs font-semibold ${
-                  task.is_completed && task.question_name
-                    ? task.is_correct
-                      ? 'text-green-600'
-                      : 'text-red-600'
+                  task.is_completed
+                    ? task.question_name
+                      ? task.is_correct
+                        ? 'text-green-600'
+                        : 'text-red-600'
+                      : 'text-green-600' 
                     : 'text-neutral-500'
                 }`}
               >
-                {task.is_completed && task.question_name ? (task.is_correct ? 'Đúng' : 'Sai') : 'Chưa hoàn thành'}
+                {task.is_completed
+                  ? task.question_name
+                    ? task.is_correct
+                      ? 'Đúng'
+                      : 'Sai'
+                    : 'Hoàn thành' 
+                  : 'Chưa hoàn thành'}
               </span>
             </div>
             {task.completion_time_at_vietnam && (
