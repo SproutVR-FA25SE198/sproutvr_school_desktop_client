@@ -12,6 +12,8 @@ import { useMutation } from '@tanstack/react-query';
 import { createLesson, type LessonCreationPayload } from '../services/lesson.service';
 import { useNavigate } from 'react-router-dom';
 import routes from '@/core/configs/routes';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/common/store';
 
 export default function LessonCreationPage() {
   const {
@@ -21,6 +23,8 @@ export default function LessonCreationPage() {
   } = useGetMasterSubjects();
 
   const navigate = useNavigate();
+
+  const { user } = useSelector((state: RootState) => state.auth);
 
   const { data: subjects, isLoading: isSubjectsLoading, isError: isSubjectsError } = useGetSubjects();
 
@@ -43,7 +47,7 @@ export default function LessonCreationPage() {
       name: data.name,
       description: data.description,
       resourceFile: data.resourceFile,
-      teacherId: '0199f4b1-8487-4352-8a2a-320a00e40e58',
+      teacherId: user?.userId,
     };
 
     createLessonMutation(payload);

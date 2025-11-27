@@ -5,8 +5,11 @@ import { LessonsGrid } from '../components/lesson-grid';
 import useGetLessons from '../hooks/useGetLessons';
 import useGetMasterSubjects from '@/common/hooks/useGetMasterSubjects';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/common/store';
 
 export default function LessonsPage() {
+  const { user } = useSelector((state: RootState) => state.auth);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -21,6 +24,7 @@ export default function LessonsPage() {
       pageSize: 100,
       sortBy: 'nameAsc',
       subjectId: '',
+      teacherId: user?.userId
     },
   });
 
