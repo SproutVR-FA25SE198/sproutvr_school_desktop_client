@@ -304,7 +304,7 @@ export function SessionForm({
           </div>
           {/* Duration */}
           <div>
-            <Label className='text-sm font-medium mb-2 block'>Thời lượng phòng học</Label>
+            <Label className='text-sm font-medium mb-2 block'>Thời lượng phiên học</Label>
             <Select value={durationMinutes.toString()} onValueChange={(value) => setDurationMinutes(parseInt(value))}>
               <SelectTrigger className='w-full'>
                 <SelectValue />

@@ -50,7 +50,7 @@ export function SessionMonitoringDashboard({ session, vrLessonDetails }: Session
           </div>
 
           <div>
-            <p className='text-xs text-neutral-500 uppercase tracking-wide'>Bài học</p>
+            <p className='text-xs text-neutral-500 uppercase tracking-wide'>Bài học VR</p>
             <p className='text-sm font-medium text-neutral-900'>{vrlesson?.name || 'N/A'}</p>
           </div>
         </div>

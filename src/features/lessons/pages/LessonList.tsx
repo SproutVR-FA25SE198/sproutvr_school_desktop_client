@@ -45,7 +45,7 @@ export default function LessonsPage() {
       <div className=''>
         <div className='flex items-center justify-between mb-6'>
           <div>
-            <h2 className='text-2xl font-bold text-neutral-900 mb-1'>Danh sách bài học</h2>
+            <h2 className='text-2xl font-bold text-neutral-900 mb-1'>Danh sách bài giảng</h2>
           </div>
         </div>
 

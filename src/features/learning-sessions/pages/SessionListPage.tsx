@@ -92,7 +92,7 @@ export default function SessionListPage() {
         <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
           <div>
             <h2 className='text-3xl font-bold text-slate-900 tracking-tight'>Danh sách phiên học</h2>
-            <p className='text-slate-500 mt-1'>Quản lý lớp học VR và theo dõi tiến độ học sinh</p>
+            <p className='text-slate-500 mt-1'>Quản lý phiên học VR và theo dõi tiến độ học sinh</p>
           </div>
           <Button
             className='bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all'

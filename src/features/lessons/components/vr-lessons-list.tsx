@@ -45,7 +45,7 @@ export function VRLessonsList({ vrLessons, lesson }: VRLessonsListProps) {
         <div className='flex gap-2'>
           {vrLessons && vrLessons.length > 0 && (
             <Button variant='secondary' size='sm' onClick={handleOpenVrClassroom}>
-              <BookOpen /> Mở phòng học VR
+              <BookOpen /> Mở phiên học VR
             </Button>
           )}
           <Button variant='default' size='sm' onClick={() => navigate(routes.vrLessonDesign, { state: { lesson } })}>

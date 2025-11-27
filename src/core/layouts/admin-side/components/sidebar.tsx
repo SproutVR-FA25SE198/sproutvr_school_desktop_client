@@ -7,6 +7,8 @@ import { Button } from '@/common/components/ui/button';
 import { LogOut } from 'lucide-react';
 import { logoutThunk } from '@/common/store/auth/authThunks';
 import { useAppDispatch } from '@/common/store/hooks';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/common/store';
 
 interface NavItem {
   label: string;
@@ -28,6 +30,9 @@ export function AdminSidebar() {
   const location = useLocation();
   const dispatch = useAppDispatch();
 
+  const { user } = useSelector((state: RootState) => state.auth);
+  const displayName = user?.fullName || 'User';
+
   const isActive = (href: string) => location.pathname.startsWith(href.replace(/:\w+/, ''));
 
   const handleLogout = () => {
@@ -39,7 +44,7 @@ export function AdminSidebar() {
       className={`${isOpen ? 'w-64' : 'w-20'} bg-neutral-900 text-white transition-all duration-300 flex flex-col h-screen shadow-xl`}
     >
       <div className='p-6 border-b border-neutral-800 flex items-center justify-between'>
-        {isOpen && <h2 className='text-xl font-bold tracking-wide'>Admin Console</h2>}
+        {isOpen && <h2 className='text-xl font-bold tracking-wide'>Menu</h2>}
         <button
           onClick={() => setIsOpen(!isOpen)}
           className='p-2 hover:bg-neutral-800 rounded-lg transition-colors'
@@ -79,8 +84,8 @@ export function AdminSidebar() {
           <div className='w-10 h-10 bg-neutral-700 rounded-full flex items-center justify-center font-bold'>AM</div>
           {isOpen && (
             <div className='flex-1 min-w-0'>
-              <p className='text-sm font-medium truncate'>Alex Morgan</p>
-              <p className='text-xs text-neutral-300 truncate'>System Admin</p>
+              <p className='text-sm font-medium truncate'>{displayName}</p>
+              <p className='text-xs text-neutral-300 truncate'>Quản trị viên</p>
             </div>
           )}
         </div>
