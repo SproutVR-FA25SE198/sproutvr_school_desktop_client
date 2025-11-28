@@ -5,8 +5,8 @@ const useGetVrLessons = ({ lessonId = '' }: { lessonId?: string }) => {
   const { data, isLoading, isError } = useQuery({
     queryKey: [GET_VR_LESSON_LIST_QUERY__KEY, lessonId],
     queryFn: async () => await getVrLessonList(lessonId),
-    staleTime: LESSONS_STALE_TIME,
     refetchOnWindowFocus: false,
+    refetchOnMount: true,
   });
 
   return { data, isLoading, isError };

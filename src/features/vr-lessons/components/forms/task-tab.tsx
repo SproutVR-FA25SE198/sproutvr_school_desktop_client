@@ -26,7 +26,6 @@ export function TaskTab({ taskNumber, setIsValid }: TaskTabProps) {
   const taskSetup = taskInOrder?.[taskNumber - 1];
   const activityType = taskSetup?.activityType?.activityCode.toLowerCase();
   const ActivityComponent = activityInputMap[activityType as keyof typeof activityInputMap];
-  if (!ActivityComponent) setIsValid?.(true);
 
   return (
     <div className='space-y-6'>
@@ -72,11 +71,7 @@ export function TaskTab({ taskNumber, setIsValid }: TaskTabProps) {
         <hr className='bg-primary w-50' />
       </div>
 
-      {ActivityComponent ? (
-        <ActivityComponent taskNumber={taskNumber} onValidChange={setIsValid} />
-      ) : (
-        <p className='text-sm text-muted-foreground text-center mb-5'>{`Học sinh sẽ ${activityType === 'grab' ? 'cầm nắm' : 'tương tác với'} đồ vật`}</p>
-      )}
+      {ActivityComponent && <ActivityComponent taskNumber={taskNumber} onValidChange={setIsValid} />}
     </div>
   );
 }

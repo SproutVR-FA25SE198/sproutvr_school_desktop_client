@@ -151,7 +151,7 @@ export function QuizActivity({ taskNumber, onValidChange }: BaseActivityProps) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* 🧾 INFORMATION ACTIVITY (unchanged) */
+/* 🧾 INFORMATION ACTIVITY */
 /* -------------------------------------------------------------------------- */
 export function InformationActivity({ taskNumber, onValidChange }: BaseActivityProps) {
   const { taskDetails, updateTaskDetails } = useFormContext();
@@ -171,9 +171,35 @@ export function InformationActivity({ taskNumber, onValidChange }: BaseActivityP
 }
 
 /* -------------------------------------------------------------------------- */
+/* ✋ GRAB ACTIVITY */
+/* -------------------------------------------------------------------------- */
+export function GrabActivity({ onValidChange }: BaseActivityProps) {
+  useEffect(() => {
+    onValidChange?.(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return <div className='pb-2 text-sm text-center'>Học sinh sẽ cầm nắm đồ vật.</div>;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 🤝 INTERACT ACTIVITY */
+/* -------------------------------------------------------------------------- */
+export function InteractActivity({ onValidChange }: BaseActivityProps) {
+  useEffect(() => {
+    onValidChange?.(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return <div className='pb-2 text-sm text-center'>Học sinh sẽ tương tác với đồ vật.</div>;
+}
+
+/* -------------------------------------------------------------------------- */
 /* 📦 EXPORT MAP */
 /* -------------------------------------------------------------------------- */
 export const activityInputMap = {
   quiz: QuizActivity,
   info: InformationActivity,
+  grab: GrabActivity,
+  interact: InteractActivity,
 };

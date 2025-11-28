@@ -27,6 +27,7 @@ export const MOCK_VR_LEARNING_SESSION: VRLearningSessionMonitor = {
       tasks: [
         {
           vr_task_id: '344bef17-8a02-44a6-8516-85fd6c3ba770',
+          task_number: 2,
           question_name: 'Giải thích khái niệm lực ma sát',
           is_completed: true,
           is_correct: true,
@@ -35,6 +36,7 @@ export const MOCK_VR_LEARNING_SESSION: VRLearningSessionMonitor = {
         },
         {
           vr_task_id: '30128af4-52d7-4334-b6b5-f2d1b9ece106',
+          task_number: 2,
           question_name: 'Phân biệt lực hướng tâm và lực quán tính',
           is_completed: true,
           is_correct: false,
@@ -43,6 +45,7 @@ export const MOCK_VR_LEARNING_SESSION: VRLearningSessionMonitor = {
         },
         {
           vr_task_id: '9ce9aa6a-a401-408b-96b3-c118dbbc57f4',
+          task_number: 2,
           is_completed: false,
           is_correct: false,
           completion_time_at_vietnam: '',
@@ -50,6 +53,7 @@ export const MOCK_VR_LEARNING_SESSION: VRLearningSessionMonitor = {
         },
         {
           vr_task_id: 'aab775e3-1ce6-4fb9-b9b1-53a7b3a46a87',
+          task_number: 2,
           is_completed: false,
           is_correct: false,
           completion_time_at_vietnam: '',
@@ -64,6 +68,7 @@ export const MOCK_VR_LEARNING_SESSION: VRLearningSessionMonitor = {
       tasks: [
         {
           vr_task_id: '344bef17-8a02-44a6-8516-85fd6c3ba770',
+          task_number: 2,
           question_name: 'Giải thích khái niệm lực ma sát',
           is_completed: false,
           is_correct: false,
@@ -72,6 +77,7 @@ export const MOCK_VR_LEARNING_SESSION: VRLearningSessionMonitor = {
         },
         {
           vr_task_id: '30128af4-52d7-4334-b6b5-f2d1b9ece106',
+          task_number: 2,
           is_completed: false,
           is_correct: false,
           completion_time_at_vietnam: '',
@@ -79,6 +85,7 @@ export const MOCK_VR_LEARNING_SESSION: VRLearningSessionMonitor = {
         },
         {
           vr_task_id: '9ce9aa6a-a401-408b-96b3-c118dbbc57f4',
+          task_number: 2,
           is_completed: false,
           is_correct: false,
           completion_time_at_vietnam: '',
@@ -86,6 +93,7 @@ export const MOCK_VR_LEARNING_SESSION: VRLearningSessionMonitor = {
         },
         {
           vr_task_id: 'aab775e3-1ce6-4fb9-b9b1-53a7b3a46a87',
+          task_number: 2,
           is_completed: false,
           is_correct: false,
           completion_time_at_vietnam: '',
@@ -100,6 +108,7 @@ export const MOCK_VR_LEARNING_SESSION: VRLearningSessionMonitor = {
       tasks: [
         {
           vr_task_id: '344bef17-8a02-44a6-8516-85fd6c3ba770',
+          task_number: 2,
           question_name: 'Định nghĩa chuyển động tròn đều',
           is_completed: true,
           is_correct: true,
@@ -108,6 +117,7 @@ export const MOCK_VR_LEARNING_SESSION: VRLearningSessionMonitor = {
         },
         {
           vr_task_id: '30128af4-52d7-4334-b6b5-f2d1b9ece106',
+          task_number: 2,
           is_completed: true,
           is_correct: true,
           completion_time_at_vietnam: '2025-11-13T09:10:00+07:00',
@@ -115,6 +125,7 @@ export const MOCK_VR_LEARNING_SESSION: VRLearningSessionMonitor = {
         },
         {
           vr_task_id: '9ce9aa6a-a401-408b-96b3-c118dbbc57f4',
+          task_number: 2,
           is_completed: false,
           is_correct: false,
           completion_time_at_vietnam: '',
@@ -122,6 +133,7 @@ export const MOCK_VR_LEARNING_SESSION: VRLearningSessionMonitor = {
         },
         {
           vr_task_id: 'aab775e3-1ce6-4fb9-b9b1-53a7b3a46a87',
+          task_number: 2,
           is_completed: false,
           is_correct: false,
           completion_time_at_vietnam: '',

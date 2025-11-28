@@ -16,10 +16,9 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { label: 'Dashboard', href: '/dashboard', icon: '📊' },
+  { label: 'Thống kê', href: '/dashboard', icon: '📊' },
   { label: 'Bài giảng', href: routes.home, icon: '📚' },
   { label: 'Phiên học VR', href: routes.sessionList, icon: '▶️' },
-  { label: 'Reports', href: '/reports', icon: '📈' },
 ];
 
 export function Sidebar() {
