@@ -28,7 +28,7 @@ export function CancelRoomButton({ vrLearningSessionId, vrLessionId }: CancelRoo
       console.log('Room cancelled:', response);
 
       // Response contains: { vr_learning_session_id }
-      alert(response.message);
+      alert('Đã kết thúc phiên học.');
       navigate(vrLessionId ? routes.lessonDetails.replace(':lessonId', vrLessionId) : routes.home);
     } catch (err: any) {
       console.error('CreateRoom error', err);

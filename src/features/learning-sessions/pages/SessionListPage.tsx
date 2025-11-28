@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/common/components/ui/button';
 import { Plus, Loader2 } from 'lucide-react';
@@ -17,6 +17,7 @@ import type { VrLessonRetrieve } from '@/common/types/vr-lesson.type';
 import { CreateLearningSessionDialog } from '@/common/components/create-learning-session-dialog';
 import useGetVrLessons from '@/features/lessons/hooks/useGetVrLessons';
 import Loading from '@/common/components/loading';
+import useGetLessons from '@/features/lessons/hooks/useGetLessons';
 
 export default function SessionListPage() {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -24,6 +25,32 @@ export default function SessionListPage() {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   const { data: vrLessonsData, isLoading: vrLessonsLoading } = useGetVrLessons({});
+
+  const lessonQueryParams = {
+    pageIndex: 1,
+    pageSize: 50, 
+    sortBy: 'nameAsc', 
+    subjectId: '',
+    teacherId: user?.userId
+  };
+
+  const { 
+    data: userLessonsData, 
+    isLoading: userLessonsLoading 
+  } = useGetLessons({
+    params: lessonQueryParams,
+  });
+
+  // Filter: Keep VR Lessons where lessonId exists in the teacher's lesson list
+  const filteredVrLessons = useMemo(() => {
+    if (!vrLessonsData?.items || !userLessonsData?.items) return [];
+
+    const userLessonIds = new Set(userLessonsData.items.map((l) => l.id));
+
+    return vrLessonsData.items.filter((vrLesson) => {
+      return userLessonIds.has(vrLesson.lesson.id);
+    });
+  }, [vrLessonsData, userLessonsData]);
 
   const handleConfirmCreate = (
     vrLessonId: string,
@@ -36,7 +63,7 @@ export default function SessionListPage() {
     });
   };
 
-  // Initial State
+  // --- EXISTING SESSION LIST STATE ---
   const initialParams: SessionRetrieveParams = {
     pageIndex: 1,
     pageSize: 9,
@@ -46,49 +73,38 @@ export default function SessionListPage() {
   };
 
   const [params, setParams] = useState<SessionRetrieveParams>(initialParams);
-
-  // Fetch Data
   const { data, isLoading } = useGetSessions(params);
   const sessions = data?.items || [];
   const totalItems = data?.totalItems || 0;
   const totalPages = Math.ceil(totalItems / (params.pageSize || 9)) || 1;
 
   // Handlers
-  const handlePageChange = (page: number) => {
-    setParams((prev) => ({ ...prev, pageIndex: page }));
-  };
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePageChange = (page: number) => setParams((prev) => ({ ...prev, pageIndex: page }));
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setParams((prev) => ({ ...prev, className: e.target.value, pageIndex: 1 }));
-  };
-
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
     setParams((prev) => ({
       ...prev,
-      // Convert string "1"/"0" to number, or undefined if empty
       vrLearningSessionStatus: value === '' ? undefined : Number(value),
       pageIndex: 1,
     }));
   };
-
-  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) =>
     setParams((prev) => ({ ...prev, sortBy: e.target.value, pageIndex: 1 }));
-  };
+  const clearFilters = () => setParams(initialParams);
 
-  const clearFilters = () => {
-    setParams(initialParams);
-  };
-
-  // Check if any filter is active to show the "Clear" button
   const isFiltering = !!params.className || params.vrLearningSessionStatus !== undefined;
 
-  if (isLoading || vrLessonsLoading) return <Loading isLoading={isLoading || vrLessonsLoading} />;
+  // Wait for everything to load
+  if (isLoading || vrLessonsLoading || userLessonsLoading) {
+    return <Loading isLoading />;
+  }
 
   return (
     <div className='flex-1 h-full overflow-y-auto bg-slate-50/50 p-8'>
       <div className='max-w-7xl mx-auto flex flex-col min-h-[calc(100vh-4rem)] space-y-8'>
-        {/* --- HEADER SECTION --- */}
+        {/* --- HEADER --- */}
         <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
           <div>
             <h2 className='text-3xl font-bold text-slate-900 tracking-tight'>Danh sách phiên học</h2>
@@ -103,7 +119,7 @@ export default function SessionListPage() {
           </Button>
         </div>
 
-        {/* --- FILTER BAR --- */}
+        {/* --- FILTERS --- */}
         <SessionListFilters
           params={params}
           onSearchChange={handleSearchChange}
@@ -112,7 +128,7 @@ export default function SessionListPage() {
           onClearFilters={clearFilters}
         />
 
-        {/* --- CONTENT SECTION --- */}
+        {/* --- LIST CONTENT --- */}
         <div className='flex-1'>
           {isLoading ? (
             <div className='flex flex-col items-center justify-center h-64 w-full text-slate-400 gap-3'>
@@ -145,7 +161,7 @@ export default function SessionListPage() {
       <CreateLearningSessionDialog
         open={showConfirmDialog}
         onOpenChange={setShowConfirmDialog}
-        vrLessons={vrLessonsData?.items || ([] as VrLessonRetrieve[])}
+        vrLessons={filteredVrLessons}
         onConfirm={handleConfirmCreate}
         confirmText='Tiếp tục'
         cancelText='Hủy'

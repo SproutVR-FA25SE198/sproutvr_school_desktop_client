@@ -7,7 +7,7 @@ export const useGetSessions = (params: SessionRetrieveParams) => {
   return useQuery({
     queryKey: [GET_SESSION_LIST_QUERY_KEY, params],
     queryFn: () => getSessionList(params),
-    staleTime: SESSIONS_STALE_TIME,
+    staleTime: 0,
     refetchOnWindowFocus: false,
   });
 };
