@@ -30,6 +30,7 @@ import AdminSessionList from '@/features/school-admin/sessions/pages/AdminSessio
 import SessionDetailPage from '@/features/school-admin/sessions/pages/AdminSessionDetail';
 import SessionDetailsPage from '@/features/learning-sessions/pages/SessionDetailsPage';
 import DeviceSummaryDetailsPage from '@/features/vr-device-session-summaries/pages/DeviceSummaryDetailsPage';
+import VrLessonDetailsPage from '@/features/vr-lessons/pages/VrLessonDetailsPage';
 
 export const AppRouter = () => (
   <Router>
@@ -42,6 +43,7 @@ export const AppRouter = () => (
           <Route path={routes.sessionList} element={<SessionListPage />} />
           <Route path={routes.sessionDetails} element={<SessionDetailsPage />} />
           <Route path={routes.deviceSummaryDetails} element={<DeviceSummaryDetailsPage />} />
+          <Route path={routes.vrLessonDetails} element={<VrLessonDetailsPage />} />
         </Route>
 
         <Route element={<TeacherDesignLayout />}>
