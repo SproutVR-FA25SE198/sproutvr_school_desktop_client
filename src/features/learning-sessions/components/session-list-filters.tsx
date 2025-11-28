@@ -43,8 +43,8 @@ export const SessionListFilters = ({
             onChange={onStatusChange}
           >
             <option value="">Tất cả trạng thái</option>
-            <option value="1">Đang diễn ra (Active)</option>
-            <option value="0">Đã kết thúc (Completed)</option>
+            <option value="0">Hoàn thành</option>
+            <option value="1">Đã hủy</option>
           </select>
         </div>
       </div>

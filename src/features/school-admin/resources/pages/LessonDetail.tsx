@@ -26,7 +26,7 @@ export default function LessonDetail() {
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const schoolResourceUrl = import.meta.env.VITE_SCHOOL_URL;
+  const schoolResourceUrl = import.meta.env.VITE_SCHOOL_URL + '/api';
 
   // --- Data Fetching ---
   const loadLessonDetails = useCallback(async () => {
