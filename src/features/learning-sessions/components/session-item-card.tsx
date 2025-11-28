@@ -72,7 +72,7 @@ export const SessionItemCard = ({ session }: SessionItemCardProps) => {
 
         <div className='flex items-center justify-between mt-auto pt-4 border-t border-neutral-100'>
           <span className={`text-xs font-medium px-2.5 py-1 rounded-full border ${statusBg}`}>
-            {session.status.name}
+            {session.status.name === 'Completed' ? 'Hoàn thành' : 'Đã hủy'}
           </span>
           <Button 
             variant='ghost' 
