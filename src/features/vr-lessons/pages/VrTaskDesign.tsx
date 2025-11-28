@@ -34,8 +34,26 @@ export function PhaseTwo() {
   useEffect(() => {
     if (vrLesson) {
       setVrLessonData(vrLesson);
+
+      setTaskValidity((prev) => {
+        const newValidity = { ...prev };
+
+        vrLesson.tasks.forEach((task) => {
+          const type = task.activityType.activityCode.toLowerCase();
+
+          if (type === 'grab' || type === 'interact') {
+            newValidity[task.taskNumber] = true;
+          } 
+          else if (newValidity[task.taskNumber] === undefined) {
+            newValidity[task.taskNumber] = false;
+          }
+        });
+
+        return newValidity;
+      });
     }
   }, [vrLesson, setVrLessonData]);
+
   if (isLoading) return <Loading isLoading />;
 
   const renderContent = () => {
@@ -65,9 +83,6 @@ export function PhaseTwo() {
         {/* Header */}
         <div className='flex items-center justify-between'>
           <div></div>
-          {/* <div className='flex items-center gap-4'>
-            <h2 className='text-xl font-semibold text-primary'>Vr Lesson</h2>
-          </div> */}
           <Button variant='secondary' onClick={handleFinish} disabled={!allTasksValid}>
             Hoàn tất bài học VR
           </Button>
