@@ -32,6 +32,7 @@ export interface VRDevice {
 
 export interface VRTask {
   vr_task_id: string;
+  task_number: number;
   question_name?: string; // optional, only for quiz-type tasks
   is_completed: boolean;
   is_correct: boolean;
