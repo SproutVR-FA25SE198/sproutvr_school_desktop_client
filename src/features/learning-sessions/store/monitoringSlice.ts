@@ -69,13 +69,13 @@ const monitoringSlice = createSlice({
 
           // Find the specific device object in the array
           const existingDevice = session.devices.find(
-            (d) => d.vr_device_serial_number === incomingDevice.vr_device_serial_number
+            (d) => d.vr_device_serial_number === incomingDevice.vr_device_serial_number,
           );
 
           if (existingDevice) {
             // IF FOUND: Update the status to Connected
-            existingDevice.status = 'Connected'; 
-            
+            existingDevice.status = 'Connected';
+
             // Optional: Update the student name in case it changed/was mapped recently
             if (incomingDevice.student_name) {
               existingDevice.student_name = incomingDevice.student_name;
@@ -97,6 +97,11 @@ const monitoringSlice = createSlice({
           if (device) {
             device.status = 'Disconnected';
           }
+          break;
+        }
+        // ROOM_CANCELLED
+        case 'room_ended': {
+          session.status = 'Ended';
           break;
         }
 

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { GET_VR_LESSON_LIST_QUERY__KEY, getVrLessonList, LESSONS_STALE_TIME } from '../services/lesson.service';
+import { GET_VR_LESSON_LIST_QUERY__KEY, getVrLessonList } from '../services/lesson.service';
 
 const useGetVrLessons = ({ lessonId = '' }: { lessonId?: string }) => {
   const { data, isLoading, isError } = useQuery({

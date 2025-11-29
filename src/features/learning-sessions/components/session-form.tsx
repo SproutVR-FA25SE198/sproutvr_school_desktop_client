@@ -105,6 +105,16 @@ export function SessionForm({
 
   const isFormValid = devices.length > 0 && devices.every((d) => d.serialNumber && d.studentName);
 
+  const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+    if (value === '') {
+      setDurationMinutes(mapDuration);
+    }
+    if (Number(value) >= mapDuration) {
+      setDurationMinutes(Number(value));
+    } else setDurationMinutes(mapDuration);
+  };
+
   const handleSubmit = async () => {
     if (!isFormValid) {
       alert('Vui lòng điền đầy đủ các trường bắt buộc');
@@ -305,29 +315,16 @@ export function SessionForm({
           {/* Duration */}
           <div>
             <Label className='text-sm font-medium mb-2 block'>Thời lượng phiên học</Label>
-            <Select value={durationMinutes.toString()} onValueChange={(value) => setDurationMinutes(parseInt(value))}>
-              <SelectTrigger className='w-full'>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {Array.from({ length: 4 }).map((_, index) => {
-                  const minuteOption = mapDuration + (index + 1) * 15;
-                  return (
-                    <SelectItem key={minuteOption} value={minuteOption.toString()}>
-                      {minuteOption} phút
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-              {/* <SelectContent>
-                <SelectItem value='15'>{selectedVrLesson?.maxDuration}</SelectItem>
-                <SelectItem value='30'>30 phút</SelectItem>
-                <SelectItem value='45'>45 phút</SelectItem>
-                <SelectItem value='60'>60 phút</SelectItem>
-                <SelectItem value='90'>90 phút</SelectItem>
-                <SelectItem value='120'>120 phút</SelectItem>
-              </SelectContent> */}
-            </Select>
+            <div className='flex items-center gap-2'>
+              <Input
+                value={durationMinutes.toString()}
+                onChange={handleDurationChange}
+                type='text'
+                className='w-20'
+                inputMode='numeric'
+              />
+              <span className='text-sm'>phút</span>
+            </div>
             <p className='text-xs text-neutral-500 mt-2'>Thời gian bắt đầu: Ngay bây giờ</p>
           </div>
         </Card>
