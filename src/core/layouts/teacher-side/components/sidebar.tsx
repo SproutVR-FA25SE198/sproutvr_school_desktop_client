@@ -2,8 +2,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import routes from '@/core/configs/routes';
-import { useSelector } from 'react-redux';
-import type { RootState } from '@/common/store';
 
 interface NavItem {
   label: string;
@@ -19,9 +17,6 @@ const navItems: NavItem[] = [
 
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
-  const { user } = useSelector((state: RootState) => state.auth);
-  const displayName = user?.fullName || 'User';
-  const initial = displayName.charAt(0);
 
   return (
     <aside
@@ -50,19 +45,6 @@ export function Sidebar() {
           </Link>
         ))}
       </nav>
-
-      {/* User profile */}
-      <div className='p-4 mb-2 border-t border-neutral-800'>
-        <div className='flex items-center gap-3'>
-          <div className='w-10 h-10 bg-secondary rounded-full flex items-center justify-center font-bold'>{initial}</div>
-          {isOpen && (
-            <div className='flex-1 min-w-0'>
-              <p className='text-sm font-medium truncate'>{displayName}</p>
-              <p className='text-xs text-primary-light truncate'>Giáo viên</p>
-            </div>
-          )}
-        </div>
-      </div>
     </aside>
   );
 }

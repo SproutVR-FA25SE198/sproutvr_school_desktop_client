@@ -3,8 +3,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import routes from '../../../configs/routes';
-import { useSelector } from 'react-redux';
-import type { RootState } from '@/common/store';
 
 interface NavItem {
   label: string;
@@ -24,10 +22,6 @@ const navItems: NavItem[] = [
 export function AdminSidebar() {
   const [isOpen, setIsOpen] = useState(true);
   const location = useLocation();
-
-  const { user } = useSelector((state: RootState) => state.auth);
-  const displayName = user?.fullName || 'User';
-  const initial = displayName.charAt(0);
 
   const isActive = (href: string) => location.pathname.startsWith(href.replace(/:\w+/, ''));
 
@@ -63,18 +57,6 @@ export function AdminSidebar() {
           );
         })}
       </nav>
-
-      <div className='p-4 mb-2 border-t border-neutral-800'>
-        <div className='flex items-center gap-3'>
-          <div className='w-10 h-10 bg-neutral-700 rounded-full flex items-center justify-center font-bold'>{initial}</div>
-          {isOpen && (
-            <div className='flex-1 min-w-0'>
-              <p className='text-sm font-medium truncate'>{displayName}</p>
-              <p className='text-xs text-neutral-300 truncate'>Quản trị viên</p>
-            </div>
-          )}
-        </div>
-      </div>
     </aside>
   );
 }
