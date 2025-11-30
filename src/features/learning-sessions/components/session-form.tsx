@@ -106,13 +106,14 @@ export function SessionForm({
   const isFormValid = devices.length > 0 && devices.every((d) => d.serialNumber && d.studentName);
 
   const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
-    if (value === '') {
-      setDurationMinutes(mapDuration);
+    const value = e.target.value.replace(/\D/g, ''); 
+    setDurationMinutes(Number(value)); 
+  };
+
+  const handleDurationBlur = () => {
+    if (durationMinutes < mapDuration) {
+      alert(`Thời lượng tối thiểu là ${mapDuration} phút`);
     }
-    if (Number(value) >= mapDuration) {
-      setDurationMinutes(Number(value));
-    } else setDurationMinutes(mapDuration);
   };
 
   const handleSubmit = async () => {
@@ -123,6 +124,11 @@ export function SessionForm({
 
     if (!vrLearningSessionId) {
       alert('Vui lòng đợi phòng được tạo trước');
+      return;
+    }
+
+    if(!durationMinutes || durationMinutes < mapDuration) {
+      alert('Thời gian phiên học phải lớn hơn thời gian bài học!');
       return;
     }
 
@@ -317,8 +323,9 @@ export function SessionForm({
             <Label className='text-sm font-medium mb-2 block'>Thời lượng phiên học</Label>
             <div className='flex items-center gap-2'>
               <Input
-                value={durationMinutes.toString()}
-                onChange={handleDurationChange}
+                value={durationMinutes.toString()} 
+                onChange={handleDurationChange}    
+                onBlur={handleDurationBlur}        // Validates when finished
                 type='text'
                 className='w-20'
                 inputMode='numeric'

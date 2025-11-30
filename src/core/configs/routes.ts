@@ -1,7 +1,9 @@
 const routes = {
   home: '/',
   login: '/login',
-  personal: '/personal/:tab?',
+  profile: '/profile',
+  adminProfile: '/admin-profile',
+  resetPassword: '/reset-password',
   lessons: '/lessons',
   lessonDetails: '/lessons/:id',
   lessonCreation: '/lessons/create',

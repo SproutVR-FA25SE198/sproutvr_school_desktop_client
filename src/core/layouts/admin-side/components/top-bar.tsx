@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { User, KeyRound, LogOut, ChevronDown } from 'lucide-react';
 import { useAppDispatch } from '@/common/store/hooks';
 import { logoutThunk } from '@/common/store/auth/authThunks';
+import logo from '@/assets/SproutVR_Icon.png'
+import routes from '@/core/configs/routes';
 
 interface AdminTopBarProps {
   title: string;
@@ -44,8 +46,21 @@ export function AdminTopBar({ title, userName, role = 'Quản trị viên' }: Ad
   return (
     <header className='bg-white border-b border-neutral-200 px-8 py-4 flex items-center justify-between shadow-sm relative z-50'>
       {/* Left Title */}
-      <div>
-        <h1 className='text-2xl font-bold text-neutral-900'>{title}</h1>
+      <div className='flex items-center gap-4'>
+        {/* Logo Container - Fixed size */}
+        <div className='w-16 h-16 flex items-center justify-center p-2 shrink-0'>
+          <img
+            src={logo}
+            alt='SproutVR Logo'
+            className='w-full h-full object-contain'
+          />
+        </div>
+
+        {/* Text Info */}
+        <div>
+          <h1 className='text-xl font-bold text-neutral-900 leading-tight'>{title}</h1>
+          <p className='text-sm text-neutral-500'>Xin chào, {userName}</p>
+        </div>
       </div>
 
       {/* Right User Menu */}
@@ -76,15 +91,15 @@ export function AdminTopBar({ title, userName, role = 'Quản trị viên' }: Ad
           <div className='absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right'>
             <div className='p-1'>
               <button 
-                onClick={() => navigate('')} 
+                onClick={() => navigate(routes.adminProfile)} 
                 className='w-full flex items-center gap-3 px-3 py-2.5 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-primary rounded-lg transition-colors text-left'
               >
                 <User size={16} />
-                Hồ sơ cá nhân
+                Tài khoản cá nhân
               </button>
               
               <button 
-                onClick={() => navigate('')} 
+                onClick={() => navigate(routes.resetPassword)} 
                 className='w-full flex items-center gap-3 px-3 py-2.5 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-primary rounded-lg transition-colors text-left'
               >
                 <KeyRound size={16} />

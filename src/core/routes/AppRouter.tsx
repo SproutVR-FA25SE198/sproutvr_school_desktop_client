@@ -31,6 +31,7 @@ import SessionDetailPage from '@/features/school-admin/sessions/pages/AdminSessi
 import SessionDetailsPage from '@/features/learning-sessions/pages/SessionDetailsPage';
 import DeviceSummaryDetailsPage from '@/features/vr-device-session-summaries/pages/DeviceSummaryDetailsPage';
 import VrLessonDetailsPage from '@/features/vr-lessons/pages/VrLessonDetailsPage';
+import ProfilePage from '@/features/auth/pages/Profile';
 
 export const AppRouter = () => (
   <Router>
@@ -38,6 +39,7 @@ export const AppRouter = () => (
       <Route path={routes.login} element={<LoginPage />} />
       <Route element={<AuthGuard />}>
         <Route element={<TeacherSideLayout />}>
+          <Route path={routes.profile} element={<ProfilePage />} />
           <Route path={routes.home} element={<LessonsPage />} />
           <Route path={routes.lessonDetails} element={<LessonDetailsPage />} />
           <Route path={routes.sessionList} element={<SessionListPage />} />
@@ -55,6 +57,7 @@ export const AppRouter = () => (
       </Route>
       <Route element={<AdminGuard />}>
         <Route element={<AdminSideLayout />}>
+          <Route path={routes.adminProfile} element={<ProfilePage />} />
           <Route path={routes.vrDevices} element={<VRDeviceList />} />
           <Route path={routes.vrDeviceDetail} element={<VRDeviceDetail />} />
           <Route path={routes.myBundles} element={<MyBundlesPage />} />
