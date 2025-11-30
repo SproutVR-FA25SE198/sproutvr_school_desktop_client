@@ -6,8 +6,9 @@ const useGetVrLessonById = (lessonId: string) => {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: [GET_VR_LESSON_BY_ID_QUERY_KEY, lessonId],
     queryFn: async () => await getVrLessonById(lessonId!),
-    staleTime: MAPS_STALE_TIME,
+    // staleTime: MAPS_STALE_TIME,
     refetchOnWindowFocus: false,
+    refetchOnMount: true,
   });
 
   return { data, isLoading, isError, refetch };
@@ -16,7 +17,7 @@ const useGetVrLessonById = (lessonId: string) => {
 const useGetVrLessonPresetFile = (presetFilePath: string) => {
   const { data, isLoading, isError } = useQuery({
     queryKey: [GET_VR_LESSON_BY_ID_QUERY_KEY, presetFilePath],
-    queryFn: async () => await getVrLessonPresetFile(presetFilePath!),
+    queryFn: async () => await getVrLessonPresetFile(presetFilePath),
     staleTime: MAPS_STALE_TIME,
     refetchOnWindowFocus: false,
   });

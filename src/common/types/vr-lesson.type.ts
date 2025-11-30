@@ -117,3 +117,19 @@ export interface VrLessonPreset {
   isSequential: boolean;
   vrTasks: VrLessonPresetTask[];
 }
+
+export interface VrLessonPresetTaskExtended extends VrLessonPresetTask {
+  locationName: string;
+  locationImageUrl: string;
+  mapObject: VrLessonPresetTask['mapObject'] & {
+    name: string;
+    imageUrl: string;
+    activityType: VrLessonPresetTask['mapObject']['activityType'] & {
+      name: string;
+    };
+  };
+}
+
+export interface VrLessonPresetExtended extends VrLessonPreset {
+  vrTasks: VrLessonPresetTaskExtended[];
+}

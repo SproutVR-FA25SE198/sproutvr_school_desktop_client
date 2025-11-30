@@ -2,13 +2,13 @@
 import { Badge } from '@/common/components/ui/badge';
 import { Card } from '@/common/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/common/components/ui/collapsible';
-import type { VrLessonPreset, VrLessonRetrieve } from '@/common/types/vr-lesson.type';
+import type { VrLessonPresetExtended, VrLessonRetrieve } from '@/common/types/vr-lesson.type';
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 
 interface VrLessonDetailsProps {
   lesson: VrLessonRetrieve;
-  tasks: VrLessonPreset;
+  tasks: VrLessonPresetExtended;
 }
 
 export function VrLessonDetails({ lesson, tasks }: VrLessonDetailsProps) {
@@ -44,7 +44,7 @@ export function VrLessonDetails({ lesson, tasks }: VrLessonDetailsProps) {
     <div className='space-y-6'>
       {/* Header */}
       <div className='bg-white rounded-lg p-6 border border-neutral-200'>
-        <div className='flex items-start justify-between mb-4'>
+        <div className='flex items-start justify-between items-center mb-0'>
           <div className='flex-1'>
             <h1 className='text-3xl font-bold text-neutral-900 mb-2'>{lesson.name}</h1>
             <p className='text-sm text-neutral-600 mb-4'>
@@ -55,21 +55,26 @@ export function VrLessonDetails({ lesson, tasks }: VrLessonDetailsProps) {
         </div>
 
         <p className='text-neutral-700 text-sm leading-relaxed mb-6'>{lesson.description}</p>
+        <img
+          src={lesson.map.imageUrl}
+          alt={lesson.map.name}
+          className='w-full h-[300px] object-cover rounded-lg mb-6'
+        />
 
         {/* Metadata Grid */}
         <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
           <div className='bg-neutral-50 rounded p-4'>
-            <p className='text-xs font-medium text-neutral-600 mb-1'>Thời lượng</p>
+            <p className='text-md font-medium text-neutral-600 mb-1'>Thời lượng</p>
             <p className='text-sm font-semibold text-neutral-900'>{lesson.duration || lesson.maxDuration}</p>
           </div>
           <div className='bg-neutral-50 rounded p-4'>
-            <p className='text-xs font-medium text-neutral-600 mb-1'>Tổng số nhiệm vụ</p>
+            <p className='text-md font-medium text-neutral-600 mb-1'>Tổng số nhiệm vụ</p>
             <p className='text-sm font-semibold text-neutral-900'>{lesson.tasks.length}</p>
           </div>
           <div className='bg-neutral-50 rounded p-4'>
-            <p className='text-xs font-medium text-neutral-600 mb-1'>Ngày tạo</p>
-            <p className='text-xs font-semibold text-neutral-900'>
-              {new Date(lesson.createdAtUtc).toLocaleDateString()}
+            <p className='text-md font-medium text-neutral-600 mb-1'>Ngày tạo</p>
+            <p className='text-sm font-semibold text-neutral-900'>
+              {new Date(lesson.createdAtUtc).toLocaleDateString('vi-VN')}
             </p>
           </div>
         </div>
@@ -94,25 +99,50 @@ export function VrLessonDetails({ lesson, tasks }: VrLessonDetailsProps) {
                 onOpenChange={(open) => setExpandedTask(open ? task.vrTaskId : null)}
               >
                 <CollapsibleTrigger asChild>
-                  <button className='w-full flex items-start justify-between p-4 bg-neutral-50 hover:bg-neutral-100 rounded-lg border border-neutral-200 transition-colors text-left'>
+                  <button className='w-full flex items-center gap-3 justify-between p-4 bg-neutral-50 hover:bg-neutral-100 rounded-lg border border-neutral-200 transition-colors text-left'>
                     <div className='flex-1'>
-                      <div className='flex items-center gap-3 mb-2'>
+                      <div className='flex items-center gap-3'>
                         <span className='inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs font-semibold'>
                           {index + 1}
                         </span>
                         <p className='text-sm font-medium text-neutral-900'>{task.taskDescription}</p>
                       </div>
                     </div>
+                    <Badge variant={'secondary'}>{activity.name}</Badge>
                     <ChevronDown className='w-5 h-5 text-neutral-500 flex-shrink-0 transition-transform duration-200' />
                   </button>
                 </CollapsibleTrigger>
 
                 <CollapsibleContent className='pt-2'>
                   <Card className='p-4 bg-neutral-50 border border-neutral-200'>
+                    <div className={`mb-4 pb-4 border-b flex flex-row justify-start gap-20 border-neutral-200`}>
+                      <div className='text-sm text-neutral-700'>
+                        <p className='font-medium'>Vị trí:</p> {task.locationName}
+                        <img
+                          src={task.locationImageUrl}
+                          alt={task.locationName}
+                          className='mt-2 h-32 object-cover rounded'
+                        />
+                      </div>
+                      <div className='text-sm text-neutral-700'>
+                        <p className='font-medium'>Đối tượng:</p> {task.mapObject.name}
+                        <img
+                          src={task.mapObject.imageUrl}
+                          alt={task.mapObject.name}
+                          className='mt-2 h-32 object-cover rounded'
+                        />
+                      </div>
+                    </div>
+
                     {/* Information */}
 
                     <div className={isQuiz ? `mb-4 pb-4 border-b border-neutral-200` : ''}>
                       <p className='text-sm text-neutral-700'>
+                        {isQuiz ? (
+                          <span className='font-medium'>Câu hỏi: </span>
+                        ) : (
+                          <span className='font-medium'>Thông tin nhiệm vụ: </span>
+                        )}
                         {activity.config?.information || activity.config?.question || displayInfo}
                       </p>
                     </div>
