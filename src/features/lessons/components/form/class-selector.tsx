@@ -17,7 +17,6 @@ export function ClassSelector<T extends FieldValues>({
   error?: string;
 }) {
   const availableClasses = classes?.filter((cls) => cls.masterSubject.id === selectedSubjectId);
-  // const availableClasses = classes?.slice(0, 3); // Temporary: show first 3 classes only
 
   return (
     <Controller
@@ -25,13 +24,13 @@ export function ClassSelector<T extends FieldValues>({
       name={'classId' as Path<T>}
       defaultValue={'' as PathValue<T, Path<T>>}
       render={({ field }) => (
-        <div className='space-y-3'>
-          <Label htmlFor='class' className='text-base font-semibold'>
+        <div className='space-y-4'>
+          <Label htmlFor='class' className='text-lg font-semibold'>
             Chọn khối lớp
           </Label>
 
           {selectedSubjectId ? (
-            <div className='grid grid-cols-3 gap-3 mt-3 max-w-md'>
+            <div className='grid grid-cols-3 gap-6 mt-4 w-full'>
               {availableClasses?.map((cls) => {
                 const isSelected = field.value === cls.id;
 
@@ -40,25 +39,34 @@ export function ClassSelector<T extends FieldValues>({
                     key={cls.id}
                     type='button'
                     onClick={() => field.onChange(cls.id)}
-                    className={`flex flex-col items-center justify-center rounded-lg p-3 transition-all border text-sm font-medium
+                    className={`flex flex-col items-center justify-center rounded-xl p-4 transition-all border shadow-sm h-full
                       ${
                         isSelected
-                          ? 'bg-primary text-primary-foreground border-primary ring-2 ring-primary'
-                          : 'border-neutral-200 bg-white hover:border-primary hover:bg-neutral-50'
+                          ? 'bg-primary/5 border-primary ring-2 ring-primary text-primary'
+                          : 'border-neutral-200 bg-white hover:border-primary/50 hover:bg-neutral-50 hover:shadow-md'
                       }
                     `}
                   >
-                    <img src={cls.imageUrl} alt={cls.name} className='w-10 h-10 rounded-md object-cover' />
-                    <span className='text-xs font-medium text-center line-clamp-2'>{cls.name}</span>
+                    <img 
+                        src={cls.imageUrl} 
+                        alt={cls.name} 
+                        className='w-20 h-20 rounded-lg object-cover shadow-sm mb-3' 
+                    />
+                    
+                    <span className='text-sm font-bold text-center line-clamp-2'>
+                        {cls.name}
+                    </span>
                   </button>
                 );
               })}
             </div>
           ) : (
-            <p className='text-sm text-neutral-500'>Vui lòng chọn môn học trước</p>
+            <div className='p-8 border-2 border-dashed border-neutral-200 rounded-xl flex items-center justify-center bg-neutral-50'>
+                <p className='text-base text-neutral-500 font-medium'>Vui lòng chọn môn học trước</p>
+            </div>
           )}
 
-          {error && <p className='text-sm text-red-500'>{error}</p>}
+          {error && <p className='text-sm text-red-500 font-medium mt-2'>{error}</p>}
         </div>
       )}
     />

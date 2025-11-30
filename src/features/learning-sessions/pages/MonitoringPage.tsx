@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { loadRoomState } from '@/core/ipc/grpc';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,12 +14,13 @@ import type { VrLessonRetrieve } from '@/common/types/vr-lesson.type';
 import Loading from '@/common/components/loading';
 import { applyRoomUpdate, teacherRoomUpdated } from '../store/monitoringSlice';
 import type { VRLearningSessionMonitor } from '../types/session-monitoring.type';
+import routes from '@/core/configs/routes';
 
 export default function MonitoringPage() {
   const dispatch = useDispatch<AppDispatch>();
   const params = useParams();
   const location = useLocation();
-  console.log('Route params:', params);
+  const navigate = useNavigate();
 
   // Redux roomState
   const roomState = useSelector((state: RootState) => state.monitoring.roomState);
@@ -27,7 +28,6 @@ export default function MonitoringPage() {
 
   // Fetch VR lesson details
   const { data: vrLesson, isLoading: lessonLoading } = useGetVrLessonById(activeSessionId);
-  console.log('Fetched VR Lesson:', vrLesson);
 
   // Load initial room state (GetRoomState)
   useEffect(() => {
@@ -42,6 +42,13 @@ export default function MonitoringPage() {
       dispatch(applyRoomUpdate(event)); // merge into roomState
     });
   }, [dispatch]);
+
+  useEffect(() => {
+    if (roomState !== null && roomState?.status !== 'Active') {
+      alert('Phiên học đã kết thúc.');
+      navigate(routes.home, { replace: true });
+    }
+  }, [roomState]);
 
   // Wait for GetRoomState to finish
   if (lessonLoading) {

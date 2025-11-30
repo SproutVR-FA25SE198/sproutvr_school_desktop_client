@@ -2,10 +2,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import routes from '@/core/configs/routes';
-import { Button } from '@/common/components/ui/button';
-import { LogOut } from 'lucide-react';
-import { logoutThunk } from '@/common/store/auth/authThunks';
-import { useAppDispatch } from '@/common/store/hooks';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/common/store';
 
@@ -23,11 +19,6 @@ const navItems: NavItem[] = [
 
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
-  const dispatch = useAppDispatch();
-  const handleLogout = () => {
-    dispatch(logoutThunk());
-  };
-
   const { user } = useSelector((state: RootState) => state.auth);
   const displayName = user?.fullName || 'User';
   const initial = displayName.charAt(0);
@@ -61,14 +52,7 @@ export function Sidebar() {
       </nav>
 
       {/* User profile */}
-      <div className='p-4 mb-8 border-t border-neutral-800'>
-        <Button
-          onClick={handleLogout}
-          variant='ghost'
-          className='justify-start mb-5 hover:bg-neutral-100 rounded-lg transition-colors'
-        >
-          <LogOut className='h-4 w-4' /> {isOpen && <span className='ml-3'>Đăng xuất</span>}
-        </Button>
+      <div className='p-4 mb-2 border-t border-neutral-800'>
         <div className='flex items-center gap-3'>
           <div className='w-10 h-10 bg-secondary rounded-full flex items-center justify-center font-bold'>{initial}</div>
           {isOpen && (
