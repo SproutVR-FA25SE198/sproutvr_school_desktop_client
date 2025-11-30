@@ -31,7 +31,7 @@ export function Sidebar() {
     >
       {/* Logo */}
       <div className='p-6 border-b border-primary-light flex items-center justify-between'>
-        {isOpen && <h2 className='text-xl font-bold'>Menu</h2>}
+        {isOpen && <h2 className='text-xl font-bold'>Danh sách</h2>}
         <button onClick={() => setIsOpen(!isOpen)} className='p-2 hover:bg-primary-light rounded-lg transition-colors'>
           {isOpen ? '←' : '→'}
         </button>
@@ -54,7 +54,9 @@ export function Sidebar() {
       {/* User profile */}
       <div className='p-4 mb-2 border-t border-neutral-800'>
         <div className='flex items-center gap-3'>
-          <div className='w-10 h-10 bg-secondary rounded-full flex items-center justify-center font-bold'>{initial}</div>
+          <div className='w-10 h-10 bg-secondary rounded-full flex items-center justify-center font-bold'>
+            {initial}
+          </div>
           {isOpen && (
             <div className='flex-1 min-w-0'>
               <p className='text-sm font-medium truncate'>{displayName}</p>
