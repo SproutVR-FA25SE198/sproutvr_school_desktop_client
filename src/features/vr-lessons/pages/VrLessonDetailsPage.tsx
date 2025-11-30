@@ -16,7 +16,6 @@ import type { VrLessonPresetExtended, VrLessonPresetTaskExtended } from '@/commo
 export default function VrLessonDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const { data: lesson, isLoading: isLessonLoading } = useGetVrLessonById(id || '');
-  console.log('VR Lesson Data:', lesson);
   const { data: tasks, isLoading: isTasksLoading } = useGetVrLessonPresetFile(lesson?.presetJsonRelativeFilePath || '');
   const { data: locations, isLoading: isLocationsLoading } = useGetTaskLocations({ mapId: lesson?.map.id || '' });
 
@@ -55,7 +54,6 @@ export default function VrLessonDetailsPage() {
         } as VrLessonPresetTaskExtended;
       });
 
-      console.log('Extended Tasks:', extendedTasks);
       setTasksExtended({
         ...tasks,
         vrTasks: extendedTasks,

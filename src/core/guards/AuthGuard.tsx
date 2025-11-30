@@ -6,8 +6,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 import routes from '../configs/routes';
 
 export default function AuthGuard() {
-  const { isAuthenticated, isLoading, user } = useSelector((state: RootState) => state.auth);
-  console.log('user', user?.roles);
+  const { isAuthenticated, isLoading } = useSelector((state: RootState) => state.auth);
   if (isLoading) {
     return <Loading isLoading />;
   }

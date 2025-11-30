@@ -82,8 +82,6 @@ export function CreateLearningSessionDialog({
       classroomLetter,
     });
 
-    console.log('Selected VR Lesson:', selectedVrLesson);
-
     onConfirm(selectedVrLessonId, selectedVrLesson || ({} as VrLessonRetrieve), classroomNumber, classroomLetter);
 
     onOpenChange(false);
