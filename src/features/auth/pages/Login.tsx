@@ -6,7 +6,7 @@ import { Label } from '@/common/components/ui/label';
 import { UserRole } from '@/common/utils/constants';
 import { loginThunk } from '@/common/store/auth/authThunks';
 import { useAppDispatch, useAppSelector } from '@/common/store/hooks';
-
+import logo from '@/assets/SproutVR_Icon.png';
 import { Eye, EyeClosed } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -69,8 +69,12 @@ export default function LoginPage() {
         <div className='bg-white rounded-2xl shadow-2xl p-8 md:p-10'>
           {/* Logo and branding */}
           <div className='text-center mb-8'>
-            <div className='inline-flex items-center justify-center w-16 h-16 bg-primary rounded-xl mb-4'>
-              <span className='text-2xl font-bold text-white'>VR</span>
+            <div className='inline-flex items-center justify-center w-24 h-24 rounded-xl mb-4'>
+              <img
+                src={logo}
+                alt={'Sprout VR Logo'}
+                className='w-full h-full object-contain'
+              />
             </div>
             <h1 className='text-3xl font-bold text-neutral-900 mb-2'>SproutVR</h1>
             <p className='text-neutral-500'>Hệ thống Giáo dục VR</p>

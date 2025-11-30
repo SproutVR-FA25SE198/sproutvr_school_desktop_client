@@ -45,7 +45,7 @@ export default function LessonsPage() {
 
   if (isLoading) return <Loading isLoading />;
   return (
-    <div className='overflow-y-auto border-r border-neutral-200 p-8'>
+    <div className='h-full overflow-y-auto border-r border-neutral-200 p-8'>
       <div className=''>
         <div className='flex items-center justify-between mb-6'>
           <div>
