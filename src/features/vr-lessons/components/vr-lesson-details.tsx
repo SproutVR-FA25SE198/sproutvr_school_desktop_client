@@ -1,10 +1,14 @@
 'use client';
+import { CreateLearningSessionDialog } from '@/common/components/create-learning-session-dialog';
 import { Badge } from '@/common/components/ui/badge';
+import { Button } from '@/common/components/ui/button';
 import { Card } from '@/common/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/common/components/ui/collapsible';
 import type { VrLessonPresetExtended, VrLessonRetrieve } from '@/common/types/vr-lesson.type';
-import { ChevronDown } from 'lucide-react';
+import routes from '@/core/configs/routes';
+import { BookOpen, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface VrLessonDetailsProps {
   lesson: VrLessonRetrieve;
@@ -13,21 +17,25 @@ interface VrLessonDetailsProps {
 
 export function VrLessonDetails({ lesson, tasks }: VrLessonDetailsProps) {
   const [expandedTask, setExpandedTask] = useState<string | null>(null);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const navigate = useNavigate();
+
+  const handleOpenVrClassroom = () => {
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmCreate = (
+    vrLessonId: string,
+    vrLesson: VrLessonRetrieve,
+    classroomNumber: string,
+    classroomLetter: string,
+  ) => {
+    navigate(routes.vrSessionCreate, {
+      state: { lessonId: vrLessonId, vrLesson, classroomNumber, classroomLetter },
+    });
+  };
 
   const tasksInOrder = tasks.vrTasks.slice().sort((a, b) => a.taskNumber - b.taskNumber);
-
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'active':
-        return 'bg-green-100 text-green-800';
-      case 'draft':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'disabled':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-neutral-100 text-neutral-800';
-    }
-  };
 
   const getActionLabel = (activityCode: string) => {
     switch (activityCode) {
@@ -42,6 +50,14 @@ export function VrLessonDetails({ lesson, tasks }: VrLessonDetailsProps) {
 
   return (
     <div className='space-y-6'>
+      <CreateLearningSessionDialog
+        open={showConfirmDialog}
+        initialVrLesson={lesson}
+        onOpenChange={setShowConfirmDialog}
+        onConfirm={handleConfirmCreate}
+        confirmText='Tiếp tục'
+        cancelText='Hủy'
+      />
       {/* Header */}
       <div className='bg-white rounded-lg p-6 border border-neutral-200'>
         <div className='flex items-start justify-between items-center mb-0'>
@@ -51,7 +67,9 @@ export function VrLessonDetails({ lesson, tasks }: VrLessonDetailsProps) {
               {lesson.lesson.name} • {lesson.map.name}
             </p>
           </div>
-          <Badge className={getStatusColor(lesson.status.name)}>{lesson.status.name}</Badge>
+          <Button variant='secondary' size='sm' onClick={handleOpenVrClassroom}>
+            <BookOpen /> Mở phiên học VR
+          </Button>
         </div>
 
         <p className='text-neutral-700 text-sm leading-relaxed mb-6'>{lesson.description}</p>

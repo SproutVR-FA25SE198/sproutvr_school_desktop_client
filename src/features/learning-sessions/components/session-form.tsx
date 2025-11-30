@@ -45,7 +45,7 @@ export function SessionForm({
   const navigate = useNavigate();
   const [selectedVrLessonId, setSelectedVrLessonId] = useState<string>(initialVrLesson?.id || '');
   const [devices, setDevices] = useState<DeviceAssignment[]>([]);
-  const mapDuration = HHMMSSToDuration(initialVrLesson?.maxDuration || '00:30:00').minutes;
+  const mapDuration = HHMMSSToDuration(initialVrLesson?.maxDuration || initialVrLesson?.duration || '00:30:00').minutes;
   const [durationMinutes, setDurationMinutes] = useState<number>(mapDuration);
   const [isActivating, setIsActivating] = useState(false);
   const vrLearningSessionId = useSelector((state: any) => state.session.vrLearningSessionId);

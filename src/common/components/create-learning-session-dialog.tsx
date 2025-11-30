@@ -22,8 +22,8 @@ interface CreateLearningSessionDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: (lessonId: string, vrLesson: VrLessonRetrieve, classroomNumber: string, classroomLetter: string) => void;
-  vrLessons: VrLessonRetrieve[];
-  vrLessonId?: string;
+  vrLessons?: VrLessonRetrieve[];
+  initialVrLesson?: VrLessonRetrieve;
   onCancel?: () => void;
   confirmText?: string;
   cancelText?: string;
@@ -34,12 +34,12 @@ export function CreateLearningSessionDialog({
   onOpenChange,
   onConfirm,
   vrLessons,
-  vrLessonId,
+  initialVrLesson,
   onCancel,
   confirmText = 'Xác nhận',
   cancelText = 'Hủy',
 }: CreateLearningSessionDialogProps) {
-  const [selectedVrLessonId, setSelectedVrLessonId] = useState<string>(vrLessonId || '');
+  const [selectedVrLessonId, setSelectedVrLessonId] = useState<string>(initialVrLesson?.id || '');
   const [confirm, setConfirm] = useState<CheckedState>(false);
   const [classroomNumber, setClassroomNumber] = useState('');
   const [classroomLetter, setClassroomLetter] = useState('');
@@ -74,13 +74,15 @@ export function CreateLearningSessionDialog({
   const handleConfirm = async () => {
     if (inValidData) return;
 
-    const selectedVrLesson = vrLessons.find((lesson) => lesson.id === selectedVrLessonId);
+    const selectedVrLesson = initialVrLesson || vrLessons?.find((lesson) => lesson.id === selectedVrLessonId);
 
     await createSession({
       vrLessonId: selectedVrLessonId,
       classroomNumber,
       classroomLetter,
     });
+
+    console.log('Selected VR Lesson:', selectedVrLesson);
 
     onConfirm(selectedVrLessonId, selectedVrLesson || ({} as VrLessonRetrieve), classroomNumber, classroomLetter);
 
@@ -107,18 +109,22 @@ export function CreateLearningSessionDialog({
             <Select
               value={selectedVrLessonId}
               onValueChange={setSelectedVrLessonId}
-              disabled={vrLessonId !== undefined}
+              disabled={initialVrLesson !== undefined}
             >
               <SelectTrigger className='w-full'>
                 <SelectValue placeholder='Chọn bài học VR' />
               </SelectTrigger>
               <SelectContent className='h-70'>
-                {vrLessons.length > 0 ? (
+                {vrLessons && vrLessons.length > 0 ? (
                   vrLessons.map((vrLesson) => (
                     <SelectItem key={vrLesson.id} value={vrLesson.id}>
                       {vrLesson.name}
                     </SelectItem>
                   ))
+                ) : selectedVrLessonId ? (
+                  <SelectItem key={selectedVrLessonId} value={selectedVrLessonId}>
+                    {initialVrLesson?.name}
+                  </SelectItem>
                 ) : (
                   <div className='px-2 py-1.5 text-sm text-neutral-500'>Không có bài học VR nào</div>
                 )}
