@@ -110,7 +110,7 @@ export function SessionForm({
     if (value === '') {
       setDurationMinutes(mapDuration);
     }
-    if (Number(value) <= mapDuration) {
+    if (Number(value) >= mapDuration) {
       setDurationMinutes(Number(value));
     } else setDurationMinutes(mapDuration);
   };
