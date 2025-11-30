@@ -26,7 +26,7 @@ export function Sidebar() {
     >
       {/* Logo */}
       <div className='p-6 border-b border-primary-light flex items-center justify-between'>
-        {isOpen && <h2 className='text-xl font-bold'>Menu</h2>}
+        {isOpen && <h2 className='text-xl font-bold'>Danh sách</h2>}
         <button onClick={() => setIsOpen(!isOpen)} className='p-2 hover:bg-primary-light rounded-lg transition-colors'>
           {isOpen ? '←' : '→'}
         </button>

@@ -139,6 +139,10 @@ const monitoringSlice = createSlice({
       state.roomStateEvents = [];
     },
 
+    clearRoomState(state) {
+      state.roomState = null;
+    },
+
     clearVrMessages(state) {
       state.vrMessages = [];
     },
@@ -153,6 +157,7 @@ export const {
   grpcDisconnected,
   grpcError,
   clearRoomEvents,
+  clearRoomState,
   clearVrMessages,
 } = monitoringSlice.actions;
 

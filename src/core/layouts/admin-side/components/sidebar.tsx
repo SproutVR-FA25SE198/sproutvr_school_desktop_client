@@ -13,7 +13,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: 'Thống kê', href: routes.adminDashboard, icon: '📊' },
   { label: 'Quản lý tài nguyên', href: routes.resources, icon: '📚' },
-  { label: 'Quản lý phiên học', href: routes.adminSessions, icon: '🖥️'},
+  { label: 'Quản lý phiên học', href: routes.adminSessions, icon: '🖥️' },
   { label: 'Quản lý thiết bị', href: routes.vrDevices, icon: '🥽' },
   { label: 'Quản lý tài khoản', href: routes.accounts, icon: '👥' },
   { label: 'Gói Học Liệu', href: routes.myBundles, icon: '📦' },
@@ -30,7 +30,7 @@ export function AdminSidebar() {
       className={`${isOpen ? 'w-64' : 'w-20'} bg-neutral-900 text-white transition-all duration-300 flex flex-col h-screen shadow-xl`}
     >
       <div className='p-6 border-b border-neutral-800 flex items-center justify-between'>
-        {isOpen && <h2 className='text-xl font-bold tracking-wide'>Menu</h2>}
+        {isOpen && <h2 className='text-xl font-bold tracking-wide'>Danh sách</h2>}
         <button
           onClick={() => setIsOpen(!isOpen)}
           className='p-2 hover:bg-neutral-800 rounded-lg transition-colors'

@@ -12,7 +12,7 @@ import type { MapRetrieveResponse } from '@/common/types/map.type';
 const VrLessonDesign = () => {
   const { currentStep } = useFormContext();
   const location = useLocation();
-  const lesson = useMemo(() => location.state?.lesson, []);
+  const lesson = useMemo(() => location.state?.lesson, [location.state?.lesson]);
 
   const { data: maps, isLoading: isMapsLoading } = useGetMapsBySubject({ subjectId: lesson?.subject.id || '' });
 

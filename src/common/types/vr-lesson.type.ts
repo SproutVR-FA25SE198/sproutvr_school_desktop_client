@@ -75,6 +75,7 @@ export interface VrLessonRetrieve {
   name: string;
   description: string;
   maxDuration: string; // format: "HH:mm:ss"
+  duration?: string;
   presetJsonRelativeFilePath: string;
   status: Status;
   tasks: VrTaskRetrieve[];
@@ -90,4 +91,45 @@ export interface VrLessonStatus {
 export interface VrLessonPatchPayload {
   isSequential?: boolean;
   taskConfigs: VrTaskDetails[];
+}
+
+export interface VrLessonPresetTask {
+  locationCode: string;
+  vrTaskId: string;
+  taskNumber: number;
+  taskDescription: string;
+  mapObject: {
+    objectCode: string;
+    activityType: {
+      activityCode: string;
+      config?: {
+        information?: string;
+        question?: string;
+        answers?: VrTaskAnswer[];
+      };
+    };
+  };
+}
+
+export interface VrLessonPreset {
+  mapCode: string;
+  duration: number;
+  isSequential: boolean;
+  vrTasks: VrLessonPresetTask[];
+}
+
+export interface VrLessonPresetTaskExtended extends VrLessonPresetTask {
+  locationName: string;
+  locationImageUrl: string;
+  mapObject: VrLessonPresetTask['mapObject'] & {
+    name: string;
+    imageUrl: string;
+    activityType: VrLessonPresetTask['mapObject']['activityType'] & {
+      name: string;
+    };
+  };
+}
+
+export interface VrLessonPresetExtended extends VrLessonPreset {
+  vrTasks: VrLessonPresetTaskExtended[];
 }

@@ -24,6 +24,10 @@ export function VRLessonsList({ vrLessons, lesson }: VRLessonsListProps) {
     setShowConfirmDialog(true);
   };
 
+  const handleVrLessonClick = (vrLessonId: string) => {
+    navigate(routes.vrLessonDetails.replace(':id', vrLessonId));
+  };
+
   const handleConfirmCreate = (
     vrLessonId: string,
     vrLesson: VrLessonRetrieve,
@@ -59,6 +63,7 @@ export function VRLessonsList({ vrLessons, lesson }: VRLessonsListProps) {
             currentData.map((vrLesson) => (
               <div
                 key={vrLesson.id}
+                onClick={() => handleVrLessonClick(vrLesson.id)}
                 className='flex-shrink-0 shadow-md w-64 rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary transition-shadow'
               >
                 <img

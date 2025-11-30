@@ -36,36 +36,45 @@ export function DeviceCard({ device }: DeviceCardProps) {
 
       {/* Task List */}
       <div className='flex-1 overflow-y-auto px-4 py-3 space-y-2'>
-        {device.tasks && [...device.tasks].sort((a, b) => a.task_number - b.task_number).map((task, index) =>{ 
-          console.log(task.task_number + "----- index: " + index);
-          return ( 
-          <div
-            key={task.vr_task_id}
-            className={`rounded border p-2 ${
-              task.is_completed ? (task.is_correct ? 'bg-green-100' : 'bg-red-100') : 'border-neutral-200'
-            }`}
-          >
-            <div className='flex justify-between'>
-              <span className='text-xs font-semibold text-neutral-700'>
-                {task.question_name ?? `Nhiệm vụ ${index + 1}`}
-              </span>
-              <span
-                className={`text-xs font-semibold ${
-                  (task.is_completed && task.is_correct) ? 'text-green-600' 
-                  : (task.is_completed && !task.is_correct) ? 'text-red-600' : 'text-neutral-500'
-                }`}
-              >
-                {(task.is_completed && task.is_correct) ? 'Hoàn thành' 
-                  : (task.is_completed && !task.is_correct) ? 'Trả lời sai' : 'Chưa hoàn thành'}
-              </span>
-            </div>
-            {task.completion_time_at_vietnam && (
-              <p className='text-xs text-neutral-600 mt-1'>
-                {new Date(task.completion_time_at_vietnam).toLocaleTimeString()}
-              </p>
-            )}
-          </div>
-        )})}
+        {device.tasks &&
+          [...device.tasks]
+            .sort((a, b) => a.task_number - b.task_number)
+            .map((task, index) => {
+              return (
+                <div
+                  key={task.vr_task_id}
+                  className={`rounded border p-2 ${
+                    task.is_completed ? (task.is_correct ? 'bg-green-100' : 'bg-red-100') : 'border-neutral-200'
+                  }`}
+                >
+                  <div className='flex justify-between'>
+                    <span className='text-xs font-semibold text-neutral-700'>
+                      {task.question_name ?? `Nhiệm vụ ${index + 1}`}
+                    </span>
+                    <span
+                      className={`text-xs font-semibold ${
+                        task.is_completed && task.is_correct
+                          ? 'text-green-600'
+                          : task.is_completed && !task.is_correct
+                            ? 'text-red-600'
+                            : 'text-neutral-500'
+                      }`}
+                    >
+                      {task.is_completed && task.is_correct
+                        ? 'Hoàn thành'
+                        : task.is_completed && !task.is_correct
+                          ? 'Trả lời sai'
+                          : 'Chưa hoàn thành'}
+                    </span>
+                  </div>
+                  {task.completion_time_at_vietnam && (
+                    <p className='text-xs text-neutral-600 mt-1'>
+                      {new Date(task.completion_time_at_vietnam).toLocaleTimeString()}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
       </div>
     </div>
   );

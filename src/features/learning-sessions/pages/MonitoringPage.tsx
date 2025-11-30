@@ -12,7 +12,7 @@ import useGetVrLessonById from '@/common/hooks/useGetVrLessonById';
 import type { VrLessonRetrieve } from '@/common/types/vr-lesson.type';
 
 import Loading from '@/common/components/loading';
-import { applyRoomUpdate, teacherRoomUpdated } from '../store/monitoringSlice';
+import { applyRoomUpdate, clearRoomState, teacherRoomUpdated } from '../store/monitoringSlice';
 import type { VRLearningSessionMonitor } from '../types/session-monitoring.type';
 import routes from '@/core/configs/routes';
 
@@ -33,7 +33,7 @@ export default function MonitoringPage() {
   useEffect(() => {
     if (!params.id) return;
     loadRoomState(params.id); // <-- Loads + dispatch(setRoomState)
-  }, [activeSessionId]);
+  }, [activeSessionId, params.id]);
 
   // Subscribe to real-time streaming updates
   useEffect(() => {
@@ -44,7 +44,8 @@ export default function MonitoringPage() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (roomState !== null && roomState?.status !== 'Active') {
+    if (roomState && roomState?.status !== 'Active') {
+      dispatch(clearRoomState());
       alert('Phiên học đã kết thúc.');
       navigate(routes.home, { replace: true });
     }
