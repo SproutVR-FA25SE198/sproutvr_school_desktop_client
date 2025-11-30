@@ -3,10 +3,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import routes from '../../../configs/routes';
-import { Button } from '@/common/components/ui/button';
-import { LogOut } from 'lucide-react';
-import { logoutThunk } from '@/common/store/auth/authThunks';
-import { useAppDispatch } from '@/common/store/hooks';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/common/store';
 
@@ -28,17 +24,12 @@ const navItems: NavItem[] = [
 export function AdminSidebar() {
   const [isOpen, setIsOpen] = useState(true);
   const location = useLocation();
-  const dispatch = useAppDispatch();
 
   const { user } = useSelector((state: RootState) => state.auth);
   const displayName = user?.fullName || 'User';
   const initial = displayName.charAt(0);
 
   const isActive = (href: string) => location.pathname.startsWith(href.replace(/:\w+/, ''));
-
-  const handleLogout = () => {
-    dispatch(logoutThunk());
-  };
 
   return (
     <aside
@@ -73,14 +64,7 @@ export function AdminSidebar() {
         })}
       </nav>
 
-      <div className='p-4 mb-8 border-t border-neutral-800'>
-        <Button
-          onClick={handleLogout}
-          variant='ghost'
-          className='justify-start mb-5 hover:bg-neutral-100 rounded-lg transition-colors'
-        >
-          <LogOut className='h-4 w-4' /> {isOpen && <span className='ml-3'>Đăng xuất</span>}
-        </Button>
+      <div className='p-4 mb-2 border-t border-neutral-800'>
         <div className='flex items-center gap-3'>
           <div className='w-10 h-10 bg-neutral-700 rounded-full flex items-center justify-center font-bold'>{initial}</div>
           {isOpen && (
