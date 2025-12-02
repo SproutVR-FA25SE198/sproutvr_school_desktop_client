@@ -7,6 +7,8 @@ import { useAppDispatch } from '@/common/store/hooks';
 import { logoutThunk } from '@/common/store/auth/authThunks';
 import logo from '@/assets/SproutVR_Icon.png'
 import routes from '@/core/configs/routes';
+import { ChangePasswordDialog } from '@/features/auth/components/change-password-dialog';
+import { toast } from 'sonner';
 
 interface AdminTopBarProps {
   title: string;
@@ -16,12 +18,17 @@ interface AdminTopBarProps {
 
 export function AdminTopBar({ title, userName, role = 'Quản trị viên' }: AdminTopBarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
   const handleLogout = () => {
     dispatch(logoutThunk());
+  };
+
+  const handlePasswordChangeSuccess = () => {
+    toast.success("Đổi mật khẩu thành công!");
   };
 
   const initials = userName
@@ -91,7 +98,10 @@ export function AdminTopBar({ title, userName, role = 'Quản trị viên' }: Ad
           <div className='absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right'>
             <div className='p-1'>
               <button 
-                onClick={() => navigate(routes.adminProfile)} 
+                onClick={() => {
+                  setIsOpen(false);
+                  navigate(routes.adminProfile)
+                }} 
                 className='w-full flex items-center gap-3 px-3 py-2.5 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-primary rounded-lg transition-colors text-left'
               >
                 <User size={16} />
@@ -99,7 +109,10 @@ export function AdminTopBar({ title, userName, role = 'Quản trị viên' }: Ad
               </button>
               
               <button 
-                onClick={() => navigate(routes.resetPassword)} 
+                onClick={() => {
+                  setIsOpen(false)
+                  setShowPasswordDialog(true)
+                }} 
                 className='w-full flex items-center gap-3 px-3 py-2.5 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-primary rounded-lg transition-colors text-left'
               >
                 <KeyRound size={16} />
@@ -121,6 +134,12 @@ export function AdminTopBar({ title, userName, role = 'Quản trị viên' }: Ad
           </div>
         )}
       </div>
+
+      <ChangePasswordDialog
+        open={showPasswordDialog}
+        onOpenChange={setShowPasswordDialog}
+        onSuccess={handlePasswordChangeSuccess}
+      />
     </header>
   );
 }

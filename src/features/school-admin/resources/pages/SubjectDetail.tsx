@@ -15,6 +15,7 @@ import { fetchLessons } from "../services/lesson.services";
 import type { MapListItem } from "../types/map.types";
 import { fetchMaps } from "../services/map.services";
 import { formatDateTime } from "@/common/utils/date-time-vn-converter";
+import { confirmDialog } from "@/common/components/ui/confirm-dialog";
 
 export default function SubjectDetail() {
   const navigate = useNavigate();
@@ -78,7 +79,9 @@ export default function SubjectDetail() {
     const newStatus = subject.status.key === 1 ? 0 : 1;
     const actionText = subject.status.key === 1 ? "khóa" : "mở khóa";
 
-    if (window.confirm(`Bạn có chắc bạn muốn ${actionText} môn học này?`)) {
+    const result = await confirmDialog(`Bạn có xác nhận ${actionText} môn học này không?`);
+
+    if (result) {
       setIsUpdatingStatus(true);
       try {
         await updateSubjectStatus(subject.id, newStatus);

@@ -17,6 +17,7 @@ import { Input } from '@/common/components/ui/input';
 import { Label } from '@/common/components/ui/label';
 import Loading from '@/common/components/loading';
 import { useCreateLearningSession } from '../hooks/useCreateLearningSession';
+import { toast } from 'sonner';
 
 interface CreateLearningSessionDialogProps {
   open: boolean;
@@ -49,7 +50,7 @@ export function CreateLearningSessionDialog({
 
   if (error) {
     console.error('Error creating learning session:', error);
-    alert(`Error creating learning session: ${error}`);
+    toast.error(`Error creating learning session: ${error}`);
     return null;
   }
 

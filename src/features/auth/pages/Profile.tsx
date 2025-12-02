@@ -1,18 +1,19 @@
 'use client';
 
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { Mail, Calendar, Clock, CheckCircle2, AlertCircle, KeyRound } from 'lucide-react';
 import type { RootState } from '@/common/store';
 import { Button } from '@/common/components/ui/button';
 import { Badge } from '@/common/components/ui/badge';
-import routes from '@/core/configs/routes';
 import { formatDateOnly } from '@/common/utils/date-time-vn-converter';
 import { ProfileField } from '../components/profileField';
+import { useState } from 'react';
+import { ChangePasswordDialog } from '../components/change-password-dialog';
+import { toast } from 'sonner';
 
 export default function ProfilePage() {
   const { user } = useSelector((state: RootState) => state.auth);
-  const navigate = useNavigate();
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
 
   if (!user) return null;
 
@@ -24,6 +25,10 @@ export default function ProfilePage() {
     .join('')
     .slice(0, 1);
 
+  const handlePasswordChangeSuccess = () => {
+    toast.success("Đổi mật khẩu thành công!");
+  };
+
   return (
     <div className='flex-1 h-full overflow-y-auto bg-slate-50/50 p-8'>
       <div className='max-w-4xl mx-auto space-y-8'>
@@ -34,7 +39,7 @@ export default function ProfilePage() {
             <h1 className='text-2xl font-bold text-slate-900 tracking-tight'>Tài khoản cá nhân</h1>
           </div>
           <div className='flex gap-3'>
-            <Button variant="outline" className='bg-white' onClick={() => navigate(routes.resetPassword)}>
+            <Button variant="outline" className='bg-white' onClick={() => setShowPasswordDialog(true)}>
               <KeyRound size={16} className="mr-2" />
               Đổi mật khẩu
             </Button>
@@ -95,6 +100,12 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
+      <ChangePasswordDialog
+        open={showPasswordDialog}
+        onOpenChange={setShowPasswordDialog}
+        onSuccess={handlePasswordChangeSuccess}
+      />
     </div>
   );
 }

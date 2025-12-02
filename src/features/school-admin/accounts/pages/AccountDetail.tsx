@@ -11,7 +11,8 @@ import type { AccountDetail } from "../types/account.types";
 import { AccountStatus, AccountDetailLessonStatus, getStatusLabel } from "../types/account.types";
 import { fetchAccountById, updateAccountStatus } from "../services/account.services";
 import routes from "@/core/configs/routes";
-import { formatDateTime } from "@/common/utils/date-time-vn-converter";
+import { formatDateOnly, formatDateTime } from "@/common/utils/date-time-vn-converter";
+import { confirmDialog } from "@/common/components/ui/confirm-dialog";
 
 export default function AccountDetailPage() {
   const navigate = useNavigate();
@@ -57,7 +58,9 @@ export default function AccountDetailPage() {
     const newStatus = isActivating ? AccountStatus.Active : AccountStatus.Disabled;
     const actionText = isActivating ? "mở khóa" : "khóa";
 
-    if (window.confirm(`Bạn có chắc bạn muốn ${actionText} tài khoản này?`)) {
+    const result = await confirmDialog(`Bạn có xác nhận ${actionText} tài khoản này không?`);
+
+    if (result) {
       setIsUpdatingStatus(true);
       try {
         await updateAccountStatus(accountDetail.teacherId, newStatus);
@@ -70,16 +73,6 @@ export default function AccountDetailPage() {
         setIsUpdatingStatus(false);
       }
     }
-  };
-
-  const formatDateOnly = (dateString: string | null) => {
-    if (!dateString) return "Chưa cập nhật";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("vi-VN", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
   };
 
   // --- Loading / Error States ---

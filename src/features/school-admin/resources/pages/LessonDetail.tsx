@@ -13,6 +13,7 @@ import type { Lesson } from "../types/lesson.types";
 import { fetchLessonById, updateLessonStatus } from "../services/lesson.services";
 import { fetchVRLessons } from "../services/vr-lesson.services";
 import type { VRLesson } from "../types/vr-lesson.types";
+import { confirmDialog } from "@/common/components/ui/confirm-dialog";
 
 export default function LessonDetail() {
   const navigate = useNavigate();
@@ -70,7 +71,9 @@ export default function LessonDetail() {
     const newStatus = lesson.status.key === 1 ? 0 : 1;
     const actionText = lesson.status.key === 1 ? "khóa" : "mở khóa";
 
-    if (window.confirm(`Bạn có chắc bạn muốn ${actionText} bài giảng này?`)) {
+    const result = await confirmDialog(`Bạn có xác nhận ${actionText} bài giảng này không?`);
+
+    if (result) {
       setIsUpdatingStatus(true);
       try {
         await updateLessonStatus(lesson.id, newStatus);

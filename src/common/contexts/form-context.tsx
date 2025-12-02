@@ -6,6 +6,7 @@ import { createVrLessonPhaseTwo } from '@/features/vr-lessons/services/vr-lesson
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import routes from '@/core/configs/routes';
+import { toast } from 'sonner';
 
 export interface LessonFormData {
   id: string;
@@ -205,7 +206,7 @@ export function FormProvider({ children }: { children: ReactNode }) {
       { vrLessonId: vrLessonData?.id || '', payload: completeFormData },
       {
         onSuccess: () => {
-          alert('Hoàn tất tạo bài học VR!');
+          toast.success('Hoàn tất tạo bài học VR!');
           navigate(routes.home, { state: { refresh: true } });
         },
       },

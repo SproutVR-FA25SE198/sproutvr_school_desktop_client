@@ -8,6 +8,7 @@ import { Spinner } from '@/common/components/ui/spinner';
 import { Send } from 'lucide-react';
 import Loading from '@/common/components/loading';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/common/components/ui/tooltip';
+import { toast } from 'sonner';
 
 interface SendNotificationProps {
   vrLessonId: string;
@@ -32,12 +33,12 @@ export function SendNotification({ vrLessonId }: SendNotificationProps) {
       await sendNotification(vrLessonId, { text: notification, severity });
       error && setError(null);
       // Response contains: { vr_learning_session_id }
-      alert('Gửi' + (severity === 'WARNING' ? ' cảnh báo ' : ' thông báo ') + 'thành công!');
+      toast.success('Gửi' + (severity === 'WARNING' ? ' cảnh báo ' : ' thông báo ') + 'thành công!');
       setNotification('');
       setSeverity(NotificationSeverity[0].value);
     } catch (err: any) {
       console.error('CreateRoom error', err);
-      alert('Error: ' + err.message);
+      toast.error('Error: ' + err.message);
     }
 
     setLoading(false);

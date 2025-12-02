@@ -13,6 +13,7 @@ import { Badge } from "@/common/components/ui/badge";
 import type { Subject } from "../types/subject.types";
 import { fetchSubjects } from "../services/subject.services";
 import { formatDateTime } from "@/common/utils/date-time-vn-converter";
+import { confirmDialog } from "@/common/components/ui/confirm-dialog";
 
 export default function MasterSubjectDetail() {
   const navigate = useNavigate();
@@ -68,7 +69,9 @@ export default function MasterSubjectDetail() {
     const newStatus = masterSubject.status.key === 1 ? 0 : 1;
     const actionText = masterSubject.status.key === 1 ? "khóa" : "mở khóa";
 
-    if (window.confirm(`Bạn có chắc bạn muốn ${actionText} bộ môn này?`)) {
+    const result = await confirmDialog(`Bạn có xác nhận ${actionText} bộ môn này không?`);
+
+    if (result) {
       setIsUpdatingStatus(true);
       try {
         await updateMasterSubjectStatus(masterSubject.id, newStatus);

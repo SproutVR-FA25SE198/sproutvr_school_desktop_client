@@ -22,7 +22,7 @@ const AdminSideLayout = ({ children }: { children?: React.ReactNode }) => {
       </div>
 
       {/* Toaster component */}
-      <Toaster richColors closeButton position="bottom-right" />
+      <Toaster richColors closeButton position="top-center" />
     </div>
   );
 };

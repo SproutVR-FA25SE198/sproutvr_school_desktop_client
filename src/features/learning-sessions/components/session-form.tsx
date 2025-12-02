@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setSessionTimes } from '../store/sessionSlice';
 import { HHMMSSToDuration } from '@/common/utils/duration-converter';
 import Loading from '@/common/components/loading';
+import { toast } from 'sonner';
 
 interface DeviceAssignment {
   id: string;
@@ -112,23 +113,23 @@ export function SessionForm({
 
   const handleDurationBlur = () => {
     if (durationMinutes < mapDuration) {
-      alert(`Thời lượng tối thiểu là ${mapDuration} phút`);
+      toast.info(`Thời lượng tối thiểu là ${mapDuration} phút`);
     }
   };
 
   const handleSubmit = async () => {
     if (!isFormValid) {
-      alert('Vui lòng điền đầy đủ các trường bắt buộc');
+      toast.error('Vui lòng điền đầy đủ các trường bắt buộc');
       return;
     }
 
     if (!vrLearningSessionId) {
-      alert('Vui lòng đợi phòng được tạo trước');
+      toast.info('Vui lòng đợi phòng được tạo trước');
       return;
     }
 
     if(!durationMinutes || durationMinutes < mapDuration) {
-      alert('Thời gian phiên học phải lớn hơn thời gian bài học!');
+      toast.error('Thời gian phiên học phải lớn hơn thời gian bài học!');
       return;
     }
 
@@ -182,7 +183,7 @@ export function SessionForm({
       });
     } catch (err: any) {
       console.error('Activate room error:', err);
-      alert(`Lỗi khi kích hoạt phiên học: ${err?.message || 'Unknown error'}`);
+      toast.error(`Lỗi khi kích hoạt phiên học: ${err?.message || 'Unknown error'}`);
     } finally {
       setIsActivating(false);
     }

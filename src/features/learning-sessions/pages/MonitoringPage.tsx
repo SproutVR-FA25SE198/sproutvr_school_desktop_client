@@ -15,6 +15,7 @@ import Loading from '@/common/components/loading';
 import { applyRoomUpdate, clearRoomState, teacherRoomUpdated } from '../store/monitoringSlice';
 import type { VRLearningSessionMonitor } from '../types/session-monitoring.type';
 import routes from '@/core/configs/routes';
+import { toast } from 'sonner';
 
 export default function MonitoringPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -46,7 +47,7 @@ export default function MonitoringPage() {
   useEffect(() => {
     if (roomState && roomState?.status !== 'Active') {
       dispatch(clearRoomState());
-      alert('Phiên học đã kết thúc.');
+      toast.info('Phiên học đã kết thúc.');
       navigate(routes.home, { replace: true });
     }
   }, [roomState]);

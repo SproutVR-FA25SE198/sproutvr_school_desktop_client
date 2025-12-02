@@ -3,6 +3,7 @@ import { TopBar } from './components/top-bar';
 import { Sidebar } from './components/sidebar';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/common/store';
+import { Toaster } from 'sonner';
 
 const TeacherSideLayout = ({ children }: { children?: React.ReactNode }) => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -18,6 +19,7 @@ const TeacherSideLayout = ({ children }: { children?: React.ReactNode }) => {
         <TopBar schoolName='SproutVR' userName={displayName} notificationCount={3} />
         <main className=' h-[calc(100vh-80px)]'>{children || <Outlet />}</main>
       </div>
+      <Toaster richColors closeButton position="top-center" />
     </div>
   );
 };
