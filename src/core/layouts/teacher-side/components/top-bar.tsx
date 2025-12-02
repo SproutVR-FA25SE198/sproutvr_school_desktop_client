@@ -7,6 +7,8 @@ import { useAppDispatch } from '@/common/store/hooks';
 import { logoutThunk } from '@/common/store/auth/authThunks';
 import logo from '@/assets/SproutVR_Icon.png';
 import routes from '@/core/configs/routes';
+import { ChangePasswordDialog } from '@/features/auth/components/change-password-dialog';
+import { toast } from 'sonner';
 
 interface TopBarProps {
   schoolName: string;
@@ -16,12 +18,17 @@ interface TopBarProps {
 
 export function TopBar({ schoolName, userName }: TopBarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   
   const dispatch = useAppDispatch();
   const handleLogout = () => {
     dispatch(logoutThunk());
+  };
+
+  const handlePasswordChangeSuccess = () => {
+    toast.success("Đổi mật khẩu thành công!");
   };
 
   useEffect(() => {
@@ -84,7 +91,10 @@ export function TopBar({ schoolName, userName }: TopBarProps) {
             <div className='absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-lg border border-neutral-200 overflow-hidden animate-in fade-in zoom-in-95 duration-200'>
               <div className='p-1'>
                 <button 
-                  onClick={() => navigate(routes.profile)} 
+                  onClick={() => {
+                    setIsOpen(false);
+                    navigate(routes.profile)
+                  }} 
                   className='w-full flex items-center gap-3 px-3 py-2.5 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-primary rounded-lg transition-colors text-left'
                 >
                   <User size={16} />
@@ -92,7 +102,10 @@ export function TopBar({ schoolName, userName }: TopBarProps) {
                 </button>
                 
                 <button 
-                  onClick={() => navigate(routes.resetPassword)} 
+                  onClick={() => {
+                    setIsOpen(false);
+                    setShowPasswordDialog(true)
+                  }} 
                   className='w-full flex items-center gap-3 px-3 py-2.5 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-primary rounded-lg transition-colors text-left'
                 >
                   <KeyRound size={16} />
@@ -115,6 +128,12 @@ export function TopBar({ schoolName, userName }: TopBarProps) {
           )}
         </div>
       </div>
+
+      <ChangePasswordDialog
+        open={showPasswordDialog}
+        onOpenChange={setShowPasswordDialog}
+        onSuccess={handlePasswordChangeSuccess}
+      />
     </div>
   );
 }
