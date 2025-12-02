@@ -16,6 +16,7 @@ import useGetTaskLocations from '@/common/hooks/useGetTaskLocations';
 import Loading from '@/common/components/loading';
 import useGetMapObjects from '@/common/hooks/useGetMapObjects';
 import useGetActivityTypes from '@/common/hooks/useGetActivityTypes';
+import { toast } from 'sonner';
 
 export function PhaseOneStepTwo({
   maps,
@@ -61,7 +62,7 @@ export function PhaseOneStepTwo({
     if (!validateAll()) return;
 
     if (formTasks.length >= (locations?.items.length || 0)) {
-      alert('Số lượng nhiệm vụ đã đạt giới hạn của Bản đồ này.');
+      toast.info('Số nhiệm vụ đã đạt giới hạn của Bản đồ này.');
       return;
     }
 

@@ -11,7 +11,7 @@ import type { AccountDetail } from "../types/account.types";
 import { AccountStatus, AccountDetailLessonStatus, getStatusLabel } from "../types/account.types";
 import { fetchAccountById, updateAccountStatus } from "../services/account.services";
 import routes from "@/core/configs/routes";
-import { formatDateTime } from "@/common/utils/date-time-vn-converter";
+import { formatDateOnly, formatDateTime } from "@/common/utils/date-time-vn-converter";
 
 export default function AccountDetailPage() {
   const navigate = useNavigate();
@@ -70,16 +70,6 @@ export default function AccountDetailPage() {
         setIsUpdatingStatus(false);
       }
     }
-  };
-
-  const formatDateOnly = (dateString: string | null) => {
-    if (!dateString) return "Chưa cập nhật";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("vi-VN", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
   };
 
   // --- Loading / Error States ---

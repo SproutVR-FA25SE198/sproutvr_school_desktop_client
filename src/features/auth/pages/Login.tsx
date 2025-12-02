@@ -11,13 +11,13 @@ import { Eye, EyeClosed } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 
 import { type LoginFormData, loginSchema } from '../components/schema';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import routes from '@/core/configs/routes';
 import Loading from '@/common/components/loading';
+import { toast } from 'sonner';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -29,7 +29,7 @@ export default function LoginPage() {
     const result = await dispatch(loginThunk(data));
     console.log(result);
     if (result.meta.requestStatus === 'rejected') {
-      alert(result.payload as string);
+      toast.error(result.payload as string);
       return;
     }
     if (loginThunk.fulfilled.match(result)) {

@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import routes from '@/core/configs/routes';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/common/store';
+import { toast } from 'sonner';
 
 export default function LessonCreationPage() {
   const {
@@ -39,7 +40,7 @@ export default function LessonCreationPage() {
   const isError = isMasterSubjectsError || isSubjectsError;
 
   if (isError) {
-    alert('Đã có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại sau.');
+    toast.error('Đã có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại sau.');
     navigate(routes.home);
   }
 

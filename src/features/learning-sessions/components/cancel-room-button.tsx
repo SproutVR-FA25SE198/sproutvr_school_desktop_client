@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ConfirmDialog } from './confirm-dialog';
 import { useNavigate } from 'react-router-dom';
 import routes from '@/core/configs/routes';
+import { toast } from 'sonner';
 
 interface CancelRoomButtonProps {
   vrLearningSessionId: string;
@@ -28,11 +29,11 @@ export function CancelRoomButton({ vrLearningSessionId, vrLessionId }: CancelRoo
       console.log('Room cancelled:', response);
 
       // Response contains: { vr_learning_session_id }
-      alert('Đã kết thúc phiên học.');
+      toast.success('Đã kết thúc phiên học.');
       navigate(vrLessionId ? routes.lessonDetails.replace(':lessonId', vrLessionId) : routes.home);
     } catch (err: any) {
       console.error('CreateRoom error', err);
-      alert('Error: ' + err.message);
+      toast.error('Error: ' + err.message);
     }
 
     setLoading(false);
