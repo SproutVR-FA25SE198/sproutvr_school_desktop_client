@@ -30,6 +30,7 @@ export interface MapPayload {
  */
 export interface BundlePayload {
   orderId: string;
+  orderCode: string;
   organizationId: string;
   mapCount: number;
   maps: MapPayload[];

@@ -21,8 +21,8 @@ export function BundleCard({ bundle, onView }: BundleCardProps) {
               <Package className="w-4 h-4 mr-2" />
               Mã Đơn Hàng
             </h3>
-            <p className="text-lg text-neutral-900 font-bold font-mono truncate" title={bundle.orderId}>
-              {bundle.orderId}
+            <p className="text-lg text-neutral-900 font-bold font-mono truncate" title={bundle.orderCode}>
+              #{bundle.orderCode}
             </p>
           </div>
         </div>
