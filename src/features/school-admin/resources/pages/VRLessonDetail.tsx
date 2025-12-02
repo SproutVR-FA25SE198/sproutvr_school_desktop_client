@@ -11,6 +11,7 @@ import { formatDateTime } from "@/common/utils/date-time-vn-converter";
 import type { VRLesson } from "../types/vr-lesson.types";
 import { fetchVRLessonById, updateVRLessonStatus } from "../services/vr-lesson.services";
 import { HHMMSSToDuration } from "@/common/utils/duration-converter";
+import { confirmDialog } from "@/common/components/ui/confirm-dialog";
 
 export default function VRLessonDetail() {
   const navigate = useNavigate();
@@ -58,7 +59,9 @@ export default function VRLessonDetail() {
     const newStatus = vrLesson.status.key === 1 ? 0 : 1;
     const actionText = vrLesson.status.key === 1 ? "khóa" : "mở khóa";
 
-    if (window.confirm(`Bạn có chắc bạn muốn ${actionText} bài học VR này?`)) {
+    const result = await confirmDialog(`Bạn có xác nhận ${actionText} bài học VR này không?`);
+
+    if (result) {
       setIsUpdatingStatus(true);
       try {
         await updateVRLessonStatus(vrLesson.id, newStatus);

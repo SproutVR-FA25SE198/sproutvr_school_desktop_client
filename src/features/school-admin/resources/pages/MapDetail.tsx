@@ -13,6 +13,7 @@ import type { VRLesson } from "../types/vr-lesson.types";
 import { fetchMapById, updateMapStatus } from "../services/map.services";
 import { fetchVRLessons } from "../services/vr-lesson.services";
 import { formatDateTime } from "@/common/utils/date-time-vn-converter";
+import { confirmDialog } from "@/common/components/ui/confirm-dialog";
 
 export default function MapDetail() {
   const navigate = useNavigate();
@@ -69,7 +70,9 @@ export default function MapDetail() {
     const newStatus = map.status.key === 1 ? 0 : 1;
     const actionText = map.status.key === 1 ? "khóa" : "mở khóa";
 
-    if (window.confirm(`Bạn có chắc bạn muốn ${actionText} học liệu VR này?`)) {
+    const result = await confirmDialog(`Bạn có xác nhận ${actionText} học liệu VR này không?`);
+
+    if (result) {
       setIsUpdatingStatus(true);
       try {
         await updateMapStatus(map.id, newStatus);
