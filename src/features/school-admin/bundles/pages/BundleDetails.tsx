@@ -160,7 +160,7 @@ export default function BundleDetailsPage() {
                 <div>
                     <p className="text-sm text-neutral-500 mb-1">Mã Đơn Hàng</p>
                     <p className="text-xl font-bold text-neutral-900 font-mono truncate">
-                        {bundle.orderId}
+                        #{bundle.orderCode}
                     </p>
                 </div>
             </Card>
