@@ -7,6 +7,7 @@ import useGetMasterSubjects from '@/common/hooks/useGetMasterSubjects';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/common/store';
+import AIChatSidebar from '@/features/chatbot/components/chat-bot';
 
 export default function LessonsPage() {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -54,6 +55,7 @@ export default function LessonsPage() {
         </div>
 
         <LessonsGrid lessons={data?.items} subjects={subjects?.items} />
+        <AIChatSidebar></AIChatSidebar>
       </div>
     </div>
   );
