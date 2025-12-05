@@ -83,7 +83,9 @@ export function VRLessonsList({ vrLessons, lesson }: VRLessonsListProps) {
           )}
         </div>
       </div>
-      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
+      {currentData.length !== 0 && (
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
+      )}
 
       <CreateLearningSessionDialog
         open={showConfirmDialog}

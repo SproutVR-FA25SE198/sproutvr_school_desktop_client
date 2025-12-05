@@ -14,9 +14,7 @@ export function LessonDetailsHeader({ lesson, totalVrLessons }: LessonDetailsHea
   const [openPdf, setOpenPdf] = useState(false);
 
   const schoolResourceUrl = import.meta.env.VITE_SCHOOL_URL;
-  const pdfUrl = lesson.resourceRelativeFilePath
-    ? schoolResourceUrl + '/api' + lesson.resourceRelativeFilePath
-    : null;
+  const pdfUrl = lesson.resourceRelativeFilePath ? schoolResourceUrl + '/api' + lesson.resourceRelativeFilePath : null;
 
   return (
     <>
@@ -41,15 +39,9 @@ export function LessonDetailsHeader({ lesson, totalVrLessons }: LessonDetailsHea
 
         <p className='text-neutral-700 text-sm leading-relaxed mb-4'>{lesson.description}</p>
 
-        <div className='flex gap-6 text-sm'>
-          <div>
-            <p className='text-neutral-600'>Tổng số bài học VR</p>
-            <p className='font-semibold text-neutral-900'>{totalVrLessons || 0}</p>
-          </div>
-          <div>
-            <p className='text-neutral-600'>Trạng thái</p>
-            <p className='font-semibold text-neutral-900 capitalize'>{lesson.status.name}</p>
-          </div>
+        <div className='flex gap-2 text-sm'>
+          <p className='text-neutral-600'>Tổng số bài học VR:</p>
+          <p className='font-semibold text-neutral-900'>{totalVrLessons || 0}</p>
         </div>
 
         {/* PDF LINK */}
@@ -77,13 +69,12 @@ export function LessonDetailsHeader({ lesson, totalVrLessons }: LessonDetailsHea
           >
             <div className='flex items-center justify-between p-4 border-b'>
               <h2 className='text-lg font-semibold'>Tài liệu bài học</h2>
-              <Button size='sm' variant='outline' onClick={() => setOpenPdf(false)}>Đóng</Button>
+              <Button size='sm' variant='outline' onClick={() => setOpenPdf(false)}>
+                Đóng
+              </Button>
             </div>
 
-            <iframe
-              src={pdfUrl}
-              className='w-full h-full'
-            />
+            <iframe src={pdfUrl} className='w-full h-full' />
           </div>
         </div>
       )}
