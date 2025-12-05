@@ -34,7 +34,7 @@ export default function MyBundlesPage() {
   // Create the filtered list based on search query
   const filteredBundles = bundles?.filter((bundle) => {
     const query = searchQuery.toLowerCase().trim();
-    const codeMatch = bundle.orderCode.toLowerCase().includes(query);
+    const codeMatch = bundle.orderCode.toString().toLowerCase().includes(query);
     return codeMatch;
   });
 

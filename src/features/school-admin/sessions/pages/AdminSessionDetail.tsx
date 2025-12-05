@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/common/components/ui/card";
 import { Button } from "@/common/components/ui/button";
 import { Loader2 } from "lucide-react";
 import routes from "@/core/configs/routes";
-import { fetchSessionById } from "../services/session.services"; 
+import { fetchSessionById, fetchTaskCountByVRLessonId } from "../services/session.services"; 
 import type { Session } from "../types/session.types";
 import { formatDateOnly, formatTimeOnly } from "@/common/utils/date-time-vn-converter";
 
@@ -17,6 +17,7 @@ export default function SessionDetailPage() {
   const sessionId = params?.id as string;
 
   const [session, setSession] = useState<Session | null>(null);
+  const [taskCount, setTaskCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,18 +35,31 @@ export default function SessionDetailPage() {
     }
   }, [sessionId]);
 
+  // Fetch total task count of VR Lesson used in session
+  // For device session summary display
+  const loadTaskCount = useCallback(async () => {
+    try{
+      if(!session) return;
+
+      const taskData = await fetchTaskCountByVRLessonId(session.vrLesson.id)
+      setTaskCount(taskData.totalItems);
+    } catch (err) {
+      console.error(err);
+      setError("Lỗi tải nhiệm vụ của bài học VR trong phiên học.");
+    }
+  }, [session])
+
   useEffect(() => {
     loadSession();
   }, [loadSession]);
 
-  const handleBack = () => navigate(routes.adminSessions);
+  useEffect(() => {
+  if (session) {
+    loadTaskCount();
+  }
+}, [session, loadTaskCount]);
 
-  // Calculate total tasks of the session
-  const totalUniqueTasks = useMemo(() => {
-    if (!session?.vrDeviceTaskProgresses) return 0;
-    const uniqueTaskIds = new Set(session.vrDeviceTaskProgresses.map(p => p.vrTaskId));
-    return uniqueTaskIds.size;
-  }, [session]);
+  const handleBack = () => navigate(routes.adminSessions);
 
   if (isLoading) {
     return (
@@ -67,7 +81,7 @@ export default function SessionDetailPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-neutral-50 overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-neutral-50 overflow-hidden">
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto px-8 pt-8 pb-24 space-y-8">
           
@@ -168,11 +182,11 @@ export default function SessionDetailPage() {
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {session.vrDeviceSessionSummaries.map((summary) => {
-                  const percentage = totalUniqueTasks > 0 
-                    ? Math.round((summary.noTasksCompleted / totalUniqueTasks) * 100) 
+                  const percentage = taskCount > 0 
+                    ? Math.round((summary.noTasksCompleted / taskCount) * 100) 
                     : 0;
                   
-                  const isPerfect = totalUniqueTasks > 0 && summary.noTasksCompleted === totalUniqueTasks;
+                  const isPerfect = taskCount > 0 && summary.noTasksCompleted === taskCount;
 
                   return (
                     <div 
@@ -198,7 +212,7 @@ export default function SessionDetailPage() {
                         <div className="flex justify-between text-sm">
                           <span className="text-neutral-500">Hoàn thành</span>
                           <span className="font-bold text-neutral-900">
-                            {summary.noTasksCompleted} <span className="text-neutral-400 font-normal">/ {totalUniqueTasks}</span>
+                            {summary.noTasksCompleted} <span className="text-neutral-400 font-normal">/ {taskCount}</span>
                           </span>
                         </div>
                         

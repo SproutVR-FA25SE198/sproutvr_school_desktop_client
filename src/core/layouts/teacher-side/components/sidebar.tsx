@@ -10,7 +10,6 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { label: 'Thống kê', href: '/dashboard', icon: '📊' },
   { label: 'Bài giảng', href: routes.home, icon: '📚' },
   { label: 'Phiên học VR', href: routes.sessionList, icon: '▶️' },
 ];

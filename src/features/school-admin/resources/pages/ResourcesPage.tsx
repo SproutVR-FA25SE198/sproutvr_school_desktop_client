@@ -265,7 +265,6 @@ export default function ResourcesPage() {
                 <>
                   <th className="px-4 py-2">Tên</th>
                   <th className="px-4 py-2">Mã học liệu VR</th>
-                  <th className="px-4 py-2">Bài giảng</th>
                   <th className="px-4 py-2">Thời lượng</th>
                   <th className="px-4 py-2">Ngày tạo</th>
                   <th className="px-4 py-2">Trạng thái</th>
