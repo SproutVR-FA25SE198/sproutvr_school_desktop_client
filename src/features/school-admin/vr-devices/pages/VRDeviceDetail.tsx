@@ -116,7 +116,7 @@ export default function VRDeviceDetail() {
     }
 
     return (
-        <div className="flex h-screen bg-neutral-50">
+        <div className="flex min-h-screen bg-neutral-50 overflow-hidden">
             <div className="flex-1 flex flex-col overflow-hidden">
                 <div className="flex-1 overflow-auto px-8 pt-8 pb-24">
                     <div className="max-w-4xl mx-auto">
