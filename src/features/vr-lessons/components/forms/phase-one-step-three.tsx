@@ -50,7 +50,7 @@ export function PhaseOneStepThree() {
   };
 
   return (
-    <div className='h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center p-4 pt-0'>
+    <div className='h-screen bg-gradient-to-br -mt-16 from-slate-900 to-slate-800 flex items-center justify-center p-4 pt-0'>
       <div className='w-full max-w-2xl'>
         {/* Main Card */}
         <div className='bg-white rounded-lg shadow-xl p-8 space-y-6'>
