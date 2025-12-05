@@ -16,13 +16,13 @@ export const removeCookie = (name: string) => {
 
 // Access token
 export const getAccessToken = () => {
-  return getCookie('accessToken');
+  return localStorage.getItem('accessToken');
 };
 
 export const setAccessToken = (token: string) => {
-  setCookie('accessToken', token, new Date(new Date().setMinutes(new Date().getMinutes() + 120)));
+  localStorage.setItem('accessToken', token);
 };
 
 export const removeAccessToken = () => {
-  removeCookie('accessToken');
+  localStorage.removeItem('accessToken');
 };
