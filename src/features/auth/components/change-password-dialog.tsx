@@ -37,11 +37,11 @@ const PasswordInput = ({
   const [show, setShow] = useState(false);
 
   return (
-    <div className="space-y-2">
-      <Label htmlFor={id} className="font-medium">
+    <div className='space-y-2'>
+      <Label htmlFor={id} className='font-medium'>
         {label}
       </Label>
-      <div className="relative">
+      <div className='relative'>
         <Input
           id={id}
           type={show ? 'text' : 'password'}
@@ -50,15 +50,15 @@ const PasswordInput = ({
           {...register}
         />
         <button
-          type="button"
+          type='button'
           onClick={() => setShow(!show)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-700"
+          className='absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-700'
         >
           {show ? <EyeClosed size={18} /> : <Eye size={18} />}
         </button>
       </div>
       {error && (
-        <p className="text-sm text-red-500 mt-1 flex items-center gap-1">
+        <p className='text-sm text-red-500 mt-1 flex items-center gap-1'>
           <AlertCircle size={12} /> {error}
         </p>
       )}
@@ -71,7 +71,7 @@ const PasswordInput = ({
 export function ChangePasswordDialog({
   open,
   onOpenChange,
-  onSuccess, 
+  onSuccess,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -130,54 +130,48 @@ export function ChangePasswordDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden gap-0">
-        
+      <DialogContent className='sm:max-w-[500px] p-0 overflow-hidden gap-0'>
         {/* Header */}
-        <DialogHeader className="px-6 py-6 bg-neutral-50 border-b border-neutral-100">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-white border border-neutral-200 rounded-lg shadow-sm">
-              <LockKeyhole className="text-primary w-5 h-5" />
+        <DialogHeader className='px-6 py-6 bg-neutral-50 border-b border-neutral-100'>
+          <div className='flex items-center gap-3'>
+            <div className='p-2 bg-white border border-neutral-200 rounded-lg shadow-sm'>
+              <LockKeyhole className='text-primary w-5 h-5' />
             </div>
             <div>
-              <DialogTitle className="text-xl">Đổi mật khẩu</DialogTitle>
-              <DialogDescription>
-                Vui lòng nhập mật khẩu hiện tại và mật khẩu mới.
-              </DialogDescription>
+              <DialogTitle className='text-xl'>Đổi mật khẩu</DialogTitle>
+              <DialogDescription>Vui lòng nhập mật khẩu hiện tại và mật khẩu mới.</DialogDescription>
             </div>
           </div>
         </DialogHeader>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-6 space-y-6">
-          
+        <form onSubmit={handleSubmit(onSubmit)} className='px-6 py-6 space-y-2'>
           {/* Current Password */}
           <PasswordInput
-            id="currentPassword"
-            label="Mật khẩu hiện tại"
-            placeholder="Nhập mật khẩu hiện tại"
+            id='currentPassword'
+            label='Mật khẩu hiện tại'
+            placeholder='Nhập mật khẩu hiện tại'
             register={register('currentPassword')}
             error={errors.currentPassword?.message}
           />
 
-          <div className="h-px bg-neutral-100" />
+          <div className='h-px bg-neutral-100' />
 
           {/* New Password */}
-          <div className="space-y-4">
+          <div className='space-y-4'>
             <PasswordInput
-              id="newPassword"
-              label="Mật khẩu mới"
-              placeholder="Nhập mật khẩu mới"
+              id='newPassword'
+              label='Mật khẩu mới'
+              placeholder='Nhập mật khẩu mới'
               register={register('newPassword')}
               error={errors.newPassword?.message}
             />
 
             {/* Requirements */}
-            <div className="bg-neutral-50 p-4 rounded-lg border border-neutral-100 space-y-2">
-              <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-2">
-                Yêu cầu mật khẩu:
-              </p>
+            <div className='bg-neutral-50 p-4 rounded-lg border border-neutral-100 space-y-2'>
+              <p className='text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-2'>Yêu cầu mật khẩu:</p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className='grid grid-cols-1 sm:grid-cols-2 gap-2'>
                 {requirements.map((req, index) => {
                   const isMet = req.regex.test(newPasswordValue) && newPasswordValue.length > 0;
 
@@ -189,9 +183,9 @@ export function ChangePasswordDialog({
                       }`}
                     >
                       {isMet ? (
-                        <Check size={14} className="shrink-0" />
+                        <Check size={14} className='shrink-0' />
                       ) : (
-                        <div className="w-3.5 h-3.5 rounded-full border border-neutral-300 shrink-0" />
+                        <div className='w-3.5 h-3.5 rounded-full border border-neutral-300 shrink-0' />
                       )}
                       {req.label}
                     </div>
@@ -203,25 +197,20 @@ export function ChangePasswordDialog({
 
           {/* Confirm Password */}
           <PasswordInput
-            id="confirmPassword"
-            label="Xác nhận mật khẩu mới"
-            placeholder="Nhập lại mật khẩu mới"
+            id='confirmPassword'
+            label='Xác nhận mật khẩu mới'
+            placeholder='Nhập lại mật khẩu mới'
             register={register('confirmPassword')}
             error={errors.confirmPassword?.message}
           />
 
           {/* Footer */}
-          <DialogFooter className="pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleCancel}
-              disabled={isSubmitting}
-            >
+          <DialogFooter className='pt-2'>
+            <Button type='button' variant='outline' onClick={handleCancel} disabled={isSubmitting}>
               Hủy
             </Button>
 
-            <Button type="submit" disabled={isSubmitting} className="bg-primary hover:bg-primary/90">
+            <Button type='submit' disabled={isSubmitting} className='bg-primary hover:bg-primary/90'>
               {isSubmitting ? 'Đang cập nhật...' : 'Đổi mật khẩu'}
             </Button>
           </DialogFooter>
