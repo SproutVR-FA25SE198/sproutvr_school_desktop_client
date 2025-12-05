@@ -1,7 +1,9 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
+console.log('[PRELOAD] Preload script loaded');
+
 contextBridge.exposeInMainWorld('electron', {
-  // Teacher room state stream
+  // Teacher room state stream listeners
   onTeacherUpdate: (cb: (data: any) => void) => {
     const handler = (_: IpcRendererEvent, data: any) => cb(data);
     ipcRenderer.on('grpc:teacher_room_update', handler);
@@ -20,7 +22,7 @@ contextBridge.exposeInMainWorld('electron', {
     return () => ipcRenderer.removeListener('grpc:teacher_room_end', handler);
   },
 
-  // VR device stream
+  // VR device stream listeners
   onVRIncoming: (cb: (data: any) => void) => {
     const handler = (_: IpcRendererEvent, data: any) => cb(data);
     ipcRenderer.on('grpc:vr_incoming', handler);
@@ -41,9 +43,15 @@ contextBridge.exposeInMainWorld('electron', {
 
   // Send VR data to server
   sendVRData: (payload: any) => {
-    console.log('📤 Sending VR data:', payload);
+    console.log('[PRELOAD] Sending VR data:', payload);
     ipcRenderer.send('grpc:vr_send', payload);
   },
+
+  // Stream control - NEW
+  startRoomStream: (vr_learning_session_id: string) =>
+    ipcRenderer.invoke('grpc:start_room_stream', { vr_learning_session_id }),
+
+  stopRoomStream: () => ipcRenderer.invoke('grpc:stop_room_stream'),
 
   // Teacher actions (unary calls)
   createRoom: (teacher_id: string, vr_lesson_id: string, class_name: string) =>

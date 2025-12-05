@@ -13,6 +13,10 @@ export interface CreateSessionPayload {
   classroomLetter: string;
 }
 
+export interface CreateSessionResponse {
+  vr_learning_session_id: string;
+}
+
 export function useCreateLearningSession() {
   const dispatch = useDispatch();
   const { user } = useAppSelector((state) => state.auth);
@@ -22,7 +26,7 @@ export function useCreateLearningSession() {
   const [error, setError] = useState<string | null>(null);
 
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: async (payload: CreateSessionPayload) => {
+    mutationFn: async (payload: CreateSessionPayload): Promise<CreateSessionResponse> => {
       const className = `${payload.classroomNumber}${
         payload.classroomLetter ? ' ' + payload.classroomLetter : ''
       }`.trim();
@@ -40,8 +44,8 @@ export function useCreateLearningSession() {
   });
 
   const createSession = useCallback(
-    async (payload: CreateSessionPayload) => {
-      await mutateAsync(payload);
+    async (payload: CreateSessionPayload): Promise<CreateSessionResponse> => {
+      return await mutateAsync(payload);
     },
     [mutateAsync],
   );

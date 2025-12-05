@@ -10,7 +10,7 @@ dotenv.config({ path: envPath });
 
 const GRPC_SERVER_URL = process.env.VITE_GRPC_SERVER_URL;
 
-console.log('🔧 Initializing TeacherSessionActionClient on:', GRPC_SERVER_URL);
+console.log('[GRPC] Initializing TeacherSessionActionClient on:', GRPC_SERVER_URL);
 
 export const TeacherSessionActionClient = new LearningSession.TeacherSessionManagement(
   GRPC_SERVER_URL,
@@ -24,18 +24,18 @@ function unaryCall(method: string, request: any): Promise<any> {
     const deadline = new Date();
     deadline.setSeconds(deadline.getSeconds() + 30); // 30 second timeout
 
-    console.log(`📤 Calling ${method} with:`, JSON.stringify(request, null, 2));
+    console.log(`[GRPC] Calling ${method} with:`, JSON.stringify(request, null, 2));
 
     TeacherSessionActionClient[method](request, metadata, { deadline }, (err: any, response: any) => {
       if (err) {
-        console.error(`❌ ${method} error:`, {
+        console.error(`[GRPC] ${method} error:`, {
           code: err.code,
           message: err.message,
           details: err.details,
         });
         reject(err);
       } else {
-        console.log(`✅ ${method} response:`, JSON.stringify(response, null, 2));
+        console.log(`[GRPC] ${method} response:`, JSON.stringify(response, null, 2));
         resolve(response);
       }
     });

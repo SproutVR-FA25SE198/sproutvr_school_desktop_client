@@ -3,79 +3,100 @@ import { streamTeacherRoomState, getRoomState } from '../grpc/sessionClient.js';
 import { createRoom, activateRoom, cancelRoom, sendNotification } from '../grpc/teacherActionsClient.js';
 
 let activeRoomStream: any = null;
+let isWindowDestroyed = false;
+let isStreamCancelling = false;
 
 export function registerGrpcEvents(win: BrowserWindow) {
-  console.log('🔧 Registering gRPC events...');
+  console.log('[GRPC] Registering gRPC events...');
+
+  // Track window destruction state
+  isWindowDestroyed = false;
+  isStreamCancelling = false;
+
+  /* ---------------------------------------------
+     Stream Control
+  --------------------------------------------- */
+  ipcMain.handle('grpc:start_room_stream', async (_, { vr_learning_session_id }) => {
+    try {
+      console.log('[GRPC] Starting room stream:', vr_learning_session_id);
+      startRoomStream(win, vr_learning_session_id);
+      return { success: true, vr_learning_session_id };
+    } catch (error: any) {
+      console.error('[GRPC] Start room stream error:', error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle('grpc:stop_room_stream', async () => {
+    try {
+      console.log('[GRPC] Stopping room stream');
+      stopRoomStream();
+      return { success: true };
+    } catch (error: any) {
+      console.error('[GRPC] Stop room stream error:', error);
+      throw error;
+    }
+  });
 
   /* ---------------------------------------------
      Teacher Actions (unary calls)
   --------------------------------------------- */
   ipcMain.handle('grpc:create_room', async (_, { teacher_id, vr_lesson_id, class_name }) => {
     try {
-      console.log('📤 Creating room:', { teacher_id, vr_lesson_id, class_name });
+      console.log('[GRPC] Creating room:', { teacher_id, vr_lesson_id, class_name });
       const response = await createRoom(teacher_id, vr_lesson_id, class_name);
-      console.log('✅ Room created:', response);
+      console.log('[GRPC] Room created:', response);
       return response;
     } catch (error: any) {
-      console.error('❌ Create room error:', error);
+      console.error('[GRPC] Create room error:', error);
       throw error;
     }
   });
 
   ipcMain.handle('grpc:activate_room', async (_, req) => {
     try {
-      console.log('📤 Activating room:', req);
+      console.log('[GRPC] Activating room:', req);
       const response = await activateRoom(req);
-      console.log('✅ Room activated:', response);
-
-      // Start streaming after activation
-      if (req.vr_learning_session_id) {
-        startRoomStream(win, req.vr_learning_session_id);
-      }
-
+      console.log('[GRPC] Room activated:', response);
       return response;
     } catch (error: any) {
-      console.error('❌ Activate room error:', error);
+      console.error('[GRPC] Activate room error:', error);
       throw error;
     }
   });
 
   ipcMain.handle('grpc:cancel_room', async (_, { vr_learning_session_id }) => {
     try {
-      console.log('📤 Cancelling room:', vr_learning_session_id);
+      console.log('[GRPC] Cancelling room:', vr_learning_session_id);
       const response = await cancelRoom(vr_learning_session_id);
-      console.log('✅ Room cancelled:', response);
-
-      // Stop streaming
-      stopRoomStream();
-
+      console.log('[GRPC] Room cancelled:', response);
       return response;
     } catch (error: any) {
-      console.error('❌ Cancel room error:', error);
+      console.error('[GRPC] Cancel room error:', error);
       throw error;
     }
   });
 
   ipcMain.handle('grpc:send_notification', async (_, { vr_learning_session_id, notification }) => {
     try {
-      console.log('📤 Sending notification:', { vr_learning_session_id, notification });
+      console.log('[GRPC] Sending notification:', { vr_learning_session_id, notification });
       const response = await sendNotification(vr_learning_session_id, notification);
-      console.log('✅ Notification sent:', response);
+      console.log('[GRPC] Notification sent:', response);
       return response;
     } catch (error: any) {
-      console.error('❌ Send notification error:', error);
+      console.error('[GRPC] Send notification error:', error);
       throw error;
     }
   });
 
   ipcMain.handle('grpc:get_room_state', async (_, { vr_learning_session_id }) => {
     try {
-      console.log('📤 Getting room state:', vr_learning_session_id);
+      console.log('[GRPC] Getting room state:', vr_learning_session_id);
       const response = await getRoomState(vr_learning_session_id);
-      console.log('✅ Room state received:', response);
+      console.log('[GRPC] Room state received:', response);
       return response;
     } catch (error: any) {
-      console.error('❌ Get room state error:', error);
+      console.error('[GRPC] Get room state error:', error);
       throw error;
     }
   });
@@ -83,10 +104,48 @@ export function registerGrpcEvents(win: BrowserWindow) {
   /* ---------------------------------------------
      Cleanup on window close
   --------------------------------------------- */
-  win.on('closed', () => {
-    console.log('🧹 Window closed, cleaning up gRPC streams...');
+  win.on('close', () => {
+    console.log('[GRPC] Window closing, cleaning up gRPC streams...');
+    isWindowDestroyed = true;
     stopRoomStream();
   });
+
+  win.on('closed', () => {
+    console.log('[GRPC] Window closed');
+    isWindowDestroyed = true;
+  });
+}
+
+/* ---------------------------------------------
+   Helper: Safely send to renderer
+--------------------------------------------- */
+function safeSend(win: BrowserWindow, channel: string, data: any) {
+  try {
+    if (!isWindowDestroyed && win && !win.isDestroyed() && win.webContents && !win.webContents.isDestroyed()) {
+      win.webContents.send(channel, data);
+    }
+  } catch (error) {
+    console.warn('[GRPC] Could not send to renderer (window may be destroyed):', error);
+  }
+}
+
+/* ---------------------------------------------
+   Helper: Check if error is a cancellation error
+--------------------------------------------- */
+function isCancellationError(err: any): boolean {
+  if (!err) return false;
+
+  // gRPC cancellation error codes
+  const code = err.code;
+  const message = err.message || '';
+
+  return (
+    code === 1 || // CANCELLED
+    code === 'CANCELLED' ||
+    message.includes('CANCELLED') ||
+    message.includes('Cancelled on client') ||
+    message.includes('cancelled')
+  );
 }
 
 /* ---------------------------------------------
@@ -96,36 +155,59 @@ function startRoomStream(win: BrowserWindow, vr_learning_session_id: string) {
   // Stop existing stream if any
   stopRoomStream();
 
-  console.log('🔌 Starting room state stream for:', vr_learning_session_id);
+  console.log('[GRPC] Starting room state stream for:', vr_learning_session_id);
+  isStreamCancelling = false;
 
   try {
     activeRoomStream = streamTeacherRoomState(vr_learning_session_id);
 
     activeRoomStream.on('data', (chunk: any) => {
-      console.log('📥 Room state update:', JSON.stringify(chunk, null, 2));
+      if (isWindowDestroyed || isStreamCancelling) return;
+
+      console.log('[GRPC] Room state update:', JSON.stringify(chunk, null, 2));
 
       // Parse the update based on the payload type
       const update = parseTeacherRoomUpdate(chunk);
-      win.webContents.send('grpc:teacher_room_update', update);
+      safeSend(win, 'grpc:teacher_room_update', update);
     });
 
     activeRoomStream.on('error', (err: any) => {
-      console.error('❌ Room state stream error:', err);
-      win.webContents.send('grpc:teacher_room_error', err?.message ?? 'Unknown gRPC error');
+      // Ignore cancellation errors - they're expected when we stop the stream
+      if (isStreamCancelling || isWindowDestroyed || isCancellationError(err)) {
+        console.log('[INFO] Stream cancelled (expected)');
+        return;
+      }
+
+      console.error('[GRPC] Room state stream error:', err);
+      safeSend(win, 'grpc:teacher_room_error', err?.message ?? 'Unknown gRPC error');
     });
 
     activeRoomStream.on('end', () => {
-      console.log('🔌 Room state stream ended');
-      win.webContents.send('grpc:teacher_room_end');
+      console.log('[GRPC] Room state stream ended');
+      if (!isWindowDestroyed && !isStreamCancelling) {
+        safeSend(win, 'grpc:teacher_room_end', null);
+      }
       activeRoomStream = null;
     });
 
     activeRoomStream.on('status', (status: any) => {
-      console.log('📊 Stream status:', status);
+      // Ignore cancelled status
+      if (status?.code === 1 || isStreamCancelling) {
+        console.log('[INFO] Stream status: cancelled');
+        return;
+      }
+      console.log('[GRPC] Stream status:', status);
     });
   } catch (error: any) {
-    console.error('❌ Failed to start room stream:', error);
-    win.webContents.send('grpc:teacher_room_error', error?.message ?? 'Failed to start stream');
+    if (isCancellationError(error)) {
+      console.log('[INFO] Stream start cancelled (expected)');
+      return;
+    }
+
+    console.error('[GRPC] Failed to start room stream:', error);
+    if (!isWindowDestroyed) {
+      safeSend(win, 'grpc:teacher_room_error', error?.message ?? 'Failed to start stream');
+    }
   }
 }
 
@@ -134,11 +216,27 @@ function startRoomStream(win: BrowserWindow, vr_learning_session_id: string) {
 --------------------------------------------- */
 function stopRoomStream() {
   if (activeRoomStream) {
-    console.log('⏹️ Stopping room state stream...');
+    console.log('[GRPC] Stopping room state stream...');
+    isStreamCancelling = true;
+
     try {
-      activeRoomStream.cancel();
-    } catch (error) {
-      console.error('❌ Error stopping stream:', error);
+      // Remove all listeners first to prevent callbacks during cancellation
+      activeRoomStream.removeAllListeners('data');
+      activeRoomStream.removeAllListeners('error');
+      activeRoomStream.removeAllListeners('end');
+      activeRoomStream.removeAllListeners('status');
+
+      // Use destroy() if available, otherwise cancel()
+      if (typeof activeRoomStream.destroy === 'function') {
+        activeRoomStream.destroy();
+      } else if (typeof activeRoomStream.cancel === 'function') {
+        activeRoomStream.cancel();
+      }
+    } catch (error: any) {
+      // Ignore cancellation errors during cleanup
+      if (!isCancellationError(error)) {
+        console.warn('[GRPC] Error stopping stream:', error);
+      }
     }
     activeRoomStream = null;
   }
@@ -148,12 +246,7 @@ function stopRoomStream() {
    Helper: Parse teacher room update based on payload type
 --------------------------------------------- */
 function parseTeacherRoomUpdate(chunk: any) {
-  const { vr_learning_session_id, payload } = chunk;
-
-  if (!payload) {
-    console.warn('⚠️ Received update without payload');
-    return chunk;
-  }
+  const { vr_learning_session_id } = chunk;
 
   // Determine which payload type was received
   if (chunk.room_cancelled) {
@@ -196,7 +289,7 @@ function parseTeacherRoomUpdate(chunk: any) {
     };
   }
 
-  console.warn('⚠️ Unknown payload type:', chunk);
+  console.warn('[GRPC] Unknown payload type:', chunk);
   return chunk;
 }
 

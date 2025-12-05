@@ -1,5 +1,5 @@
 import { Button } from '@/common/components/ui/button';
-import { cancelRoom } from '@/core/ipc/grpc';
+import { cancelRoom, stopRoomStream } from '@/core/ipc/grpc';
 import { useState } from 'react';
 import { ConfirmDialog } from './confirm-dialog';
 import { useNavigate } from 'react-router-dom';
@@ -25,18 +25,23 @@ export function CancelRoomButton({ vrLearningSessionId, vrLessionId }: CancelRoo
     setLoading(true);
 
     try {
+      // First, cancel the room on the server
       const response = await cancelRoom(vrLearningSessionId);
       console.log('Room cancelled:', response);
+
+      // Then, stop the gRPC stream
+      console.log('⏹️ Stopping gRPC stream');
+      await stopRoomStream();
 
       // Response contains: { vr_learning_session_id }
       toast.success('Đã kết thúc phiên học.');
       navigate(vrLessionId ? routes.lessonDetails.replace(':lessonId', vrLessionId) : routes.home);
     } catch (err: any) {
-      console.error('CreateRoom error', err);
+      console.error('CancelRoom error', err);
       toast.error('Error: ' + err.message);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }
 
   return (

@@ -18,6 +18,7 @@ import { Label } from '@/common/components/ui/label';
 import Loading from '@/common/components/loading';
 import { useCreateLearningSession } from '../hooks/useCreateLearningSession';
 import { toast } from 'sonner';
+import { startRoomStream } from '@/core/ipc/grpc';
 
 interface CreateLearningSessionDialogProps {
   open: boolean;
@@ -77,21 +78,34 @@ export function CreateLearningSessionDialog({
 
     const selectedVrLesson = initialVrLesson || vrLessons?.find((lesson) => lesson.id === selectedVrLessonId);
 
-    await createSession({
-      vrLessonId: selectedVrLessonId,
-      classroomNumber,
-      classroomLetter,
-    });
+    try {
+      // Create the learning session
+      const sessionResponse = await createSession({
+        vrLessonId: selectedVrLessonId,
+        classroomNumber,
+        classroomLetter,
+      });
 
-    onConfirm(selectedVrLessonId, selectedVrLesson || ({} as VrLessonRetrieve), classroomNumber, classroomLetter);
+      // Start the gRPC stream for real-time updates
+      if (sessionResponse?.vr_learning_session_id) {
+        console.log('[GRPC] Starting gRPC stream for session:', sessionResponse.vr_learning_session_id);
+        await startRoomStream(sessionResponse.vr_learning_session_id);
+        toast.success('Phiên học VR đã được mở.');
+      }
 
-    onOpenChange(false);
+      onConfirm(selectedVrLessonId, selectedVrLesson || ({} as VrLessonRetrieve), classroomNumber, classroomLetter);
+      onOpenChange(false);
+    } catch (error: any) {
+      console.error('[ERROR] Error in handleConfirm:', error);
+      toast.error('Có lỗi xảy ra: ' + error.message);
+    }
   };
 
   const handleCancel = () => {
     onCancel?.();
     onOpenChange(false);
   };
+
   if (isCreating) return <Loading isLoading={isCreating} />;
 
   return (

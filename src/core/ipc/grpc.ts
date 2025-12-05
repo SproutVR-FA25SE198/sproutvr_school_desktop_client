@@ -9,7 +9,7 @@ import {
 } from '@/features/learning-sessions/store/monitoringSlice';
 
 export function initGrpcListeners() {
-  console.log('🔧 Initializing gRPC listeners...');
+  console.log('[GRPC] Initializing gRPC listeners...');
 
   // Teacher room state updates
   window.electron.onTeacherUpdate((data) => {
@@ -18,29 +18,40 @@ export function initGrpcListeners() {
   });
 
   window.electron.onTeacherError((error) => {
-    console.error('❌ Teacher room error:', error);
+    console.error('[GRPC] Teacher room error:', error);
     store.dispatch(grpcError(error));
   });
 
   window.electron.onTeacherEnd(() => {
-    console.log('🔌 Teacher room stream ended');
+    console.log('[GRPC] Teacher room stream ended');
     store.dispatch(grpcDisconnected());
   });
 
   // VR device streams
   window.electron.onVRIncoming((data) => {
-    console.log('📥 VR data received:', data);
+    console.log('[GRPC] VR data received:', data);
     store.dispatch(vrStreamUpdated(data));
   });
 
   window.electron.onVRError((error) => {
-    console.error('❌ VR stream error:', error);
+    console.error('[GRPC] VR stream error:', error);
     store.dispatch(grpcError(error));
   });
 
   window.electron.onVREnd(() => {
-    console.log('🔌 VR stream ended');
+    console.log('[GRPC] VR stream ended');
   });
+}
+
+// Stream control functions
+export async function startRoomStream(vr_learning_session_id: string) {
+  console.log('[GRPC] Starting room stream from renderer:', vr_learning_session_id);
+  return window.electron.startRoomStream(vr_learning_session_id);
+}
+
+export async function stopRoomStream() {
+  console.log('[GRPC] Stopping room stream from renderer');
+  return window.electron.stopRoomStream();
 }
 
 // Helper functions for teacher actions
@@ -60,7 +71,7 @@ export async function activateRoom(
     room_duration_in_minutes,
     assigned_device_serials,
   };
-  console.log('Activating room with request:', req);
+  console.log('[GRPC] Activating room with request:', req);
   return window.electron.activateRoom(req);
 }
 
