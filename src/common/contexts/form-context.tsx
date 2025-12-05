@@ -207,7 +207,7 @@ export function FormProvider({ children }: { children: ReactNode }) {
       {
         onSuccess: () => {
           toast.success('Hoàn tất tạo bài học VR!');
-          navigate(routes.home, { state: { refresh: true } });
+          navigate(routes.lessonDetails.replace(':id', vrLessonData?.lesson.id || ''), { state: { refresh: true } });
         },
       },
     );

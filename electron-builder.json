@@ -1,7 +1,14 @@
 {
   "appId": "sproutvr",
-  "files": ["dist-electron", "dist-react"],
-  "extraResources": ["dist-electron/preload/preload.cjs", "src/assets/**"],
+  "files": ["dist-electron", "dist-react", ".env"],
+  "extraResources": [
+    "dist-electron/preload/preload.cjs",
+    "src/assets/**",
+    {
+      "from": ".env",
+      "to": ".env"
+    }
+  ],
   "icon": "public/SproutVR_Icon.png",
   "mac": {
     "target": "dmg"

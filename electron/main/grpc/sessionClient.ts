@@ -1,10 +1,19 @@
 import { credentials, Metadata } from '@grpc/grpc-js';
 import { LearningSession } from './loader.js';
+import { app } from 'electron';
+import path from 'path';
 import dotenv from 'dotenv';
 
-const GRPC_SERVER_URL = dotenv.config().parsed?.VITE_GRPC_SERVER_URL;
+// Load .env from the app resources directory in production
+const envPath = app.isPackaged ? path.join(process.resourcesPath, '.env') : path.join(process.cwd(), '.env');
+
+dotenv.config({ path: envPath });
+
+const GRPC_SERVER_URL = process.env.VITE_GRPC_SERVER_URL;
 
 console.log('🔧 Initializing SessionRealTimeClient on:', GRPC_SERVER_URL);
+console.log('🔧 Env path:', envPath);
+console.log('🔧 Is packaged:', app.isPackaged);
 
 export const SessionRealTimeClient = new LearningSession.TeacherSessionRealTimeStateManagement(
   GRPC_SERVER_URL,

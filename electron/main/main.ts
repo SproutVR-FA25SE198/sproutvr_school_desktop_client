@@ -13,6 +13,8 @@ app.on('ready', () => {
     },
   });
 
+  mainWindow.setFullScreen(true);
+
   registerGrpcEvents(mainWindow);
 
   if (isDev()) {
@@ -20,5 +22,5 @@ app.on('ready', () => {
   } else {
     mainWindow.loadFile(path.join(app.getAppPath(), 'dist-react', 'index.html'));
   }
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 });
