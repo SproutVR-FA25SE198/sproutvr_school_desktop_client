@@ -14,7 +14,6 @@ export function VRLessonRow({
   id,
   name,
   map,
-  lesson,
   maxDuration,
   status,
   createdAtVietNam,
@@ -29,7 +28,6 @@ export function VRLessonRow({
     <tr className="border-b hover:bg-neutral-50 transition">
       <td className="px-4 py-3 font-medium text-neutral-900">{name}</td>
       <td className="px-4 py-3 text-neutral-600">{map.mapCode}</td>
-      <td className="px-4 py-3 text-neutral-600">{lesson.name}</td>
       <td className="px-4 py-3 text-neutral-600">
         {HHMMSSToDuration(maxDuration).minutes} phút 
         {HHMMSSToDuration(maxDuration).seconds === 0 ? "" : ` ${HHMMSSToDuration(maxDuration).seconds} giây`}

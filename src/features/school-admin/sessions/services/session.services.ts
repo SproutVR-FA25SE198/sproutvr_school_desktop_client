@@ -63,3 +63,22 @@ export async function fetchSessionById(id: string): Promise<Session | null> {
 
   return item
 }
+
+export interface TaskListResult {
+  totalItems: number;
+}
+
+// Fetch tasks of VR Lesson used in Session
+export async function fetchTaskCountByVRLessonId(vrLessonId: string): Promise<TaskListResult> {
+  const response = await http_school.get(`/api/v1/authorized/vrtasks?vrLessonId=${vrLessonId}`);
+
+  const apiData = response.data;
+
+  if (!apiData?.items) {
+    return { totalItems: 0 };
+  }
+
+  return {
+    totalItems: apiData.totalItems ?? apiData.items.length,
+  };
+}
