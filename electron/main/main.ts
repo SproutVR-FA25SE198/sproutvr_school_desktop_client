@@ -1,8 +1,8 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, dialog } from 'electron';
 import path from 'path';
 import { isDev } from './util.js';
 import { getPreloadPath } from './pathResolver.js';
-import { registerGrpcEvents } from './ipc/grpc-events.js';
+import { registerGrpcEvents, stopRoomStream } from './ipc/grpc-events.js';
 
 // Handle uncaught exceptions - especially gRPC cancellation errors
 process.on('uncaughtException', (error) => {
@@ -39,9 +39,37 @@ app.on('ready', () => {
     },
   });
 
-  mainWindow.setFullScreen(true);
+  mainWindow.maximize();
+  mainWindow.setMenuBarVisibility(false);
 
   registerGrpcEvents(mainWindow);
+
+  // Intercept close event and show confirmation dialog
+  mainWindow.on('close', (event) => {
+    event.preventDefault();
+
+    dialog
+      .showMessageBox(mainWindow, {
+        type: 'question',
+        buttons: ['Hủy', 'Thoát'],
+        defaultId: 0,
+        cancelId: 0,
+        title: 'Xác nhận thoát',
+        message: 'Bạn có chắc chắn muốn thoát ứng dụng?',
+        detail: 'Mọi phiên học đang hoạt động sẽ bị kết thúc.',
+      })
+      .then(({ response }) => {
+        if (response === 1) {
+          // User clicked "Thoát"
+          // Stop any active gRPC streams
+          stopRoomStream();
+
+          // Force close the window
+          mainWindow.destroy();
+        }
+        // If response === 0 (Hủy), do nothing - window stays open
+      });
+  });
 
   if (isDev()) {
     mainWindow.loadURL('http://localhost:7272');
