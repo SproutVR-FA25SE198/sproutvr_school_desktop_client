@@ -42,7 +42,7 @@ export const SessionHeader = ({ session }: SessionHeaderProps) => {
             <Badge
               className={`${session.status.name === 'Completed' ? 'bg-green-600' : 'bg-blue-600'} hover:bg-opacity-90`}
             >
-              {session.status.name === 'Completed' ? 'Đã hoàn thành' : 'Đang diễn ra'}
+              {session.status.name === 'Completed' ? 'Đã hoàn thành' : 'Đã hủy'}
             </Badge>
           </div>
           <h1 className='text-2xl md:text-3xl font-bold text-neutral-900 mb-2'>{session.vrLesson.name}</h1>
