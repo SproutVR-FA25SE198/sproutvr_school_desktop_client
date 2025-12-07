@@ -3,7 +3,13 @@
 import { Controller } from 'react-hook-form';
 import type { Control, FieldValues, Path, PathValue } from 'react-hook-form';
 import { Label } from '@/common/components/ui/label';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/common/components/ui/carousel';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/common/components/ui/carousel';
 import type { MasterSubjectRetrieve } from '@/common/services/subject.service';
 
 export function SubjectSelector<T extends FieldValues>({
@@ -21,11 +27,11 @@ export function SubjectSelector<T extends FieldValues>({
       name={'subjectId' as Path<T>}
       defaultValue={'' as PathValue<T, Path<T>>}
       render={({ field }) => (
-        <div className='space-y-4'>
+        <div className='space-y-4 max-w-[60%] flex-2'>
           <Label className='text-lg font-semibold'>Chọn môn học</Label>
 
           <Carousel
-            className='w-full px-12 relative' 
+            className='w-full px-12 relative'
             opts={{
               align: 'start',
             }}
@@ -35,7 +41,7 @@ export function SubjectSelector<T extends FieldValues>({
                 const isSelected = field.value === subject.id;
 
                 return (
-                  <CarouselItem key={subject.id} className='pl-4 basis-1/2 md:basis-1/3 lg:basis-1/4'>
+                  <CarouselItem key={subject.id} className={`pl-4 basis-1/2 md:basis-1/3 lg:basis-1/4`}>
                     <button
                       type='button'
                       onClick={() => field.onChange(subject.id)}
@@ -53,9 +59,7 @@ export function SubjectSelector<T extends FieldValues>({
                         className='w-20 h-20 rounded-lg object-cover shadow-sm'
                       />
 
-                      <span className='text-sm font-bold text-center line-clamp-2'>
-                        {subject.name}
-                      </span>
+                      <span className='text-sm font-bold text-center line-clamp-2'>{subject.name}</span>
                     </button>
                   </CarouselItem>
                 );

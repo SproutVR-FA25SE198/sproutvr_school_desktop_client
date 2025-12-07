@@ -54,30 +54,24 @@ export function LessonForm({ onSubmit, masterSubjects, subjects }: LessonFormPro
   };
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className='space-y-8'>
       {/* Lesson Name */}
-      <div className="space-y-3 w-full">
-        <Label htmlFor="name" className="text-base font-semibold">
+      <div className='space-y-3 w-full'>
+        <Label htmlFor='name' className='text-base font-semibold'>
           Tên bài giảng
         </Label>
         <Input
-          id="name"
-          placeholder="Nhập tên bài giảng"
+          id='name'
+          placeholder='Nhập tên bài giảng'
           {...register('name')}
           className={errors.name ? 'border-red-500' : ''}
         />
-        {errors.name && (
-          <p className="text-sm text-red-500">{errors.name.message as string}</p>
-        )}
+        {errors.name && <p className='text-sm text-red-500'>{errors.name.message as string}</p>}
       </div>
 
       {/* Subject + Class */}
-      <div className="flex gap-12">
-        <SubjectSelector
-          subjects={masterSubjects}
-          control={control}
-          error={errors.subjectId?.message as string}
-        />
+      <div className='flex gap-12'>
+        <SubjectSelector subjects={masterSubjects} control={control} error={errors.subjectId?.message as string} />
         <ClassSelector
           classes={subjects}
           control={control}
@@ -87,46 +81,31 @@ export function LessonForm({ onSubmit, masterSubjects, subjects }: LessonFormPro
       </div>
 
       {/* Description */}
-      <div className="space-y-3">
-        <Label htmlFor="description" className="text-base font-semibold">
+      <div className='space-y-3'>
+        <Label htmlFor='description' className='text-base font-semibold'>
           Mô tả bài giảng
         </Label>
         <Textarea
-          id="description"
-          placeholder="Nhập mô tả lớp học (tối đa 1000 ký tự)"
+          id='description'
+          placeholder='Nhập mô tả lớp học (tối đa 1000 ký tự)'
           {...register('description')}
           className={`resize-none ${errors.description ? 'border-red-500' : ''}`}
           rows={2}
         />
-        {errors.description && (
-          <p className="text-sm text-red-500">{errors.description.message as string}</p>
-        )}
+        {errors.description && <p className='text-sm text-red-500'>{errors.description.message as string}</p>}
       </div>
 
       {/* File Upload */}
-      <div className="space-y-3">
-        <FileUpload
-          control={control}
-          error={errors.resourceFile?.message as string}
-        />
+      <div className='space-y-3'>
+        <FileUpload control={control} error={errors.resourceFile?.message as string} />
       </div>
 
       {/* Footer Buttons */}
-      <div className="flex justify-center gap-4 pt-6">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={handleClear}
-          className="min-w-32 bg-transparent"
-        >
+      <div className='flex justify-center gap-4 pt-6'>
+        <Button type='button' variant='outline' onClick={handleClear} className='min-w-32 bg-transparent'>
           Xóa thông tin
         </Button>
-        <Button
-          type="submit"
-          variant="secondary"
-          disabled={!isValid || isSubmitting}
-          className="min-w-32"
-        >
+        <Button type='submit' variant='secondary' disabled={!isValid || isSubmitting} className='min-w-32'>
           {isSubmitting ? 'Đang lưu bài giảng...' : 'Lưu bài giảng'}
         </Button>
       </div>
