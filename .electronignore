@@ -1,0 +1,54 @@
+# Source files (already compiled)
+src/
+electron/
+public/
+
+# Development files
+*.ts
+*.tsx
+*.map
+*.md
+!README.md
+
+# Config files
+tsconfig*.json
+vite.config.ts
+eslint.config.js
+components.json
+.prettierrc
+.eslintrc*
+
+# Test files
+**/*.test.*
+**/*.spec.*
+__tests__/
+coverage/
+
+# Development dependencies
+node_modules/.cache
+node_modules/**/*.md
+node_modules/**/*.ts
+node_modules/**/test/
+node_modules/**/tests/
+node_modules/**/__tests__/
+node_modules/**/docs/
+node_modules/**/*.map
+node_modules/**/.github/
+node_modules/**/example/
+node_modules/**/examples/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temp
+.env.local
+.env.development

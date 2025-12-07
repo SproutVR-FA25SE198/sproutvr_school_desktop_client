@@ -1,0 +1,109 @@
+import { store } from '@/common/store';
+import {
+  teacherRoomUpdated,
+  vrStreamUpdated,
+  grpcError,
+  grpcDisconnected,
+  setRoomState,
+  applyRoomUpdate,
+} from '@/features/learning-sessions/store/monitoringSlice';
+
+export function initGrpcListeners() {
+  console.log('[GRPC] Initializing gRPC listeners...');
+
+  // Teacher room state updates
+  window.electron.onTeacherUpdate((data) => {
+    store.dispatch(teacherRoomUpdated(data));
+    store.dispatch(applyRoomUpdate(data));
+  });
+
+  window.electron.onTeacherError((error) => {
+    console.error('[GRPC] Teacher room error:', error);
+    store.dispatch(grpcError(error));
+  });
+
+  window.electron.onTeacherEnd(() => {
+    console.log('[GRPC] Teacher room stream ended');
+    store.dispatch(grpcDisconnected());
+  });
+
+  // VR device streams
+  window.electron.onVRIncoming((data) => {
+    console.log('[GRPC] VR data received:', data);
+    store.dispatch(vrStreamUpdated(data));
+  });
+
+  window.electron.onVRError((error) => {
+    console.error('[GRPC] VR stream error:', error);
+    store.dispatch(grpcError(error));
+  });
+
+  window.electron.onVREnd(() => {
+    console.log('[GRPC] VR stream ended');
+  });
+}
+
+// Stream control functions
+export async function startRoomStream(vr_learning_session_id: string) {
+  console.log('[GRPC] Starting room stream from renderer:', vr_learning_session_id);
+  return window.electron.startRoomStream(vr_learning_session_id);
+}
+
+export async function stopRoomStream() {
+  console.log('[GRPC] Stopping room stream from renderer');
+  return window.electron.stopRoomStream();
+}
+
+// Helper functions for teacher actions
+export async function createRoom(teacher_id: string, vr_lesson_id: string, class_name: string) {
+  return window.electron.createRoom(teacher_id, vr_lesson_id, class_name);
+}
+
+export async function activateRoom(
+  vr_learning_session_id: string,
+  vr_lesson_id: string,
+  room_duration_in_minutes: number,
+  assigned_device_serials: Array<{ vr_device_serial_number: string; student_name: string }>,
+) {
+  const req = {
+    vr_learning_session_id,
+    vr_lesson_id,
+    room_duration_in_minutes,
+    assigned_device_serials,
+  };
+  console.log('[GRPC] Activating room with request:', req);
+  return window.electron.activateRoom(req);
+}
+
+export async function cancelRoom(vr_learning_session_id: string) {
+  return window.electron.cancelRoom(vr_learning_session_id);
+}
+
+export async function sendNotification(
+  vr_learning_session_id: string,
+  notification: { text: string; severity: string },
+) {
+  return window.electron.sendNotification(vr_learning_session_id, notification);
+}
+
+export function sendVRData(payload: any) {
+  window.electron.sendVRData(payload);
+}
+
+export async function getRoomState(sessionId: string) {
+  const state = await window.electron.getRoomState(sessionId);
+  store.dispatch(setRoomState(state));
+}
+
+export async function loadRoomState(sessionId: string) {
+  try {
+    const state = await window.electron.getRoomState(sessionId);
+
+    // Store full room snapshot into Redux
+    store.dispatch(setRoomState(state));
+
+    console.log('[grpc] Loaded initial room state:', state);
+  } catch (error) {
+    console.error('[grpc] Failed to load room state:', error);
+  }
+}
