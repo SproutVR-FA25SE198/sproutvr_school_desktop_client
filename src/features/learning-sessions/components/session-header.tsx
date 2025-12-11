@@ -30,10 +30,8 @@ export const SessionHeader = ({ session }: SessionHeaderProps) => {
         <ArrowLeft className='mr-2 h-4 w-4' /> Quay lại danh sách
       </Button>
 
-      {/* FIXED: Added constraints to children to prevent wrapping issues */}
+      {/* TITLE */}
       <div className='flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 bg-white p-6 rounded-2xl shadow-sm border border-neutral-200'>
-        
-        {/* LEFT SIDE: Added 'flex-1 min-w-0' so it wraps instead of pushing right side */}
         <div className="flex-1 min-w-0">
           <div className='flex items-center gap-3 mb-3'>
             <Badge
@@ -49,8 +47,7 @@ export const SessionHeader = ({ session }: SessionHeaderProps) => {
             </Badge>
           </div>
           
-          {/* Added 'break-words' to handle extremely long words if necessary */}
-          <h1 className='text-2xl md:text-3xl font-bold text-neutral-900 mb-2 break-words leading-tight'>
+          <h1 className='text-2xl md:text-3xl font-bold text-neutral-900 mb-2 wrap-break-word leading-tight'>
             {session.vrLesson.name}
           </h1>
           
@@ -62,7 +59,7 @@ export const SessionHeader = ({ session }: SessionHeaderProps) => {
           </p>
         </div>
 
-        {/* RIGHT SIDE (Info Bar): Added 'shrink-0' so it stays fixed size */}
+        {/* INFO BAR */}
         <div className='shrink-0 flex flex-wrap gap-6 lg:gap-8 text-sm text-neutral-600 bg-neutral-50/80 p-4 rounded-xl border border-neutral-100'>
           {/* Start Time */}
           <div className='flex flex-col gap-1.5'>
