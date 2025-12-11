@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Search, Filter, ListFilter, XCircle } from 'lucide-react';
 import { Button } from '@/common/components/ui/button';
 import type { SessionRetrieveParams } from '../types/session-manage.type';
@@ -17,8 +18,35 @@ export const SessionListFilters = ({
   onSortChange,
   onClearFilters,
 }: SessionListFiltersProps) => {
-  // Check if any filter is active (excluding sort and pagination)
+  // Check if filtering is active (for the clear button)
   const isFiltering = !!params.className || params.vrLearningSessionStatus !== undefined;
+
+  // Create local state for the input
+  // This allows the input to update instantly without waiting for the parent/API
+  const [searchTerm, setSearchTerm] = useState(params.className || '');
+
+  // Sync local state with parent params (e.g., when "Clear Filters" is clicked)
+  useEffect(() => {
+    setSearchTerm(params.className || '');
+  }, [params.className]);
+
+  // Debounce Logic: 
+  // Wait 500ms after user stops typing before calling the parent's onSearchChange
+  useEffect(() => {
+    // If the local term matches the parent param, do nothing (prevents loops)
+    if (searchTerm === (params.className || '')) return;
+
+    const timer = setTimeout(() => {
+      // Create a synthetic event to match your existing interface
+      const syntheticEvent = {
+        target: { value: searchTerm }
+      } as React.ChangeEvent<HTMLInputElement>;
+      
+      onSearchChange(syntheticEvent);
+    }, 500); // 500ms delay
+
+    return () => clearTimeout(timer);
+  }, [searchTerm, onSearchChange, params.className]);
 
   return (
     <div className='bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between sticky top-0 z-10'>
@@ -30,8 +58,9 @@ export const SessionListFilters = ({
             type="text"
             placeholder="Tìm theo tên lớp..."
             className="h-10 w-full pl-9 pr-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-            value={params.className || ''}
-            onChange={onSearchChange}
+            // BIND TO LOCAL STATE INSTEAD OF PARENT PARAMS
+            value={searchTerm} 
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 

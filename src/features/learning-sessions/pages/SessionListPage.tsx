@@ -24,6 +24,7 @@ export default function SessionListPage() {
   const navigate = useNavigate();
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
+  // --- DATA FETCHING ---
   const { data: vrLessonsData, isLoading: vrLessonsLoading } = useGetVrLessons({});
 
   const lessonQueryParams = {
@@ -41,15 +42,11 @@ export default function SessionListPage() {
     params: lessonQueryParams,
   });
 
-  // Filter: Keep VR Lessons where lessonId exists in the teacher's lesson list
+  // Filter Logic
   const filteredVrLessons = useMemo(() => {
     if (!vrLessonsData?.items || !userLessonsData?.items) return [];
-
     const userLessonIds = new Set(userLessonsData.items.map((l) => l.id));
-
-    return vrLessonsData.items.filter((vrLesson) => {
-      return userLessonIds.has(vrLesson.lesson.id);
-    });
+    return vrLessonsData.items.filter((vrLesson) => userLessonIds.has(vrLesson.lesson.id));
   }, [vrLessonsData, userLessonsData]);
 
   const handleConfirmCreate = (
@@ -63,7 +60,7 @@ export default function SessionListPage() {
     });
   };
 
-  // --- EXISTING SESSION LIST STATE ---
+  // --- SESSION LIST STATE ---
   const initialParams: SessionRetrieveParams = {
     pageIndex: 1,
     pageSize: 9,
@@ -73,15 +70,19 @@ export default function SessionListPage() {
   };
 
   const [params, setParams] = useState<SessionRetrieveParams>(initialParams);
-  const { data, isLoading } = useGetSessions(params);
+  const { data, isLoading } = useGetSessions(params); // isLoading here updates frequently
+  
   const sessions = data?.items || [];
   const totalItems = data?.totalItems || 0;
   const totalPages = Math.ceil(totalItems / (params.pageSize || 9)) || 1;
 
   // Handlers
   const handlePageChange = (page: number) => setParams((prev) => ({ ...prev, pageIndex: page }));
+  
+  // Note: The Debounce logic is now inside SessionListFilters, so we just accept the value here
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setParams((prev) => ({ ...prev, className: e.target.value, pageIndex: 1 }));
+    
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
     setParams((prev) => ({
@@ -90,20 +91,23 @@ export default function SessionListPage() {
       pageIndex: 1,
     }));
   };
+  
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) =>
     setParams((prev) => ({ ...prev, sortBy: e.target.value, pageIndex: 1 }));
+    
   const clearFilters = () => setParams(initialParams);
 
   const isFiltering = !!params.className || params.vrLearningSessionStatus !== undefined;
 
-  // Wait for everything to load
-  if (isLoading || vrLessonsLoading || userLessonsLoading) {
+  // --- 3. FIX: Only block full page for Initial Setup data, NOT for session list loading ---
+  if (vrLessonsLoading || userLessonsLoading) {
     return <Loading isLoading />;
   }
 
   return (
     <div className='flex-1 h-full overflow-y-auto bg-slate-50/50 p-8'>
       <div className='max-w-7xl mx-auto flex flex-col min-h-[calc(100vh-4rem)] space-y-8'>
+        
         {/* --- HEADER --- */}
         <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
           <div>
@@ -119,7 +123,7 @@ export default function SessionListPage() {
           </Button>
         </div>
 
-        {/* --- FILTERS --- */}
+        {/* --- FILTERS (Always Mounted) --- */}
         <SessionListFilters
           params={params}
           onSearchChange={handleSearchChange}
@@ -128,9 +132,18 @@ export default function SessionListPage() {
           onClearFilters={clearFilters}
         />
 
-        {/* --- LIST CONTENT --- */}
-        <div className='flex-1'>
-          {isLoading ? (
+        {/* --- LIST CONTENT (Loading handled internally) --- */}
+        <div className='flex-1 relative min-h-[400px]'>
+          
+          {/* Optional: Overlay Loader when refetching */}
+          {isLoading && sessions.length > 0 && (
+             <div className="absolute inset-0 bg-slate-50/50 z-10 flex items-start justify-center pt-20 backdrop-blur-[1px]">
+                 <Loader2 className='h-8 w-8 animate-spin text-primary' />
+             </div>
+          )}
+
+          {isLoading && sessions.length === 0 ? (
+            // Initial Load / No Data Load State
             <div className='flex flex-col items-center justify-center h-64 w-full text-slate-400 gap-3'>
               <Loader2 className='h-10 w-10 animate-spin text-primary' />
               <p className='text-sm font-medium'>Đang tải dữ liệu...</p>
@@ -158,6 +171,7 @@ export default function SessionListPage() {
         )}
       </div>
 
+      {/* --- DIALOG --- */}
       <CreateLearningSessionDialog
         open={showConfirmDialog}
         onOpenChange={setShowConfirmDialog}
