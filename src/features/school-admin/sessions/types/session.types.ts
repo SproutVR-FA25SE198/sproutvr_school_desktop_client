@@ -33,6 +33,12 @@ export interface VRDeviceTaskProgress {
 
 export interface VRDeviceSessionSummary {
     id: string,
+    vrDevice: VRDevice,
     studentName: string,
     noTasksCompleted: number
+}
+
+export interface VRDevice {
+    vrDeviceId: string,
+    deviceName: string
 }
