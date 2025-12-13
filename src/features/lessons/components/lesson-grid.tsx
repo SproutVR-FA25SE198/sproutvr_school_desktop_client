@@ -30,7 +30,8 @@ export function LessonsGrid({ lessons = [], subjects = [] }: LessonsGridProps) {
   const itemsPerPage = 4;
 
   const filteredLessons = useMemo(() => {
-    let result = [...lessons];
+    // Active lessons only
+    let result = [...lessons].filter(l => l.status.key === 1);
 
     if (selectedSubject !== 'all') {
       result = result.filter((l) => l.masterSubject.name === selectedSubject);

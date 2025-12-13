@@ -71,9 +71,9 @@ export function LessonForm({ onSubmit, masterSubjects, subjects }: LessonFormPro
 
       {/* Subject + Class */}
       <div className='flex gap-12'>
-        <SubjectSelector subjects={masterSubjects} control={control} error={errors.subjectId?.message as string} />
+        <SubjectSelector subjects={masterSubjects?.filter(ms => ms.status.key === 1)} control={control} error={errors.subjectId?.message as string} />
         <ClassSelector
-          classes={subjects}
+          classes={subjects?.filter(s => s.status.key === 1)}
           control={control}
           selectedSubjectId={selectedSubjectId}
           error={errors.classId?.message as string}

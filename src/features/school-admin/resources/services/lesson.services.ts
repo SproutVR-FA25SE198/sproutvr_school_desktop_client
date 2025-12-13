@@ -19,7 +19,6 @@ const DEFAULT_PARAMS: Required<Pick<FetchLessonsParams, 'pageIndex' | 'pageSize'
   sortBy: 'createdAtUtcDesc',
 };
 
-const LESSONS_ADMIN_ENDPOINT = '/api/v1/school-admin/lessons';
 const LESSONS_AUTHORIZED_ENDPOINT = '/api/v1/authorized/lessons';
 
 export interface LessonListResult {
@@ -68,7 +67,7 @@ export async function fetchLessonById(id: string): Promise<Lesson | null> {
 export async function updateLessonStatus(id: string, status: number): Promise<void> {
   if (!id) throw new Error('Missing Lesson id');
 
-  await http_school.patch(`${LESSONS_ADMIN_ENDPOINT}/${id}/assign-status`, {
+  await http_school.patch(`${LESSONS_AUTHORIZED_ENDPOINT}/${id}/assign-status`, {
     status,
   });
 }

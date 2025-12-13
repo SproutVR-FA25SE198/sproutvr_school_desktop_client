@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
-import { GET_LESSON_BY_ID_QUERY__KEY, getLessonById, LESSONS_STALE_TIME } from '../services/lesson.service';
+import { GET_LESSON_BY_ID_QUERY__KEY, getLessonById } from '../services/lesson.service';
 
 const useGetLessonById = ({ lessonId }: { lessonId: string }) => {
   const { data, isLoading, isError } = useQuery({
     queryKey: [GET_LESSON_BY_ID_QUERY__KEY, lessonId],
     queryFn: async () => await getLessonById(lessonId),
-    staleTime: LESSONS_STALE_TIME,
+    staleTime: 0,
     refetchOnWindowFocus: false,
     refetchOnMount: true,
   });

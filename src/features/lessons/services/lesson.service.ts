@@ -67,6 +67,20 @@ export const createLesson = async (data: LessonCreationPayload) => {
   return result.data;
 };
 
+export async function updateLesson(lessonId: string, data: FormData): Promise<void> {
+  const result = await http.put(`/api/v1/teacher/lessons/${lessonId}`, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  if (result.data?.errors != null) throw new Error('Failed to update lesson.');
+};
+
+export async function deleteLesson(lessonId: string, status: number): Promise<any> {
+  const result = await http.patch(`/api/v1/authorized/lessons/${lessonId}/assign-status`, {status});
+  if (result.data?.errors != null) throw new Error('Failed to delete lesson.');
+}
+
 export const getVrLessonList = async (lessonId?: string) => {
   const result = await http.get<VrLessonRetrieveResponse>(`/api/v1/authorized/vrlessons?lessonId=${lessonId}`);
   return result.data;

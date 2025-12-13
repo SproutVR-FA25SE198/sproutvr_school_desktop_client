@@ -84,13 +84,13 @@ export function PhaseOneStepOne({ lesson, maps }: { lesson?: LessonRetrieve; map
           <div className='space-y-6'>
             <div className='bg-white rounded-lg border border-neutral-200 p-6 space-y-4'>
               <MapSelect
-                maps={maps?.items || []}
+                maps={maps?.items.filter(m => m.status.key === 1) || []}
                 value={formData.map}
                 onChange={(value) => updateField('map', value)}
                 error={errors.map}
               />
 
-              <MapPreview selectedMapId={formData.map} maps={maps?.items || []} />
+              <MapPreview selectedMapId={formData.map} maps={maps?.items.filter(m => m.status.key === 1) || []} />
             </div>
           </div>
         </div>

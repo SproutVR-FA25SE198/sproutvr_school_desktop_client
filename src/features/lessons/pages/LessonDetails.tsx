@@ -8,6 +8,7 @@ import useGetLessonById from '../hooks/useGetLessonById';
 import Loading from '@/common/components/loading';
 import useGetVrLessons from '../hooks/useGetVrLessons';
 import { ChevronLeft } from 'lucide-react';
+import { useMemo } from 'react';
 
 export default function LessonDetailsPage() {
   const params = useParams();
@@ -15,6 +16,11 @@ export default function LessonDetailsPage() {
   const { data: lesson, isLoading: lessonLoading, isError: lessonError } = useGetLessonById({ lessonId });
 
   const { data: vrLessons, isLoading: vrLessonsLoading, isError: vrLessonsError } = useGetVrLessons({ lessonId });
+
+  const filteredVrLessons = useMemo(() => {
+      if (!vrLessons?.items) return []; 
+      return vrLessons.items.filter(v => v.status.key === 1); 
+  }, [vrLessons]);
 
   const isLoading = lessonLoading || vrLessonsLoading;
   const isError = lessonError || vrLessonsError;
@@ -49,18 +55,12 @@ export default function LessonDetailsPage() {
           <span>Quay lại</span>
         </Link>
 
-        {/* Lesson Details */}
-        <LessonDetailsHeader lesson={lesson} totalVrLessons={vrLessons?.items?.length} />
+        <LessonDetailsHeader 
+            lesson={lesson} 
+            totalVrLessons={vrLessons?.items?.length} 
+        />
 
-        <VRLessonsList vrLessons={vrLessons?.items} lesson={lesson} />
-
-        {/* Open Folder Action
-        <div className='mt-8 flex gap-3'>
-          <Button variant='outline' className='border-neutral-300 bg-transparent'>
-            Clear
-          </Button>
-          <Button className='bg-primary text-white hover:bg-primary/90'>Open this folder onClick</Button>
-        </div> */}
+        <VRLessonsList vrLessons={filteredVrLessons} lesson={lesson} />
       </div>
     </div>
   );
