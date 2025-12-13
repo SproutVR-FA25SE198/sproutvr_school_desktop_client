@@ -126,7 +126,7 @@ export function PhaseOneStepTwo({
                 selectedLocationId={currentTask.taskLocationId}
                 selectedMapId={lessonData.map}
                 locationPreviewUrl={locations?.items[0]?.map.previewUrl}
-                maps={maps?.items || []}
+                maps={maps?.items.filter(m => m.status.key === 1) || []}
                 locations={locations?.items || []}
               />
             </div>

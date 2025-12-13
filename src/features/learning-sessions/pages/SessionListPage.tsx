@@ -45,8 +45,11 @@ export default function SessionListPage() {
   // Filter Logic
   const filteredVrLessons = useMemo(() => {
     if (!vrLessonsData?.items || !userLessonsData?.items) return [];
+
     const userLessonIds = new Set(userLessonsData.items.map((l) => l.id));
-    return vrLessonsData.items.filter((vrLesson) => userLessonIds.has(vrLesson.lesson.id));
+    var vrLessons = vrLessonsData.items.filter((vrLesson) => userLessonIds.has(vrLesson.lesson.id));
+    
+    return vrLessons.filter(v => v.status.key === 1); 
   }, [vrLessonsData, userLessonsData]);
 
   const handleConfirmCreate = (
