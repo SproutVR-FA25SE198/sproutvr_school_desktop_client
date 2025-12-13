@@ -20,7 +20,6 @@ const DEFAULT_PARAMS: Required<Pick<FetchVRLessonsParams, 'pageIndex' | 'pageSiz
   sortBy: 'createdAtUtcDesc',
 };
 
-const VRLS_ADMIN_ENDPOINT = '/api/v1/school-admin/vrlessons';
 const VRLS_AUTHORIZED_ENDPOINT = '/api/v1/authorized/vrlessons';
 
 export interface VRLessonListResult {
@@ -69,7 +68,7 @@ export async function fetchVRLessonById(id: string): Promise<VRLesson | null> {
 export async function updateVRLessonStatus(id: string, status: number): Promise<void> {
   if (!id) throw new Error('Missing VRLesson id');
 
-  await http_school.patch(`${VRLS_ADMIN_ENDPOINT}/${id}/assign-status`, {
+  await http_school.patch(`${VRLS_AUTHORIZED_ENDPOINT}/${id}/assign-status`, {
     status,
   });
 }

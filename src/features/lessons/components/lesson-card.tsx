@@ -22,7 +22,6 @@ export function LessonCard({ lesson, onSelect }: LessonCardProps) {
       <div className='space-y-1'>
         <p className='text-sm font-medium text-neutral-700'>{lesson.subject.name}</p>
         <h3 className='font-semibold text-neutral-900 line-clamp-2'>{lesson.name}</h3>
-        <p className='text-sm text-neutral-600'>Bài học VR: {lesson.vrLessonsCount}</p>
         <p className='text-xs text-neutral-500'>{new Date(lesson.createdAtUtc).toLocaleDateString()}</p>
       </div>
     </button>

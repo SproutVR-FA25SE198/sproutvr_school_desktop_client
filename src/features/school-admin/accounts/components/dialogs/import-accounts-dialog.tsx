@@ -67,7 +67,7 @@ export default function ImportAccountsDialog({
         <DialogHeader>
           <DialogTitle>Thêm tài khoản</DialogTitle>
           <DialogDescription>
-            Thêm tài khoản mới bằng cách tải file .csv, .xlsx, .xls.
+            Thêm tài khoản mới bằng cách tải file Excel.
           </DialogDescription>
         </DialogHeader>
 
