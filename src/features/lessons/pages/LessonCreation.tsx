@@ -75,7 +75,7 @@ export default function LessonCreationPage() {
 
         {/* Form Card */}
         <Card className='p-8 w-full'>
-          <LessonForm masterSubjects={masterSubjects?.items} subjects={subjects?.items} onSubmit={handleSubmit} />
+          <LessonForm masterSubjects={masterSubjects?.items.filter(m => m.status.key === 1)} subjects={subjects?.items.filter(s => s.status.key === 1)} onSubmit={handleSubmit} />
         </Card>
       </div>
     </div>
