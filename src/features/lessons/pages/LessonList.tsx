@@ -19,7 +19,7 @@ export default function LessonsPage() {
     pageSize: 50,
     sortBy: 'nameAsc',
     subjectId: '',
-    teacherId: user?.userId
+    teacherId: user?.userId,
   };
 
   const {
@@ -47,10 +47,10 @@ export default function LessonsPage() {
   if (isLoading) return <Loading isLoading />;
   return (
     <div className='h-full overflow-y-auto border-r border-neutral-200 p-8'>
-      <div className=''>
+      <div className='max-w-7xl mx-auto flex flex-col min-h-[calc(100vh-4rem)] space-y-8'>
         <div className='flex items-center justify-between mb-6'>
           <div>
-            <h2 className='text-2xl font-bold text-neutral-900 mb-1'>Danh sách bài học</h2>
+            <h2 className='text-3xl font-bold text-neutral-900 mb-1'>Danh sách bài học</h2>
           </div>
         </div>
 

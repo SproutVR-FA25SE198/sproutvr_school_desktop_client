@@ -36,7 +36,7 @@ export function SubjectSelector<T extends FieldValues>({
               align: 'start',
             }}
           >
-            <CarouselContent className='py-4 -ml-4'>
+            <CarouselContent className='py-4 -ml-2 mr-4'>
               {subjects?.map((subject) => {
                 const isSelected = field.value === subject.id;
 

@@ -44,8 +44,8 @@ export function VRLessonsList({ vrLessons, lesson }: VRLessonsListProps) {
 
   return (
     <div className='bg-white rounded-lg p-6'>
-      <div className='flex items-center justify-between mb-0'>
-        <h2 className='text-xl font-semibold text-neutral-900 mb-4'>Bài học VR ({vrLessons?.length || 0})</h2>
+      <div className='flex items-center justify-between mb-0 mb-4'>
+        <h2 className='text-xl font-semibold text-neutral-900'>Bài học VR ({vrLessons?.length || 0})</h2>
         <div className='flex gap-2'>
           {vrLessons && vrLessons.length > 0 && (
             <Button variant='secondary' size='sm' onClick={handleOpenVrClassroom}>

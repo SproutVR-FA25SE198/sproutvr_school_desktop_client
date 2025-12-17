@@ -19,7 +19,7 @@ interface LessonDetailsHeaderProps {
 export function LessonDetailsHeader({ lesson, totalVrLessons }: LessonDetailsHeaderProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  
+
   const [openPdf, setOpenPdf] = useState(false);
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
 
@@ -31,10 +31,10 @@ export function LessonDetailsHeader({ lesson, totalVrLessons }: LessonDetailsHea
   };
 
   const handleUpdateSuccess = async () => {
-    await queryClient.invalidateQueries({ 
-      queryKey: [GET_LESSON_BY_ID_QUERY__KEY, lesson.id] 
+    await queryClient.invalidateQueries({
+      queryKey: [GET_LESSON_BY_ID_QUERY__KEY, lesson.id],
     });
-    
+
     setIsUpdateOpen(false);
   };
 
@@ -58,7 +58,7 @@ export function LessonDetailsHeader({ lesson, totalVrLessons }: LessonDetailsHea
   return (
     <>
       <div className='bg-white rounded-lg p-6 mb-4'>
-        <div className='flex items-start justify-between mb-4'>
+        <div className='flex items-start justify-between mb-4 border-b border-neutral-200'>
           <div className='flex-1 mr-2'>
             <h1 className='text-3xl font-bold text-neutral-900 mb-2'>{lesson?.name}</h1>
             <p className='text-sm text-neutral-600 mb-3'>{lesson.subject.name}</p>
@@ -74,11 +74,6 @@ export function LessonDetailsHeader({ lesson, totalVrLessons }: LessonDetailsHea
         </div>
 
         <p className='text-neutral-700 text-sm leading-relaxed mb-4'>{lesson.description}</p>
-
-        <div className='flex gap-2 text-sm'>
-          <p className='text-neutral-600'>Tổng số bài học VR:</p>
-          <p className='font-semibold text-neutral-900'>{totalVrLessons || 0}</p>
-        </div>
 
         {/* PDF LINK */}
         {pdfUrl && (
@@ -116,9 +111,9 @@ export function LessonDetailsHeader({ lesson, totalVrLessons }: LessonDetailsHea
       )}
 
       {/* UPDATE LESSON DIALOG */}
-      <UpdateLessonDialog 
-        lesson={lesson} 
-        open={isUpdateOpen} 
+      <UpdateLessonDialog
+        lesson={lesson}
+        open={isUpdateOpen}
         onOpenChange={setIsUpdateOpen}
         onSuccess={handleUpdateSuccess}
       />
