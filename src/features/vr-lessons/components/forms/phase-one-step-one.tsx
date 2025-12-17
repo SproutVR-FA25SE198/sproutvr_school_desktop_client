@@ -37,7 +37,7 @@ export function PhaseOneStepOne({ lesson, maps }: { lesson?: LessonRetrieve; map
   };
 
   return (
-    <div className='min-h-screen bg-neutral-50 p-6'>
+    <div className='bg-neutral-50 p-6'>
       <div className='max-w-7xl m-auto'>
         <div className='flex items-center gap-4 mb-8'>
           <Button variant='ghost' size='icon' onClick={handleBack} className='rounded-full bg-white shadow-sm'>
@@ -84,13 +84,13 @@ export function PhaseOneStepOne({ lesson, maps }: { lesson?: LessonRetrieve; map
           <div className='space-y-6'>
             <div className='bg-white rounded-lg border border-neutral-200 p-6 space-y-4'>
               <MapSelect
-                maps={maps?.items.filter(m => m.status.key === 1) || []}
+                maps={maps?.items.filter((m) => m.status.key === 1) || []}
                 value={formData.map}
                 onChange={(value) => updateField('map', value)}
                 error={errors.map}
               />
 
-              <MapPreview selectedMapId={formData.map} maps={maps?.items.filter(m => m.status.key === 1) || []} />
+              <MapPreview selectedMapId={formData.map} maps={maps?.items.filter((m) => m.status.key === 1) || []} />
             </div>
           </div>
         </div>

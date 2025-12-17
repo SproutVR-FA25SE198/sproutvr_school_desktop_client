@@ -114,7 +114,7 @@ export function PhaseOneStepTwo({
   if (isLoading) return <Loading isLoading />;
 
   return (
-    <div className='min-h-screen bg-neutral-50 p-6'>
+    <div className='bg-neutral-50 p-6'>
       <div className='max-w-7xl mx-auto'>
         {/* Main Content */}
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
@@ -126,7 +126,7 @@ export function PhaseOneStepTwo({
                 selectedLocationId={currentTask.taskLocationId}
                 selectedMapId={lessonData.map}
                 locationPreviewUrl={locations?.items[0]?.map.previewUrl}
-                maps={maps?.items.filter(m => m.status.key === 1) || []}
+                maps={maps?.items.filter((m) => m.status.key === 1) || []}
                 locations={locations?.items || []}
               />
             </div>

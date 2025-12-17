@@ -40,7 +40,7 @@ export function OverviewTab({ vrLessonData }: { vrLessonData: VrLessonRetrieve }
 
       {/* Finish Setup Button */}
       <Button onClick={handleFinishSetup} variant='outline' className='w-full bg-transparent'>
-        Hoàn tất thiết lập nhiệm vụ bài học
+        Thiết lập nhiệm vụ bài học
       </Button>
 
       {/* Overview Details */}
@@ -49,7 +49,7 @@ export function OverviewTab({ vrLessonData }: { vrLessonData: VrLessonRetrieve }
           <div>
             <div className='mb-4 flex gap-2 items-center'>
               <p className='text-sm font-medium'>Tổng thời lượng:</p>
-              <p className='text-sm '>{vrLessonData?.maxDuration}</p>
+              <p className='text-sm '>{vrLessonData?.duration}</p>
             </div>
             <div className='mb-4 flex gap-2 items-center'>
               <p className='text-sm font-medium'>Bản đồ:</p>

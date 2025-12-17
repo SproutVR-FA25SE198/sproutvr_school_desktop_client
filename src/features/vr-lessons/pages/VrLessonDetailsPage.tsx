@@ -67,11 +67,11 @@ export default function VrLessonDetailsPage() {
   if (isLoading) return <Loading isLoading={isLoading} />;
   if (!lesson || !tasksExtended) {
     return (
-      <div className='flex-1 flex items-center justify-center'>
+      <div className='flex-1 flex h-full items-center justify-center'>
         <div className='text-center'>
           <h2 className='text-2xl font-bold text-neutral-900 mb-2'>Không tìm thấy bài học VR</h2>
           <p className='text-neutral-600 mb-4'>Bài học VR bạn đang tìm không tồn tại.</p>
-          <Link to={routes.lessons.replace(':id', lesson?.lesson.id || '')}>
+          <Link to={routes.home}>
             <Button className='bg-primary text-white hover:bg-primary/90'>Quay lại</Button>
           </Link>
         </div>
