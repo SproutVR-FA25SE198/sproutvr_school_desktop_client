@@ -27,7 +27,7 @@ export function LessonForm({ onSubmit, masterSubjects, subjects }: LessonFormPro
     control,
     handleSubmit,
     reset,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(lessonCreationSchema),
     mode: 'onSubmit',

@@ -3,8 +3,6 @@
 import { cn } from '@/common/utils';
 import logo from '@/assets/SproutVR_Icon.png';
 
-import { Spinner } from './ui/spinner';
-
 interface LoadingProps {
   isLoading: boolean;
   className?: string;

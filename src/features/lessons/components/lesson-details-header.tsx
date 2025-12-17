@@ -16,7 +16,7 @@ interface LessonDetailsHeaderProps {
   totalVrLessons?: number;
 }
 
-export function LessonDetailsHeader({ lesson, totalVrLessons }: LessonDetailsHeaderProps) {
+export function LessonDetailsHeader({ lesson }: LessonDetailsHeaderProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
