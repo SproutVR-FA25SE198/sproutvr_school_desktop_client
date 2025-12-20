@@ -29,6 +29,10 @@
     {
       "from": "dist-electron/preload/preload.cjs",
       "to": "dist-electron/preload/preload.cjs"
+    },
+    {
+      "from": "public/CONFIG_README.txt",
+      "to": "CONFIG_README.txt"
     }
   ],
   "icon": "public/SproutVR_Icon.png",
@@ -42,7 +46,7 @@
     "category": "Utility"
   },
   "win": {
-    "target": ["nsis"]
+    "target": ["dir", "zip"]
   },
   "nsis": {
     "oneClick": true,

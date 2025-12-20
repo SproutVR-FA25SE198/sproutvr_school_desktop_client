@@ -67,4 +67,8 @@ contextBridge.exposeInMainWorld('electron', {
   // Get initial room state
   getRoomState: (vr_learning_session_id: string) =>
     ipcRenderer.invoke('grpc:get_room_state', { vr_learning_session_id }),
+
+  // Get runtime configuration from .env file
+  // This allows endpoints to be modified after the app is exported
+  getRuntimeConfig: () => ipcRenderer.invoke('get-runtime-config'),
 });

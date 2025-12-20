@@ -1,32 +1,44 @@
 import { credentials, Metadata } from '@grpc/grpc-js';
 import { LearningSession } from './loader.js';
-import { app } from 'electron';
-import path from 'path';
-import dotenv from 'dotenv';
+import { getRuntimeConfig } from '../config.js';
 
-const envPath = app.isPackaged ? path.join(process.resourcesPath, '.env') : path.join(process.cwd(), '.env');
+// Lazy-initialized client - created on first use after config is loaded
+let _teacherSessionActionClient: any = null;
 
-dotenv.config({ path: envPath });
+/**
+ * Get the TeacherSessionActionClient instance (lazy initialization).
+ * This ensures the client is only created after loadConfig() has been called.
+ */
+function getTeacherSessionActionClient() {
+  if (!_teacherSessionActionClient) {
+    const config = getRuntimeConfig();
+    const GRPC_SERVER_URL = config.GRPC_SERVER_URL;
 
-const GRPC_SERVER_URL = process.env.VITE_GRPC_SERVER_URL;
+    console.log('[GRPC] Initializing TeacherSessionActionClient on:', GRPC_SERVER_URL);
 
-console.log('[GRPC] Initializing TeacherSessionActionClient on:', GRPC_SERVER_URL);
+    if (!GRPC_SERVER_URL) {
+      throw new Error('GRPC_SERVER_URL is not configured. Check your .env file.');
+    }
 
-export const TeacherSessionActionClient = new LearningSession.TeacherSessionManagement(
-  GRPC_SERVER_URL,
-  credentials.createInsecure(),
-);
+    _teacherSessionActionClient = new LearningSession.TeacherSessionManagement(
+      GRPC_SERVER_URL,
+      credentials.createInsecure(),
+    );
+  }
+  return _teacherSessionActionClient;
+}
 
 // Utility to wrap unary calls with proper error handling and logging
 function unaryCall(method: string, request: any): Promise<any> {
   return new Promise((resolve, reject) => {
+    const client = getTeacherSessionActionClient();
     const metadata = new Metadata();
     const deadline = new Date();
     deadline.setSeconds(deadline.getSeconds() + 30); // 30 second timeout
 
     console.log(`[GRPC] Calling ${method} with:`, JSON.stringify(request, null, 2));
 
-    TeacherSessionActionClient[method](request, metadata, { deadline }, (err: any, response: any) => {
+    client[method](request, metadata, { deadline }, (err: any, response: any) => {
       if (err) {
         console.error(`[GRPC] ${method} error:`, {
           code: err.code,
