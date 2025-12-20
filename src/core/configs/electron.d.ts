@@ -1,3 +1,16 @@
+export interface RuntimeConfig {
+  PROVIDER_URL: string;
+  SCHOOL_URL: string;
+  APK_DOWNLOAD_URL: string;
+  BASE_URL: string;
+  GRPC_SERVER_URL: string;
+  AGENT_LOCATION: string;
+  AGENT_LANGUAGE: string;
+  PROJECT_ID: string;
+  AGENT_ID: string;
+  LOGO: string;
+}
+
 export interface ElectronAPI {
   // Teacher room state stream listeners
   onTeacherUpdate: (callback: (data: any) => void) => () => void;
@@ -34,6 +47,9 @@ export interface ElectronAPI {
   sendNotification: (vr_learning_session_id: string, notification: { text: string; severity: string }) => Promise<any>;
 
   getRoomState: (vr_learning_session_id: string) => Promise<any>;
+
+  // Get runtime configuration from .env file
+  getRuntimeConfig: () => Promise<RuntimeConfig>;
 }
 
 declare global {

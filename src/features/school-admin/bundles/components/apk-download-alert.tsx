@@ -3,15 +3,18 @@
 import { Alert, AlertDescription, AlertTitle } from '@/common/components/ui/alert';
 import { Button } from '@/common/components/ui/button';
 import { DownloadCloud } from 'lucide-react';
+import { useRuntimeConfig } from '@/core/configs/runtime-config';
 
 /**
  * A reusable Alert component to prompt the admin to download the latest APK.
- * It pulls the download URL from environment variables.
+ * It pulls the download URL from runtime configuration (modifiable after export).
  */
 export function ApkDownloadAlert() {
-  // Get the download link from the environment variable
-  // (Added a fallback to '#' to prevent errors if it's missing)
-  const apkDownloadLink = import.meta.env.VITE_APK_DOWNLOAD_URL || '#';
+  const { config } = useRuntimeConfig();
+  
+  // Get the download link from runtime config (allows modification after export)
+  // Falls back to build-time env var, then to '#' if not set
+  const apkDownloadLink = config.APK_DOWNLOAD_URL || import.meta.env.VITE_APK_DOWNLOAD_URL || '#';
 
   // Use the correct Electron API to open the link in the user's default browser
   const handleApkDownload = () => {

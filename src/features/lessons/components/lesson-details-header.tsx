@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import routes from '@/core/configs/routes';
 import { UpdateLessonDialog } from './form/update-lesson-dialog';
 import { useQueryClient } from '@tanstack/react-query';
+import { useRuntimeConfig } from '@/core/configs/runtime-config';
 
 interface LessonDetailsHeaderProps {
   lesson: LessonRetrieve;
@@ -19,11 +20,12 @@ interface LessonDetailsHeaderProps {
 export function LessonDetailsHeader({ lesson }: LessonDetailsHeaderProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { config } = useRuntimeConfig();
 
   const [openPdf, setOpenPdf] = useState(false);
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
 
-  const schoolResourceUrl = import.meta.env.VITE_SCHOOL_URL;
+  const schoolResourceUrl = config.SCHOOL_URL || import.meta.env.VITE_SCHOOL_URL;
   const pdfUrl = lesson.resourceRelativeFilePath ? schoolResourceUrl + '/api' + lesson.resourceRelativeFilePath : null;
 
   const handleUpdate = () => {
