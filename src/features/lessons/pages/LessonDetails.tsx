@@ -43,15 +43,15 @@ export default function LessonDetailsPage() {
   }
 
   return (
-    <div className='p-8 h-full overflow-y-auto'>
-      <div className='max-w-4xl mx-auto py-4'>
+    <div className='pt-8 h-full overflow-y-auto'>
+      <div className='max-w-4xl mx-auto'>
         {/* Back Button */}
         <Link
           to='/'
           state={{ refresh: true }}
-          className='inline-flex items-center gap-2 text-neutral-600 hover:text-primary mb-4 transition-colors hover:font-semibold'
+          className='inline-flex items-center gap-2 text-neutral-600 hover:text-primary mb-6 transition-colors hover:font-semibold'
         >
-          <ChevronLeft />
+          <ChevronLeft size={25} />
           <span>Quay lại</span>
         </Link>
 

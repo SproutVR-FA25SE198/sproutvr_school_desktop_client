@@ -55,7 +55,7 @@ export default function LessonsPage() {
         </div>
 
         <LessonsGrid lessons={data?.items} subjects={subjects?.items} />
-        <AIChatSidebar></AIChatSidebar>
+        <AIChatSidebar/>
       </div>
     </div>
   );

@@ -57,7 +57,7 @@ export function LessonDetailsHeader({ lesson }: LessonDetailsHeaderProps) {
 
   return (
     <>
-      <div className='bg-white rounded-lg p-6 mb-4'>
+      <div className='bg-white rounded-lg p-6 mb-4 border border-neutral-300'>
         <div className='flex items-start justify-between mb-4 border-b border-neutral-200'>
           <div className='flex-1 mr-2'>
             <h1 className='text-3xl font-bold text-neutral-900 mb-2'>{lesson?.name}</h1>

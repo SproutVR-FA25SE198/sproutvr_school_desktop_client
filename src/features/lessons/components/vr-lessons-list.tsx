@@ -43,7 +43,7 @@ export function VRLessonsList({ vrLessons, lesson }: VRLessonsListProps) {
   const { currentData, currentPage, setPage, totalPages } = usePagination(vrLessons || [], itemsPerView);
 
   return (
-    <div className='bg-white rounded-lg p-6'>
+    <div className='bg-white rounded-lg p-6 border border-neutral-300'>
       <div className='flex items-center justify-between mb-0 mb-4'>
         <h2 className='text-xl font-semibold text-neutral-900'>Bài học VR ({vrLessons?.length || 0})</h2>
         <div className='flex gap-2'>

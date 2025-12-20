@@ -3,7 +3,6 @@
 import { Card } from '@/common/components/ui/card';
 import { LessonForm } from '../components/form/lesson-form';
 import { ChevronLeft } from 'lucide-react';
-import { Button } from '@/common/components/ui/button';
 import type { LessonFormData } from '../components/form/schema';
 import useGetMasterSubjects from '@/common/hooks/useGetMasterSubjects';
 import useGetSubjects from '@/common/hooks/useGetSubjects';
@@ -67,15 +66,13 @@ export default function LessonCreationPage() {
       <div className='mx-auto container w-full space-y-6 p-8 mt-0 pb-16'>
         {/* Header */}
         <div className='flex items-center gap-4'>
-          <Button
-            variant='ghost'
-            size='icon'
+          <div
             onClick={handleBack}
-            className='rounded-full bg-white shadow-sm border border-primary/40 hover:bg-neutral-100'
+            className='inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 hover:cursor-pointer transition-colors'
           >
-            <ChevronLeft className='size-15' />
-          </Button>
-          <h1 className='text-3xl self-center font-bold text-neutral-900'>Tạo bài giảng mới</h1>
+            <ChevronLeft size={40} />
+            <h1 className='text-3xl self-center font-bold text-neutral-900'>Tạo bài giảng mới</h1>
+          </div>
         </div>
 
         {/* Form Card */}

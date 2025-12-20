@@ -80,13 +80,13 @@ export default function VrLessonDetailsPage() {
   } else
     return (
       <div className='flex-1 overflow-y-auto h-full'>
-        <div className='max-w-4xl mx-auto px-8 py-8 overflow-y-auto'>
+        <div className='max-w-4xl mx-auto py-8 overflow-y-auto'>
           {/* Back Button */}
           <Link
             to={routes.lessonDetails.replace(':id', lesson.lesson.id) || routes.home}
             className='inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 mb-6 transition-colors'
           >
-            <ChevronLeft size={16} />
+            <ChevronLeft size={25} />
             <span>Quay lại</span>
           </Link>
 

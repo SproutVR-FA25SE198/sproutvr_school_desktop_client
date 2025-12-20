@@ -1,7 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import { SessionForm } from '../components/session-form';
 import type { VrLessonRetrieve } from '@/common/types/vr-lesson.type';
-import { Button } from '@/common/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
 
 export default function CreateSessionPage() {
@@ -25,15 +24,13 @@ export default function CreateSessionPage() {
     <div className='flex-1 overflow-auto p-8'>
       <div className='max-w-6xl mx-auto'>
         <div className='flex items-center gap-4 mb-8'>
-          <Button
-            variant='ghost'
-            size='icon'
+          <div
             onClick={handleBack}
-            className='rounded-full border border-primary/40 bg-white shadow-sm'
+            className='inline-flex items-center gap-2 text-neutral-600 hover:cursor-pointer hover:text-neutral-900 transition-colors'
           >
-            <ChevronLeft className='size-5' />
-          </Button>
-          <h1 className='text-3xl self-center font-bold text-neutral-900'>Mở phiên học VR</h1>
+            <ChevronLeft size={40} />
+            <h1 className='text-3xl self-center font-bold text-neutral-900'>Mở phiên học VR</h1>
+          </div>
         </div>
         <SessionForm
           vrLesson={vrLesson}
