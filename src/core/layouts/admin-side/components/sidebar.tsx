@@ -3,20 +3,30 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import routes from '../../../configs/routes';
+import {
+  BarChart4,
+  ChevronLeft,
+  ChevronRight,
+  FileBox,
+  LucideBookMarked,
+  Presentation,
+  RectangleGoggles,
+  Users,
+} from 'lucide-react';
 
 interface NavItem {
   label: string;
   href: string;
-  icon: string;
+  icon: React.ReactNode;
 }
 
 const navItems: NavItem[] = [
-  { label: 'Thống kê', href: routes.adminDashboard, icon: '📊' },
-  { label: 'Quản lý tài nguyên', href: routes.resources, icon: '📚' },
-  { label: 'Quản lý phiên học', href: routes.adminSessions, icon: '🖥️' },
-  { label: 'Quản lý thiết bị', href: routes.vrDevices, icon: '🥽' },
-  { label: 'Quản lý tài khoản', href: routes.accounts, icon: '👥' },
-  { label: 'Gói Học Liệu', href: routes.myBundles, icon: '📦' },
+  { label: 'Tổng quan', href: routes.adminDashboard, icon: <BarChart4 /> },
+  { label: 'Tài nguyên', href: routes.resources, icon: <LucideBookMarked /> },
+  { label: 'Phiên học', href: routes.adminSessions, icon: <Presentation /> },
+  { label: 'Thiết bị', href: routes.vrDevices, icon: <RectangleGoggles /> },
+  { label: 'Tài khoản', href: routes.accounts, icon: <Users /> },
+  { label: 'Gói Học Liệu', href: routes.myBundles, icon: <FileBox /> },
 ];
 
 export function AdminSidebar() {
@@ -36,7 +46,7 @@ export function AdminSidebar() {
           className='p-2 hover:bg-neutral-800 rounded-lg transition-colors'
           aria-label='Toggle sidebar'
         >
-          {isOpen ? '←' : '→'}
+          {isOpen ? <ChevronLeft /> : <ChevronRight />}
         </button>
       </div>
 

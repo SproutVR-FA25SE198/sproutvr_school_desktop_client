@@ -1,6 +1,5 @@
 import { Badge } from '@/common/components/ui/badge';
-import { Button } from '@/common/components/ui/button';
-import { ArrowLeft, Calendar, Clock, Timer, User } from 'lucide-react';
+import { Calendar, ChevronLeft, Clock, Timer, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { VRLearningSession } from '../types/session-manage.type';
 
@@ -22,17 +21,16 @@ export const SessionHeader = ({ session }: SessionHeaderProps) => {
 
   return (
     <div className='flex flex-col gap-4'>
-      <Button
-        variant='ghost'
-        className='w-fit pl-0 hover:bg-transparent hover:text-primary text-neutral-500'
+      <div
+        className='inline-flex items-center gap-2 text-neutral-600 hover:cursor-pointer hover:text-neutral-900 transition-colors'
         onClick={() => navigate(-1)}
       >
-        <ArrowLeft className='mr-2 h-4 w-4' /> Quay lại danh sách
-      </Button>
+        <ChevronLeft size={25} /> Quay lại danh sách
+      </div>
 
       {/* TITLE */}
       <div className='flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 bg-white p-6 rounded-2xl shadow-sm border border-neutral-200'>
-        <div className="flex-1 min-w-0">
+        <div className='flex-1 min-w-0'>
           <div className='flex items-center gap-3 mb-3'>
             <Badge
               variant='outline'
@@ -46,14 +44,14 @@ export const SessionHeader = ({ session }: SessionHeaderProps) => {
               {session.status.name === 'Completed' ? 'Đã hoàn thành' : 'Đã hủy'}
             </Badge>
           </div>
-          
+
           <h1 className='text-2xl md:text-3xl font-bold text-neutral-900 mb-2 wrap-break-word leading-tight'>
             {session.vrLesson.name}
           </h1>
-          
+
           <p className='text-neutral-500 flex items-center gap-2 text-sm font-medium'>
             <User size={16} className='text-neutral-400 shrink-0' />
-            <span className="truncate">
+            <span className='truncate'>
               Giáo viên: <span className='text-neutral-900'>{session.teacher.name}</span>
             </span>
           </p>

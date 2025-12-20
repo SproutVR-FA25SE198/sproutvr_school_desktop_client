@@ -25,6 +25,7 @@
   "dependencies": {
     "@grpc/grpc-js": "^1.14.1",
     "@grpc/proto-loader": "^0.8.0",
+    "@radix-ui/react-alert-dialog": "^1.1.15",
     "dotenv": "^17.2.3",
     "google-proto-files": "^5.0.1"
   },

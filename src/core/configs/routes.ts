@@ -3,7 +3,6 @@ const routes = {
   login: '/login',
   profile: '/profile',
   adminProfile: '/admin-profile',
-  lessons: '/lessons',
   lessonDetails: '/lessons/:id',
   lessonCreation: '/lessons/create',
   vrLessons: '/lessons/:id/:vrId',

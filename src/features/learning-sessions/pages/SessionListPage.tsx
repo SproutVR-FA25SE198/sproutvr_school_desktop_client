@@ -29,16 +29,13 @@ export default function SessionListPage() {
 
   const lessonQueryParams = {
     pageIndex: 1,
-    pageSize: 50, 
-    sortBy: 'nameAsc', 
+    pageSize: 50,
+    sortBy: 'nameAsc',
     subjectId: '',
-    teacherId: user?.userId
+    teacherId: user?.userId,
   };
 
-  const { 
-    data: userLessonsData, 
-    isLoading: userLessonsLoading 
-  } = useGetLessons({
+  const { data: userLessonsData, isLoading: userLessonsLoading } = useGetLessons({
     params: lessonQueryParams,
   });
 
@@ -48,8 +45,8 @@ export default function SessionListPage() {
 
     const userLessonIds = new Set(userLessonsData.items.map((l) => l.id));
     var vrLessons = vrLessonsData.items.filter((vrLesson) => userLessonIds.has(vrLesson.lesson.id));
-    
-    return vrLessons.filter(v => v.status.key === 1); 
+
+    return vrLessons.filter((v) => v.status.key === 1);
   }, [vrLessonsData, userLessonsData]);
 
   const handleConfirmCreate = (
@@ -74,18 +71,18 @@ export default function SessionListPage() {
 
   const [params, setParams] = useState<SessionRetrieveParams>(initialParams);
   const { data, isLoading } = useGetSessions(params); // isLoading here updates frequently
-  
+
   const sessions = data?.items || [];
   const totalItems = data?.totalItems || 0;
   const totalPages = Math.ceil(totalItems / (params.pageSize || 9)) || 1;
 
   // Handlers
   const handlePageChange = (page: number) => setParams((prev) => ({ ...prev, pageIndex: page }));
-  
+
   // Note: The Debounce logic is now inside SessionListFilters, so we just accept the value here
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setParams((prev) => ({ ...prev, className: e.target.value, pageIndex: 1 }));
-    
+
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
     setParams((prev) => ({
@@ -94,10 +91,10 @@ export default function SessionListPage() {
       pageIndex: 1,
     }));
   };
-  
+
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) =>
     setParams((prev) => ({ ...prev, sortBy: e.target.value, pageIndex: 1 }));
-    
+
   const clearFilters = () => setParams(initialParams);
 
   const isFiltering = !!params.className || params.vrLearningSessionStatus !== undefined;
@@ -110,7 +107,6 @@ export default function SessionListPage() {
   return (
     <div className='flex-1 h-full overflow-y-auto bg-slate-50/50 p-8'>
       <div className='max-w-7xl mx-auto flex flex-col min-h-[calc(100vh-4rem)] space-y-8'>
-        
         {/* --- HEADER --- */}
         <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
           <div>
@@ -137,12 +133,11 @@ export default function SessionListPage() {
 
         {/* --- LIST CONTENT (Loading handled internally) --- */}
         <div className='flex-1 relative min-h-[400px]'>
-          
           {/* Optional: Overlay Loader when refetching */}
           {isLoading && sessions.length > 0 && (
-             <div className="absolute inset-0 bg-slate-50/50 z-10 flex items-start justify-center pt-20 backdrop-blur-[1px]">
-                 <Loader2 className='h-8 w-8 animate-spin text-primary' />
-             </div>
+            <div className='absolute inset-0 bg-slate-50/50 z-10 flex items-start justify-center pt-20 backdrop-blur-[1px]'>
+              <Loader2 className='h-8 w-8 animate-spin text-primary' />
+            </div>
           )}
 
           {isLoading && sessions.length === 0 ? (

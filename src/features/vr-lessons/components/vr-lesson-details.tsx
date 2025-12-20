@@ -59,7 +59,7 @@ export function VrLessonDetails({ lesson, tasks }: VrLessonDetailsProps) {
         cancelText='Hủy'
       />
       {/* Header */}
-      <div className='bg-white rounded-lg p-6 border border-neutral-200'>
+      <div className='bg-white rounded-lg p-6 border border-neutral-300'>
         <div className='flex items-start justify-between items-center mb-0'>
           <div className='flex-1'>
             <h1 className='text-3xl font-bold text-neutral-900 mb-2'>{lesson.name}</h1>
@@ -99,7 +99,7 @@ export function VrLessonDetails({ lesson, tasks }: VrLessonDetailsProps) {
       </div>
 
       {/* Tasks Section */}
-      <div className='bg-white rounded-lg p-6 border border-neutral-200'>
+      <div className='bg-white rounded-lg p-6 border border-neutral-300'>
         <div className='flex items-center justify-between mb-4'>
           <h2 className='text-2xl font-bold text-neutral-900'>Nhiệm vụ ({lesson.tasks.length})</h2>
           <span className='italic my-auto'>{tasks.isSequential ? 'Nhiệm vụ tuần tự' : 'Nhiệm vụ tự do'}</span>

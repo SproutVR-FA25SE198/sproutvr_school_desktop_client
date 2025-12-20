@@ -20,9 +20,14 @@ export function LessonCard({ lesson, onSelect }: LessonCardProps) {
         />
       </div>
       <div className='space-y-1'>
-        <p className='text-sm font-medium text-neutral-700'>{lesson.subject.name}</p>
-        <h3 className='font-semibold text-neutral-900 line-clamp-2'>{lesson.name}</h3>
-        <p className='text-xs text-neutral-500'>{new Date(lesson.createdAtUtc).toLocaleDateString()}</p>
+        <p className='text-md font-medium text-neutral-700'>{lesson.subject.name}</p>
+        <h2 className='font-semibold text-2xl text-neutral-900 line-clamp-2'>{lesson.name}</h2>
+        <p className='text-md text-neutral-700 mb-6'>{lesson.description}</p>
+
+        <p className='text-md text-neutral-700'>Bài học VR: {lesson.vrLessonsCount}</p>
+        <p className='text-md text-neutral-500'>
+          Ngày tạo: {new Date(lesson.createdAtUtc).toLocaleDateString('vi-VN')}
+        </p>
       </div>
     </button>
   );

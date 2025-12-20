@@ -44,6 +44,7 @@ export interface VrTaskRetrieve extends Pick<VrTask, 'id' | 'taskNumber' | 'desc
   taskLocation: TaskLocation;
   question?: string;
   mapObject: MapObject;
+  taskDescription?: string;
   activityType: ActivityType;
 }
 

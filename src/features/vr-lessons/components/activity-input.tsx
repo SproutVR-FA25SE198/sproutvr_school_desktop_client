@@ -121,7 +121,7 @@ export function QuizActivity({ taskNumber, onValidChange }: BaseActivityProps) {
             <Input
               value={opt.text}
               onChange={(e) => handleOptionChange(opt.id, e.target.value)}
-              placeholder={`Option ${opt.id.toUpperCase()}`}
+              placeholder={`Phương án ${opt.id.toUpperCase()}`}
             />
 
             {/* Delete Button */}
