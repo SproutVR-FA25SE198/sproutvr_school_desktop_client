@@ -13,15 +13,10 @@ export function KpiCard({
 }: KpiCardProps) {
   return (
     <Card
-      className="p-4 rounded-xl gap-4 shadow-sm flex items-center bg-white border border-neutral-200"
+      className="flex flex-col justify-center items-center p-4 rounded-xl gap-4 shadow-sm bg-white border border-neutral-200"
     >
-      <div
-        className="w-12 h-12 flex items-center justify-center rounded-xl text-white text-3xl"
-      >
-      </div>
-
-      <div>
-        <div className="text-xs text-neutral-500">{title}</div>
+      <div className="text-center">
+        <div className="text-m text-neutral-500">{title}</div>
         <div className="text-2xl font-bold text-neutral-900 leading-tight">{value}</div>
       </div>
     </Card>
