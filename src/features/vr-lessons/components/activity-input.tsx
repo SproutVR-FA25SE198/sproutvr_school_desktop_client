@@ -6,6 +6,7 @@ import { Button } from '@/common/components/ui/button';
 import { Plus, Trash2, CheckSquare, Square } from 'lucide-react';
 import { useFormContext } from '@/common/contexts/form-context';
 import { useEffect } from 'react';
+import { Textarea } from '@/common/components/ui/textarea';
 
 interface BaseActivityProps {
   taskNumber: number;
@@ -165,7 +166,7 @@ export function InformationActivity({ taskNumber, onValidChange }: BaseActivityP
   return (
     <div className='space-y-2'>
       <Label>Nội dung thông tin</Label>
-      <Input value={infoText} onChange={(e) => handleChange(e.target.value)} placeholder='Enter information text...' />
+      <Textarea value={infoText} rows={2} className='resize-none' onChange={(e) => handleChange(e.target.value)} placeholder='Nhập thông tin...' />
     </div>
   );
 }
