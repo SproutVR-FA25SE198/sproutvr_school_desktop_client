@@ -87,12 +87,14 @@ export function VrLessonDetails({ lesson, tasks }: VrLessonDetailsProps) {
               {lesson.lesson.name} • {lesson.map.name}
             </p>
           </div>
-          <Button variant='secondary' size='sm' onClick={handleOpenVrClassroom}>
-            <BookOpen /> Mở phiên học VR
-          </Button>
-          <Button variant='ghost' className='hover:bg-destructive/30' size='sm' onClick={handleDelete}>
-              <Trash /> Xóa
-          </Button>
+          <div className='flex items-center gap-2'>
+            <Button variant='secondary' size='sm' onClick={handleOpenVrClassroom}>
+              <BookOpen className="mr-2 h-4 w-4" /> Mở phiên học VR
+            </Button>
+            <Button variant='destructive' className='text-white' size='sm' onClick={handleDelete}>
+              <Trash className="mr-2 h-4 w-4" /> Xóa
+            </Button>
+          </div>
         </div>
 
         <p className='text-neutral-700 text-sm leading-relaxed mb-6'>{lesson.description}</p>
