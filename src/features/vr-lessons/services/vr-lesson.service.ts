@@ -16,3 +16,9 @@ export const createVrLessonPhaseTwo = async ({
   const result = await http.patch(`/api/v1/teacher/vrlessons/${lessonId}/design-preset`, payload);
   return result.status;
 };
+
+export async function deleteVrLesson(vrLessonId: string, status: number): Promise<any> {
+  const result = await http.patch(`/api/v1/authorized/vrlessons/${vrLessonId}/assign-status`, {status});
+  if (result.data?.errors != null) throw new Error('Failed to delete VR lesson.');
+}
+
