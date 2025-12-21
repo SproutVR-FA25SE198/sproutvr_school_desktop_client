@@ -36,6 +36,7 @@ export interface RuntimeConfig {
   PROJECT_ID: string;
   AGENT_ID: string;
   LOGO: string;
+  APP_SERVER_URL: string;
 }
 
 /**
@@ -54,5 +55,6 @@ export function getRuntimeConfig(): RuntimeConfig {
     PROJECT_ID: process.env.PROJECT_ID || '',
     AGENT_ID: process.env.AGENT_ID || '',
     LOGO: process.env.LOGO || '',
+    APP_SERVER_URL: process.env.APP_SERVER_URL || 'http://localhost:7272',
   };
 }
