@@ -81,7 +81,7 @@ app.on('ready', () => {
   });
 
   if (isDev()) {
-    mainWindow.loadURL('http://localhost:7272');
+    mainWindow.loadURL(getRuntimeConfig().APP_SERVER_URL);
   } else {
     mainWindow.loadFile(path.join(app.getAppPath(), 'dist-react', 'index.html'));
   }
