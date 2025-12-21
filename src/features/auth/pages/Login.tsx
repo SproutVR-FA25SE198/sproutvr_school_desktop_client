@@ -70,11 +70,7 @@ export default function LoginPage() {
           {/* Logo and branding */}
           <div className='text-center mb-8'>
             <div className='inline-flex items-center justify-center w-24 h-24 rounded-xl mb-4'>
-              <img
-                src={logo}
-                alt={'Sprout VR Logo'}
-                className='w-full h-full object-contain'
-              />
+              <img src={logo} alt={'Sprout VR Logo'} className='w-full h-full object-contain' />
             </div>
             <h1 className='text-3xl font-bold text-neutral-900 mb-2'>SproutVR</h1>
             <p className='text-neutral-500'>Hệ thống Giáo dục VR</p>
@@ -125,7 +121,7 @@ export default function LoginPage() {
 
           {/* Footer */}
           <p className='text-center text-sm text-neutral-500 mt-6'>
-            Cần giúp đỡ? Liên hệ với quản trị viên trường của bạn
+            Liên hệ với quản trị viên trường của bạn nếu cần hỗ trợ đăng nhập.
           </p>
         </div>
       </div>

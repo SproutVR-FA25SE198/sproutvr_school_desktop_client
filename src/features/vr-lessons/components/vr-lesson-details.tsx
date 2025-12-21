@@ -4,11 +4,14 @@ import { Badge } from '@/common/components/ui/badge';
 import { Button } from '@/common/components/ui/button';
 import { Card } from '@/common/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/common/components/ui/collapsible';
+import { confirmDialog } from '@/common/components/ui/confirm-dialog';
 import type { VrLessonPresetExtended, VrLessonRetrieve } from '@/common/types/vr-lesson.type';
 import routes from '@/core/configs/routes';
-import { BookOpen, ChevronDown } from 'lucide-react';
+import { BookOpen, ChevronDown, Trash } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { deleteVrLesson } from '../services/vr-lesson.service';
+import { toast } from 'sonner';
 
 interface VrLessonDetailsProps {
   lesson: VrLessonRetrieve;
@@ -35,6 +38,23 @@ export function VrLessonDetails({ lesson, tasks }: VrLessonDetailsProps) {
     });
   };
 
+  const handleDelete = async () => {
+    if (!lesson) return;
+
+    const result = await confirmDialog(`Bạn có xác nhận xóa bài học VR này không?`);
+
+    if (result) {
+      try {
+        await deleteVrLesson(lesson.id, 0);
+        toast.success('Xóa bài học VR thành công!');
+        navigate(routes.lessonDetails.replace(':id', lesson.lesson.id));
+      } catch (err) {
+        console.error(err);
+        toast.error('Lỗi xóa bài học VR.');
+      }
+    }
+  };
+
   const tasksInOrder = tasks.vrTasks.slice().sort((a, b) => a.taskNumber - b.taskNumber);
 
   const getActionLabel = (activityCode: string) => {
@@ -59,7 +79,7 @@ export function VrLessonDetails({ lesson, tasks }: VrLessonDetailsProps) {
         cancelText='Hủy'
       />
       {/* Header */}
-      <div className='bg-white rounded-lg p-6 border border-neutral-200'>
+      <div className='bg-white rounded-lg p-6 border border-neutral-300'>
         <div className='flex items-start justify-between items-center mb-0'>
           <div className='flex-1'>
             <h1 className='text-3xl font-bold text-neutral-900 mb-2'>{lesson.name}</h1>
@@ -67,9 +87,14 @@ export function VrLessonDetails({ lesson, tasks }: VrLessonDetailsProps) {
               {lesson.lesson.name} • {lesson.map.name}
             </p>
           </div>
-          <Button variant='secondary' size='sm' onClick={handleOpenVrClassroom}>
-            <BookOpen /> Mở phiên học VR
-          </Button>
+          <div className='flex items-center gap-2'>
+            <Button variant='secondary' size='sm' onClick={handleOpenVrClassroom}>
+              <BookOpen className="mr-2 h-4 w-4" /> Mở phiên học VR
+            </Button>
+            <Button variant='destructive' className='text-white' size='sm' onClick={handleDelete}>
+              <Trash className="mr-2 h-4 w-4" /> Xóa
+            </Button>
+          </div>
         </div>
 
         <p className='text-neutral-700 text-sm leading-relaxed mb-6'>{lesson.description}</p>
@@ -99,7 +124,7 @@ export function VrLessonDetails({ lesson, tasks }: VrLessonDetailsProps) {
       </div>
 
       {/* Tasks Section */}
-      <div className='bg-white rounded-lg p-6 border border-neutral-200'>
+      <div className='bg-white rounded-lg p-6 border border-neutral-300'>
         <div className='flex items-center justify-between mb-4'>
           <h2 className='text-2xl font-bold text-neutral-900'>Nhiệm vụ ({lesson.tasks.length})</h2>
           <span className='italic my-auto'>{tasks.isSequential ? 'Nhiệm vụ tuần tự' : 'Nhiệm vụ tự do'}</span>

@@ -4,7 +4,7 @@ import { z } from 'zod';
 export const activationSchema = z.object({
   activationKey: z
     .string()
-    .min(1, 'Activation key is required.')
+    .min(1, 'Vui lòng nhập mã kích hoạt')
     .regex(/^([A-Z0-9]{5}-){4}[A-Z0-9]{5}$/, 'Mã kích hoạt không đúng định dạng'),
 });
 

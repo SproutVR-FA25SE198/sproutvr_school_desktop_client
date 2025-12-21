@@ -1,8 +1,12 @@
-import { app, BrowserWindow, dialog } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import path from 'path';
 import { isDev } from './util.js';
 import { getPreloadPath } from './pathResolver.js';
 import { registerGrpcEvents, stopRoomStream } from './ipc/grpc-events.js';
+import { loadConfig, getRuntimeConfig } from './config.js';
+
+// Load runtime config from .env file before anything else
+loadConfig();
 
 // Handle uncaught exceptions - especially gRPC cancellation errors
 process.on('uncaughtException', (error) => {
@@ -31,6 +35,11 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 app.on('ready', () => {
+  // Register IPC handler for runtime config
+  ipcMain.handle('get-runtime-config', () => {
+    return getRuntimeConfig();
+  });
+
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
@@ -72,7 +81,7 @@ app.on('ready', () => {
   });
 
   if (isDev()) {
-    mainWindow.loadURL('http://192.168.137.115:7272');
+    mainWindow.loadURL(getRuntimeConfig().APP_SERVER_URL);
   } else {
     mainWindow.loadFile(path.join(app.getAppPath(), 'dist-react', 'index.html'));
   }

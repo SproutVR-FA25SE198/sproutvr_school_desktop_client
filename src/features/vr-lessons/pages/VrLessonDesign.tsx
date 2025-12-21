@@ -22,7 +22,7 @@ const VrLessonDesign = () => {
 
   return (
     <>
-      <div className='mt-16'>
+      <div className=''>
         {currentStep === 1 && <PhaseOneStepOne maps={maps || ({} as MapRetrieveResponse)} lesson={lesson} />}
         {currentStep === 2 && <PhaseOneStepTwo maps={maps || ({} as MapRetrieveResponse)} />}
         {currentStep === 3 && <PhaseOneStepThree />}

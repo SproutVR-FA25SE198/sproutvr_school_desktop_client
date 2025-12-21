@@ -50,12 +50,12 @@ export function PhaseOneStepThree() {
   };
 
   return (
-    <div className='h-screen bg-gradient-to-br -mt-16 from-slate-900 to-slate-800 flex items-center justify-center p-4 pt-0'>
+    <div className='bg-gradient-to-br h-[calc(100vh-97px)] from-slate-900 to-slate-800 flex items-center justify-center p-4 pt-0'>
       <div className='w-full max-w-2xl'>
         {/* Main Card */}
         <div className='bg-white rounded-lg shadow-xl p-8 space-y-6'>
           {/* Title */}
-          <div className='text-center mb-8'>
+          <div className='text-center'>
             <h2 className='text-xl font-semibold text-slate-700'>Lưu bài học VR</h2>
           </div>
 
@@ -84,10 +84,10 @@ export function PhaseOneStepThree() {
           {/* Buttons */}
           <div className='flex justify-center gap-4 pt-6'>
             <Button onClick={handleBack} variant='outline' className='px-8 bg-transparent'>
-              ← Quay lại
+              Quay lại
             </Button>
             <Button onClick={handleSave} disabled={!isValid} className='px-8'>
-              Lưu →
+              Tiếp theo
             </Button>
           </div>
         </div>

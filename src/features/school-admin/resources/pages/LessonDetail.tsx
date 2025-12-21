@@ -14,11 +14,13 @@ import { fetchLessonById, updateLessonStatus } from '../services/lesson.services
 import { fetchVRLessons } from '../services/vr-lesson.services';
 import type { VRLesson } from '../types/vr-lesson.types';
 import { confirmDialog } from '@/common/components/ui/confirm-dialog';
+import { useRuntimeConfig } from '@/core/configs/runtime-config';
 
 export default function LessonDetail() {
   const navigate = useNavigate();
   const params = useParams();
   const lessonId = params?.id as string;
+  const { config } = useRuntimeConfig();
 
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [vrLessons, setVrLessons] = useState<VRLesson[]>([]);
@@ -27,7 +29,7 @@ export default function LessonDetail() {
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const schoolResourceUrl = import.meta.env.VITE_SCHOOL_URL + '/api';
+  const schoolResourceUrl = (config.SCHOOL_URL || import.meta.env.VITE_SCHOOL_URL) + '/api';
 
   // --- Data Fetching ---
   const loadLessonDetails = useCallback(async () => {

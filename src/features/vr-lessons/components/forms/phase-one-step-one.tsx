@@ -37,13 +37,16 @@ export function PhaseOneStepOne({ lesson, maps }: { lesson?: LessonRetrieve; map
   };
 
   return (
-    <div className='min-h-screen bg-neutral-50 p-6'>
+    <div className='bg-neutral-50 p-6'>
       <div className='max-w-7xl m-auto'>
         <div className='flex items-center gap-4 mb-8'>
-          <Button variant='ghost' size='icon' onClick={handleBack} className='rounded-full bg-white shadow-sm'>
-            <ChevronLeft className='size-5' />
-          </Button>
-          <h1 className='text-3xl self-center font-bold text-neutral-900'>Tạo bài học VR mới</h1>
+          <div
+            onClick={handleBack}
+            className='inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 hover:cursor-pointer transition-colors'
+          >
+            <ChevronLeft size={40} />
+            <h1 className='text-3xl self-center font-bold text-neutral-900'>Tạo bài học VR mới</h1>
+          </div>
         </div>
         {/* Main Content - 2 Column Layout */}
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
@@ -84,13 +87,13 @@ export function PhaseOneStepOne({ lesson, maps }: { lesson?: LessonRetrieve; map
           <div className='space-y-6'>
             <div className='bg-white rounded-lg border border-neutral-200 p-6 space-y-4'>
               <MapSelect
-                maps={maps?.items.filter(m => m.status.key === 1) || []}
+                maps={maps?.items.filter((m) => m.status.key === 1) || []}
                 value={formData.map}
                 onChange={(value) => updateField('map', value)}
                 error={errors.map}
               />
 
-              <MapPreview selectedMapId={formData.map} maps={maps?.items.filter(m => m.status.key === 1) || []} />
+              <MapPreview selectedMapId={formData.map} maps={maps?.items.filter((m) => m.status.key === 1) || []} />
             </div>
           </div>
         </div>

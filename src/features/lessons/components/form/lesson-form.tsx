@@ -27,7 +27,7 @@ export function LessonForm({ onSubmit, masterSubjects, subjects }: LessonFormPro
     control,
     handleSubmit,
     reset,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(lessonCreationSchema),
     mode: 'onSubmit',
@@ -71,9 +71,13 @@ export function LessonForm({ onSubmit, masterSubjects, subjects }: LessonFormPro
 
       {/* Subject + Class */}
       <div className='flex gap-12'>
-        <SubjectSelector subjects={masterSubjects?.filter(ms => ms.status.key === 1)} control={control} error={errors.subjectId?.message as string} />
+        <SubjectSelector
+          subjects={masterSubjects?.filter((ms) => ms.status.key === 1)}
+          control={control}
+          error={errors.subjectId?.message as string}
+        />
         <ClassSelector
-          classes={subjects?.filter(s => s.status.key === 1)}
+          classes={subjects?.filter((s) => s.status.key === 1)}
           control={control}
           selectedSubjectId={selectedSubjectId}
           error={errors.classId?.message as string}
@@ -105,7 +109,7 @@ export function LessonForm({ onSubmit, masterSubjects, subjects }: LessonFormPro
         <Button type='button' variant='outline' onClick={handleClear} className='min-w-32 bg-transparent'>
           Xóa thông tin
         </Button>
-        <Button type='submit' variant='secondary' disabled={!isValid || isSubmitting} className='min-w-32'>
+        <Button type='submit' variant='secondary' disabled={isSubmitting} className='min-w-32'>
           {isSubmitting ? 'Đang lưu bài giảng...' : 'Lưu bài giảng'}
         </Button>
       </div>

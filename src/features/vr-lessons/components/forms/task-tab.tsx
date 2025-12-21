@@ -27,12 +27,14 @@ export function TaskTab({ taskNumber, setIsValid }: TaskTabProps) {
   const activityType = taskSetup?.activityType?.activityCode.toLowerCase();
   const ActivityComponent = activityInputMap[activityType as keyof typeof activityInputMap];
 
+  console.log('Task Setup:', taskSetup);
+
   return (
-    <div className='space-y-6'>
+    <div className='space-y-4'>
       {/* Task Info */}
       <div className='flex gap-2 items-center'>
         <p className='text-sm font-medium'>Mô tả:</p>
-        <p className='text-sm text-muted-foreground'>{taskSetup?.description}</p>
+        <p className='text-sm text-muted-foreground'>{taskSetup?.taskDescription}</p>
       </div>
       <div className='grid grid-cols-2 gap-6'>
         <div className='space-y-4'>

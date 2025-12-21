@@ -3,7 +3,6 @@
 import { Card } from '@/common/components/ui/card';
 import { LessonForm } from '../components/form/lesson-form';
 import { ChevronLeft } from 'lucide-react';
-import { Button } from '@/common/components/ui/button';
 import type { LessonFormData } from '../components/form/schema';
 import useGetMasterSubjects from '@/common/hooks/useGetMasterSubjects';
 import useGetSubjects from '@/common/hooks/useGetSubjects';
@@ -63,19 +62,26 @@ export default function LessonCreationPage() {
   if (isLoading) return <Loading isLoading />;
 
   return (
-    <div className='h-screen overflow-y-auto'>
-      <div className='mx-auto container w-full space-y-6 p-8 mt-4 pb-16'>
+    <div className='h-screen'>
+      <div className='mx-auto container w-full space-y-6 p-8 mt-0 pb-16'>
         {/* Header */}
         <div className='flex items-center gap-4'>
-          <Button variant='ghost' size='icon' onClick={handleBack} className='rounded-full bg-white shadow-sm'>
-            <ChevronLeft className='size-5' />
-          </Button>
-          <h1 className='text-3xl self-center font-bold text-neutral-900'>Tạo bài giảng mới</h1>
+          <div
+            onClick={handleBack}
+            className='inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 hover:cursor-pointer transition-colors'
+          >
+            <ChevronLeft size={40} />
+            <h1 className='text-3xl self-center font-bold text-neutral-900'>Tạo bài giảng mới</h1>
+          </div>
         </div>
 
         {/* Form Card */}
         <Card className='p-8 w-full'>
-          <LessonForm masterSubjects={masterSubjects?.items} subjects={subjects?.items} onSubmit={handleSubmit} />
+          <LessonForm
+            masterSubjects={masterSubjects?.items.filter((m) => m.status.key === 1)}
+            subjects={subjects?.items.filter((s) => s.status.key === 1)}
+            onSubmit={handleSubmit}
+          />
         </Card>
       </div>
     </div>
