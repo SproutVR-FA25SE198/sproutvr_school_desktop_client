@@ -5,13 +5,11 @@ import { Card } from "@/common/components/ui/card";
 export interface KpiCardProps {
   title: string;
   value: number | string;
-  icon: string;
 }
 
 export function KpiCard({
   title,
   value,
-  icon,
 }: KpiCardProps) {
   return (
     <Card
@@ -20,7 +18,6 @@ export function KpiCard({
       <div
         className="w-12 h-12 flex items-center justify-center rounded-xl text-white text-3xl"
       >
-        {icon}
       </div>
 
       <div>

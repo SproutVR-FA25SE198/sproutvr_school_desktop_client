@@ -4,11 +4,14 @@ import { Badge } from '@/common/components/ui/badge';
 import { Button } from '@/common/components/ui/button';
 import { Card } from '@/common/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/common/components/ui/collapsible';
+import { confirmDialog } from '@/common/components/ui/confirm-dialog';
 import type { VrLessonPresetExtended, VrLessonRetrieve } from '@/common/types/vr-lesson.type';
 import routes from '@/core/configs/routes';
-import { BookOpen, ChevronDown } from 'lucide-react';
+import { BookOpen, ChevronDown, Trash } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { deleteVrLesson } from '../services/vr-lesson.service';
+import { toast } from 'sonner';
 
 interface VrLessonDetailsProps {
   lesson: VrLessonRetrieve;
@@ -33,6 +36,23 @@ export function VrLessonDetails({ lesson, tasks }: VrLessonDetailsProps) {
     navigate(routes.vrSessionCreate, {
       state: { lessonId: vrLessonId, vrLesson, classroomNumber, classroomLetter },
     });
+  };
+
+  const handleDelete = async () => {
+    if (!lesson) return;
+
+    const result = await confirmDialog(`Bạn có xác nhận xóa bài học VR này không?`);
+
+    if (result) {
+      try {
+        await deleteVrLesson(lesson.id, 0);
+        toast.success('Xóa bài học VR thành công!');
+        navigate(routes.lessonDetails.replace(':id', lesson.lesson.id));
+      } catch (err) {
+        console.error(err);
+        toast.error('Lỗi xóa bài học VR.');
+      }
+    }
   };
 
   const tasksInOrder = tasks.vrTasks.slice().sort((a, b) => a.taskNumber - b.taskNumber);
@@ -69,6 +89,9 @@ export function VrLessonDetails({ lesson, tasks }: VrLessonDetailsProps) {
           </div>
           <Button variant='secondary' size='sm' onClick={handleOpenVrClassroom}>
             <BookOpen /> Mở phiên học VR
+          </Button>
+          <Button variant='ghost' className='hover:bg-destructive/30' size='sm' onClick={handleDelete}>
+              <Trash /> Xóa
           </Button>
         </div>
 

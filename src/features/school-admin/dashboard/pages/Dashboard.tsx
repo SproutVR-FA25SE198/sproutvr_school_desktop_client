@@ -245,66 +245,14 @@ export default function Dashboard() {
     <div className="p-6 space-y-6">
       {/* KPI Cards: Total count by resources */}
       <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-        <KpiCard title="Bộ môn" value={totals.masterSubjects} icon="📚"  />
-        <KpiCard title="Môn học" value={totals.subjects} icon="📘"  />
-        <KpiCard title="Học liệu VR" value={totals.maps} icon="🗺️" />
-        <KpiCard title="Bài giảng" value={totals.lessons} icon="🎓"  />
-        <KpiCard title="Bài học VR" value={totals.vrLessons} icon="🥽" />
-        <KpiCard title="Phiên học VR" value={totals.sessions} icon="🖥️" />
+        <KpiCard title="Bộ môn" value={totals.masterSubjects} />
+        <KpiCard title="Môn học" value={totals.subjects} />
+        <KpiCard title="Học liệu VR" value={totals.maps}/>
+        <KpiCard title="Bài giảng" value={totals.lessons} />
+        <KpiCard title="Bài học VR" value={totals.vrLessons} />
+        <KpiCard title="Phiên học VR" value={totals.sessions} />
       </div>
 
-      {/* Pie charts */}
-      <div>
-        {/* Pie chart: MasterSubjects count by Status */}
-        <StatusPieCard
-          datasets={{
-            masterSubjects: msStatusData,
-            subjects: subjectsStatusData,
-            maps: mapsStatusData,
-            lessons: lessonsStatusData,
-            vrLessons: vrStatusData,
-            sessions: sessionsStatusData
-          }}
-        />
-      </div>
-
-      {/* Bar charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Bar chart: Lessons count by MasterSubject */}
-        <Card className="p-4">
-          <h3 className="text-lg font-semibold mb-2">Số lượng bài giảng theo bộ môn</h3>
-          <div style={{ height: 240 }}>
-            <ResponsiveContainer>
-              <BarChart data={lessonsByMasterSubject} layout="horizontal" margin={{ left: 10 }}>
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                <YAxis allowDecimals={false} />
-                <ReTooltip />
-                <Legend />
-                <Bar dataKey="count" name="Số lượng" fill="#b592f6ff" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="mt-3 text-sm text-neutral-600">Hiển thị top {lessonsByMasterSubject.length}</div>
-        </Card>
-
-        {/* Bar chart: VRLessons count by MasterSubject */}
-        <Card className="p-4">
-          <h3 className="text-lg font-semibold mb-2">Số lượng bài học VR theo bộ môn</h3>
-          <div style={{ height: 240 }}>
-            <ResponsiveContainer>
-              <BarChart data={vrLessonsByMasterSubject} layout="horizontal" margin={{ left: 10 }}>
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                <YAxis allowDecimals={false} />
-                <ReTooltip />
-                <Legend />
-                <Bar dataKey="count" name="Số lượng" fill="#b592f6ff" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="mt-3 text-sm text-neutral-600">Hiển thị top {vrLessonsByMasterSubject.length}</div>
-        </Card>
-      </div>
-      
       {/* Recent resources tables */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Recent Sessions table */}
@@ -386,6 +334,59 @@ export default function Dashboard() {
         </Card>
 
       </div>
+
+      {/* Pie charts */}
+      <div>
+        {/* Pie chart: MasterSubjects count by Status */}
+        <StatusPieCard
+          datasets={{
+            masterSubjects: msStatusData,
+            subjects: subjectsStatusData,
+            maps: mapsStatusData,
+            lessons: lessonsStatusData,
+            vrLessons: vrStatusData,
+            sessions: sessionsStatusData
+          }}
+        />
+      </div>
+
+      {/* Bar charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Bar chart: Lessons count by MasterSubject */}
+        <Card className="p-4">
+          <h3 className="text-lg font-semibold mb-2">Số lượng bài giảng theo bộ môn</h3>
+          <div style={{ height: 240 }}>
+            <ResponsiveContainer>
+              <BarChart data={lessonsByMasterSubject} layout="horizontal" margin={{ left: 10 }}>
+                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                <YAxis allowDecimals={false} />
+                <ReTooltip />
+                <Legend />
+                <Bar dataKey="count" name="Số lượng" fill="#b592f6ff" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="mt-3 text-sm text-neutral-600">Hiển thị top {lessonsByMasterSubject.length}</div>
+        </Card>
+
+        {/* Bar chart: VRLessons count by MasterSubject */}
+        <Card className="p-4">
+          <h3 className="text-lg font-semibold mb-2">Số lượng bài học VR theo bộ môn</h3>
+          <div style={{ height: 240 }}>
+            <ResponsiveContainer>
+              <BarChart data={vrLessonsByMasterSubject} layout="horizontal" margin={{ left: 10 }}>
+                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                <YAxis allowDecimals={false} />
+                <ReTooltip />
+                <Legend />
+                <Bar dataKey="count" name="Số lượng" fill="#b592f6ff" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="mt-3 text-sm text-neutral-600">Hiển thị top {vrLessonsByMasterSubject.length}</div>
+        </Card>
+      </div>
+
       <AIChatSidebar />
     </div>
   );
